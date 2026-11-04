@@ -1,0 +1,160 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-people me-2 text-primary"></i>User management</h1>
+      <p class="text-body-secondary mb-0">Search, filter and manage every account on the platform.</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="/admin/users/export.csv">
+      <i class="bi bi-filetype-csv me-1"></i>Export users (CSV)
+    </a>
+  </div>
+
+  <div class="card shadow-sm border-0 mb-3">
+    <div class="card-body">
+      <form action="/admin/users" method="get" class="row g-2 align-items-end">
+        <div class="col-lg-4 col-md-6">
+          <label class="form-label small mb-1" for="q">Search</label>
+          <input type="search" class="form-control form-control-sm" id="q" name="q" value="<%= search %>" placeholder="Name or e-mail">
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <label class="form-label small mb-1" for="role">Role</label>
+          <select class="form-select form-select-sm" id="role" name="role">
+            <option value="">All roles</option>
+            <option value="student" <%= activeRole === 'student' ? 'selected' : '' %>>Student</option>
+            <option value="company" <%= activeRole === 'company' ? 'selected' : '' %>>Company</option>
+            <option value="admin" <%= activeRole === 'admin' ? 'selected' : '' %>>Admin</option>
+          </select>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <label class="form-label small mb-1" for="status">Status</label>
+          <select class="form-select form-select-sm" id="status" name="status">
+            <option value="">Any status</option>
+            <option value="active" <%= activeStatus === 'active' ? 'selected' : '' %>>Active</option>
+            <option value="suspended" <%= activeStatus === 'suspended' ? 'selected' : '' %>>Suspended</option>
+            <option value="pending" <%= activeStatus === 'pending' ? 'selected' : '' %>>Pending</option>
+          </select>
+        </div>
+        <div class="col-lg-2 col-md-6 d-flex gap-2">
+          <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-funnel me-1"></i>Filter</button>
+          <a class="btn btn-outline-secondary btn-sm" href="/admin/users">Clear</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <a class="btn btn-sm <%= !activeRole ? 'btn-dark' : 'btn-outline-secondary' %>" href="/admin/users">
+      All <span class="badge bg-light text-dark ms-1"><%= totalUsers %></span>
+    </a>
+    <% ['student', 'company', 'admin'].forEach(function (r) { %>
+      <a class="btn btn-sm <%= activeRole === r ? 'btn-dark' : 'btn-outline-secondary' %>" href="/admin/users?role=<%= r %>">
+        <span class="text-capitalize"><%= r %></span> <span class="badge bg-light text-dark ms-1"><%= roleCounts[r] || 0 %></span>
+      </a>
+    <% }); %>
+  </div>
+
+  <% if (!users.length) { %>
+    <%- include('../partials/emptyState', {
+      emptyState: {
+        icon: 'bi-people',
+        title: 'No users match your filters',
+        message: 'Try a different role, status or search term.',
+        actionHref: '/admin/users', actionLabel: 'Clear filters', actionIcon: 'bi-x-circle'
+      }
+    }) %>
+  <% } else { %>
+    <form action="/admin/users/bulk" method="post" id="bulkUsersForm">
+      <input type="hidden" name="returnTo" value="/admin/users">
+
+      <div class="card shadow-sm border-0 table-card">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th style="width:36px"><input class="form-check-input" type="checkbox" id="checkAll" aria-label="Select all"></th>
+                  <th>User</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Registered</th>
+                  <th>Last login</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% users.forEach(function (u) { %>
+                  <tr>
+                    <td><input class="form-check-input app-check" type="checkbox" value="<%= u._id %>" aria-label="Select user"></td>
+                    <td>
+                      <a href="/admin/users/<%= u._id %>" class="fw-semibold text-decoration-none d-flex align-items-center gap-2">
+                        <span class="avatar avatar-sm"><%= u.initials %></span><%= u.name %>
+                      </a>
+                      <div class="small text-body-secondary"><%= u.email %></div>
+                    </td>
+                    <td><span class="badge text-bg-secondary text-uppercase"><%= u.role %></span></td>
+                    <td>
+                      <span class="badge text-bg-<%= u.status === 'active' ? 'success' : u.status === 'suspended' ? 'danger' : 'warning' %> text-capitalize">
+                        <%= u.status %>
+                      </span>
+                    </td>
+                    <td class="small text-nowrap"><%= format.formatDate(u.createdAt) %></td>
+                    <td class="small text-nowrap"><%= u.lastLogin ? format.timeAgo(u.lastLogin) : 'never' %></td>
+                    <td class="text-end">
+                      <div class="d-inline-flex gap-1">
+                        <a class="btn btn-sm btn-outline-primary" href="/admin/users/<%= u._id %>" title="Details"><i class="bi bi-eye"></i></a>
+                        <% if (u.role === 'company') { %>
+                          <a class="btn btn-sm btn-outline-secondary" href="/companies/<%= u._id %>" title="Public page" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i></a>
+                        <% } %>
+                        <% if (u._id.toString() !== currentUser._id.toString()) { %>
+                          <% if (u.status === 'active') { %>
+                            <form action="/admin/users/<%= u._id %>" method="post" class="d-inline" data-confirm="Suspend <%= u.name %>?">
+                              <input type="hidden" name="action" value="suspend">
+                              <input type="hidden" name="returnTo" value="/admin/users?page=<%= pager.page %>">
+                              <button class="btn btn-sm btn-outline-warning" type="submit" title="Suspend"><i class="bi bi-pause"></i></button>
+                            </form>
+                          <% } else { %>
+                            <form action="/admin/users/<%= u._id %>" method="post" class="d-inline" data-confirm="Reactivate <%= u.name %>?">
+                              <input type="hidden" name="action" value="activate">
+                              <input type="hidden" name="returnTo" value="/admin/users?page=<%= pager.page %>">
+                              <button class="btn btn-sm btn-outline-success" type="submit" title="Activate"><i class="bi bi-play"></i></button>
+                            </form>
+                          <% } %>
+                        <% } %>
+                      </div>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="card shadow-sm border-0 mt-3" id="bulkBar" style="display:none">
+      <div class="card-body p-3">
+        <div class="row g-2 align-items-end">
+          <div id="bulkSelected"></div>
+          <div class="col-md-3">
+            <label class="form-label small mb-1" for="bulkAction">Bulk action</label>
+            <select class="form-select form-select-sm" id="bulkAction" name="bulkAction" required>
+              <option value="">Choose an action...</option>
+              <option value="suspend">Suspend accounts</option>
+              <option value="activate">Activate accounts</option>
+              <option value="delete">Delete accounts</option>
+            </select>
+          </div>
+          <div class="col-md-9">
+            <button class="btn btn-primary btn-sm" type="submit" form="bulkUsersForm"
+                    data-confirm="Apply this action to all selected users?">
+              <i class="bi bi-check2-all me-1"></i>Apply to selected
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/pagination', { pager: pager }) %>
+  <% } %>
+</div>

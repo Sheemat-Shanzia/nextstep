@@ -1,0 +1,30 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <div class="mb-4">
+    <h1 class="h3 mb-1"><i class="bi bi-fire text-danger me-2"></i>Most viewed opportunities</h1>
+    <p class="text-body-secondary mb-0">The opportunities students are currently clicking on the most.</p>
+  </div>
+
+  <% if (!opportunities || !opportunities.length) { %>
+    <%- include('../partials/emptyState', {
+      emptyState: {
+        icon: 'bi-fire',
+        title: 'Nothing has been viewed yet',
+        message: 'View statistics appear here as soon as opportunities are opened.',
+        actionHref: '/opportunities', actionLabel: 'Browse opportunities', actionIcon: 'bi-grid'
+      }
+    }) %>
+  <% } else { %>
+    <div class="row g-4">
+      <% opportunities.forEach(function (o) { %>
+        <div class="col-md-6 col-xl-4">
+          <%- include('../partials/opportunityCard', { o: o }) %>
+        </div>
+      <% }); %>
+    </div>
+
+    <div class="mt-4">
+      <a class="btn btn-outline-secondary" href="/opportunities"><i class="bi bi-grid me-1"></i>Browse all opportunities</a>
+    </div>
+  <% } %>
+</div>

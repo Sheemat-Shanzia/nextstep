@@ -1,0 +1,22 @@
+<%- include('../partials/flash') %>
+<div class="container py-5 text-center error-page">
+  <div class="display-1 fw-bold text-danger">403</div>
+  <h1 class="h3 mb-3"><%= typeof title !== 'undefined' ? title : 'Access denied' %></h1>
+  <p class="text-body-secondary mb-4"><%= typeof message !== 'undefined' ? message : 'You do not have permission to view this page.' %></p>
+
+  <% if (currentUser) { %>
+    <div class="d-flex gap-2 justify-content-center flex-wrap">
+      <a class="btn btn-primary" href="/dashboard"><i class="bi bi-speedometer2 me-1"></i>Go to my dashboard</a>
+      <a class="btn btn-outline-secondary" href="/"><i class="bi bi-house me-1"></i>Back to home</a>
+    </div>
+    <p class="small text-body-secondary mt-4">
+      You are signed in as <strong><%= currentUser.email %></strong> with the
+      <span class="badge text-bg-secondary text-uppercase"><%= currentUser.role %></span> role.
+    </p>
+  <% } else { %>
+    <div class="d-flex gap-2 justify-content-center flex-wrap">
+      <a class="btn btn-primary" href="/auth/login"><i class="bi bi-box-arrow-in-right me-1"></i>Sign in</a>
+      <a class="btn btn-outline-secondary" href="/"><i class="bi bi-house me-1"></i>Back to home</a>
+    </div>
+  <% } %>
+</div>

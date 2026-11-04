@@ -1,0 +1,119 @@
+<%
+/**
+ * Reusable opportunity card used by the landing page, browse, search,
+ * bookmarks, recommendations and the public company page.
+ *
+ * Expected: `o` = Opportunity (doc or lean object). Optional:
+ *   o.match        -> skill match percentage (recommendations)
+ *   o.applied      -> true when the viewer already applied
+ *   o.matchedSkills
+ */
+const dl = (typeof o.daysLeft === 'number' ? o.daysLeft : Math.ceil((new Date(o.deadline).getTime() - Date.now()) / 86400000));
+const expired = dl < 0;
+const badge = format.deadlineBadge(dl);
+const cp = o.companyProfile || {};
+const alreadyApplied = typeof o.applied !== 'undefined'
+  ? o.applied
+  : (typeof appliedIds !== 'undefined' && appliedIds ? appliedIds.has(String(o._id)) : false);
+const isSaved = typeof bookmarkedIds !== 'undefined' && bookmarkedIds ? bookmarkedIds.has(String(o._id)) : false;
+const isInternship = o.type === 'internship';
+%>
+<div class="card opportunity-card h-100 shadow-sm">
+  <div class="card-body d-flex flex-column">
+    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+      <div class="d-flex align-items-center gap-2 min-w-0">
+        <% if (cp.logo) { %>
+          <img src="/files/company/logo/<%= cp.user || '' %>" class="rounded" width="34" height="34"
+               style="object-fit:cover" alt="<%= cp.companyName %> logo"
+               onerror="this.style.display='none'">
+        <% } %>
+        <span class="text-truncate fw-semibold small" title="<%= cp.companyName || o.companyNameCopy || '' %>">
+          <%= cp.companyName || o.companyNameCopy %>
+        </span>
+        <% if (cp.verified) { %>
+          <i class="bi bi-patch-check-fill text-primary" title="Verified company" aria-label="Verified company"></i>
+        <% } %>
+      </div>
+      <span class="badge <%= isInternship ? 'bg-primary' : 'bg-success' %> text-uppercase">
+        <i class="bi <%= isInternship ? 'bi-briefcase' : 'bi-mortarboard' %> me-1"></i><%= isInternship ? 'Internship' : 'Scholarship' %>
+      </span>
+    </div>
+
+    <h5 class="card-title h6 mb-2">
+      <a href="/opportunities/<%= o._id %>" class="text-decoration-none text-body card-title-link">
+        <%= o.title %>
+      </a>
+    </h5>
+
+    <div class="small text-body-secondary d-flex flex-wrap gap-2 mb-2">
+      <span><i class="bi bi-geo-alt me-1"></i><%= o.location || '-' %></span>
+      <span class="text-capitalize"><i class="bi bi-<%= o.mode === 'remote' ? 'cloud' : o.mode === 'hybrid' ? 'arrow-left-right' : 'building' %> me-1"></i><%= o.mode || '-' %></span>
+      <% if (o.duration) { %><span><i class="bi bi-calendar-range me-1"></i><%= o.duration %></span><% } %>
+    </div>
+
+    <p class="small text-body-secondary flex-grow-1 mb-2"><%= format.truncate(o.description, 130) %></p>
+
+    <% if (o.requiredSkills && o.requiredSkills.length) { %>
+      <div class="d-flex flex-wrap gap-1 mb-2">
+        <% o.requiredSkills.slice(0, 4).forEach(function (s) { %>
+          <span class="badge text-bg-light border"><%= s %></span>
+        <% }); %>
+        <% if (o.requiredSkills.length > 4) { %>
+          <span class="badge text-bg-light border">+<%= o.requiredSkills.length - 4 %></span>
+        <% } %>
+      </div>
+    <% } %>
+
+    <% if (typeof o.match !== 'undefined') { %>
+      <div class="mb-2">
+        <div class="d-flex justify-content-between small">
+          <span class="text-body-secondary"><i class="bi bi-magic me-1"></i>Skill match</span>
+          <strong class="text-primary"><%= o.match %>%</strong>
+        </div>
+        <div class="progress" style="height:5px" role="progressbar" aria-label="Skill match" aria-valuenow="<%= o.match %>" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-bar bg-primary" style="width:<%= o.match %>%"></div>
+        </div>
+      </div>
+    <% } %>
+
+    <div class="d-flex justify-content-between align-items-center small mt-auto pt-2 border-top">
+      <span class="fw-semibold">
+        <i class="bi bi-cash-coin me-1"></i><%= o.stipend ? format.formatNumber(o.stipend) : (isInternship ? 'Unpaid' : 'N/A') %>
+      </span>
+      <% if (typeof cp.averageRating !== 'undefined' && cp.reviewCount > 0) { %>
+        <span class="text-warning"><i class="bi bi-star-fill"></i> <%= cp.averageRating.toFixed(1) %> <span class="text-body-secondary">(<%= cp.reviewCount %>)</span></span>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="card-footer bg-transparent d-flex justify-content-between align-items-center gap-2">
+    <span class="badge <%= badge.className %>"><i class="bi bi-clock me-1"></i><%= badge.text %></span>
+
+    <div class="d-flex align-items-center gap-1">
+      <% if (o.views !== undefined) { %>
+        <span class="small text-body-secondary me-2" title="Views"><i class="bi bi-eye"></i> <%= o.views %></span>
+      <% } %>
+
+      <% if (isStudent && !expired) { %>
+        <form action="/opportunities/<%= o._id %>/bookmark" method="post" class="d-inline bookmark-form"
+              data-id="<%= o._id %>">
+          <button type="submit" class="btn btn-sm btn-link p-1 text-body-secondary bookmark-btn
+                 <%= isSaved ? 'is-saved text-warning' : '' %>" title="<%= isSaved ? 'Remove from saved' : 'Save this opportunity' %>"
+                  aria-label="<%= isSaved ? 'Remove from saved' : 'Save this opportunity' %>">
+            <i class="bi <%= isSaved ? 'bi-bookmark-fill' : 'bi-bookmark' %>"></i>
+          </button>
+        </form>
+      <% } %>
+
+      <% if (alreadyApplied) { %>
+        <span class="badge bg-success-subtle text-success border border-success-subtle" title="You already applied">
+          <i class="bi bi-check2 me-1"></i>Applied
+        </span>
+      <% } else if (!expired && o.status === 'approved') { %>
+        <a class="btn btn-sm btn-primary" href="/opportunities/<%= o._id %>/apply">Apply</a>
+      <% } else if (expired) { %>
+        <span class="badge bg-secondary">Closed</span>
+      <% } %>
+    </div>
+  </div>
+</div>

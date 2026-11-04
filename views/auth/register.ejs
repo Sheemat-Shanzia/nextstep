@@ -1,0 +1,114 @@
+<%- include('../partials/flash') %>
+<% const role = (old && old.role) || 'student'; %>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-lg-5">
+          <div class="text-center mb-4">
+            <span class="brand-mark brand-mark-lg mb-2"><i class="bi bi-person-plus-fill"></i></span>
+            <h1 class="h4 mb-1">Create your NextStep account</h1>
+            <p class="text-body-secondary small mb-0">It takes less than a minute</p>
+          </div>
+
+          <!-- Role switcher (toggles the company-only / student-only fields) -->
+          <div class="row g-2 mb-4" role="tablist">
+            <div class="col-6">
+              <input type="radio" class="btn-check" name="roleTab" id="roleStudent" value="student"
+                     data-role-tab="student" <%= role === 'student' ? 'checked' : '' %>>
+              <label class="btn btn-outline-primary w-100" for="roleStudent">
+                <i class="bi bi-mortarboard me-1"></i>I'm a student
+              </label>
+            </div>
+            <div class="col-6">
+              <input type="radio" class="btn-check" name="roleTab" id="roleCompany" value="company"
+                     data-role-tab="company" <%= role === 'company' ? 'checked' : '' %>>
+              <label class="btn btn-outline-primary w-100" for="roleCompany">
+                <i class="bi bi-building me-1"></i>I'm a company
+              </label>
+            </div>
+          </div>
+
+          <form action="/auth/register" method="post" class="needs-validation" novalidate id="registerForm">
+            <input type="hidden" name="role" id="roleInput" value="<%= role %>">
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="name">Full name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="name" name="name" required minlength="2" maxlength="120"
+                       value="<%= old.name || '' %>" placeholder="e.g. Aisha Rahman">
+                <div class="invalid-feedback">Please enter your full name (2+ characters).</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label" for="email">E-mail address <span class="text-danger">*</span></label>
+                <input type="email" class="form-control" id="email" name="email" required
+                       value="<%= old.email || '' %>" placeholder="you@example.com" autocomplete="email">
+                <div class="invalid-feedback">Please enter a valid e-mail address.</div>
+              </div>
+
+              <!-- Student only -->
+              <div class="col-12 role-field" data-role-field="student">
+                <label class="form-label" for="university">University</label>
+                <input type="text" class="form-control" id="university" name="university"
+                       value="<%= old.university || '' %>" placeholder="e.g. University of Dhaka">
+                <div class="form-text">Helps companies find you for university-specific programs.</div>
+              </div>
+
+              <!-- Company only -->
+              <div class="col-12 role-field d-none" data-role-field="company">
+                <label class="form-label" for="companyName">Company / organisation name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="companyName" name="companyName"
+                       value="<%= old.companyName || '' %>" placeholder="e.g. Bright Future Tech Ltd">
+                <div class="invalid-feedback">Please enter your company name.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label" for="password">Password <span class="text-danger">*</span></label>
+                <input type="password" class="form-control" id="password" name="password" required minlength="8"
+                       autocomplete="new-password" placeholder="At least 8 characters">
+                <div class="invalid-feedback">Password must be at least 8 characters.</div>
+                <div class="form-text" id="passwordHelp">
+                  Must contain a lower case letter, an upper case letter and a number.
+                </div>
+                <div class="progress mt-2" style="height:5px">
+                  <div class="progress-bar" id="passwordStrengthBar" style="width:0%"></div>
+                </div>
+                <div class="small text-body-secondary" id="passwordStrengthText">Password strength</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label" for="password2">Confirm password <span class="text-danger">*</span></label>
+                <input type="password" class="form-control" id="password2" name="password2" required
+                       autocomplete="new-password" placeholder="Repeat your password">
+                <div class="invalid-feedback">The two passwords do not match.</div>
+              </div>
+
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="terms" required>
+                  <label class="form-check-label small" for="terms">
+                    I agree to use NextStep responsibly and understand that my CV will be shared with
+                    companies I apply to.
+                  </label>
+                  <div class="invalid-feedback">Please confirm before creating your account.</div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <button class="btn btn-primary w-100" type="submit">
+                  <span class="spinner-border spinner-border-sm me-1 d-none" data-loading-spinner></span>
+                  <i class="bi bi-person-plus me-1"></i>Create account
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <p class="text-center small mt-3 mb-0">
+            Already registered? <a href="/auth/login" class="fw-semibold">Sign in instead</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

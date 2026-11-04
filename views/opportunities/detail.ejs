@@ -1,0 +1,290 @@
+<%- include('../partials/flash') %>
+<%
+const dl = opportunity.daysLeft;
+const badge = format.deadlineBadge(dl);
+const isInternship = opportunity.type === 'internship';
+const canApply = opportunity.isVisibleToStudents;
+const isOwner = currentUser && opportunity.company && opportunity.company._id && currentUser._id.toString() === opportunity.company._id.toString();
+%>
+<div class="container py-4">
+  <!-- breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/opportunities">Opportunities</a></li>
+      <li class="breadcrumb-item"><a href="/search?type=<%= opportunity.type %>"><%= opportunity.typeLabel %></a></li>
+      <li class="breadcrumb-item active" aria-current="page"><%= format.truncate(opportunity.title, 40) %></li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+    <!-- ============ MAIN ============ -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <span class="badge <%= isInternship ? 'bg-primary' : 'bg-success' %>">
+              <i class="bi <%= isInternship ? 'bi-briefcase' : 'bi-mortarboard' %> me-1"></i><%= opportunity.typeLabel %>
+            </span>
+            <span class="badge text-bg-light border text-capitalize"><%= opportunity.mode %></span>
+            <span class="badge <%= badge.className %>"><i class="bi bi-clock me-1"></i><%= badge.text %></span>
+            <% if (opportunity.isClosingSoon) { %>
+              <span class="badge bg-danger"><i class="bi bi-exclamation-triangle me-1"></i>Closing soon</span>
+            <% } %>
+            <% if (opportunity.status !== 'approved') { %>
+              <span class="badge bg-warning text-dark">Preview mode &mdash; <%= opportunity.status %></span>
+            <% } %>
+          </div>
+
+          <h1 class="h3 mb-3"><%= opportunity.title %></h1>
+
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <% if (company && company.logo) { %>
+              <img src="/files/company/logo/<%= company.user %>" width="40" height="40" class="rounded"
+                   style="object-fit:cover" alt="<%= company.companyName %> logo"
+                   onerror="this.style.display='none'">
+            <% } %>
+            <div class="min-w-0">
+              <a href="/companies/<%= opportunity.company %>" class="fw-semibold d-block text-decoration-none text-body">
+                <%= opportunity.companyNameCopy %>
+              </a>
+              <span class="small text-body-secondary">
+                <% if (company && company.verified) { %>
+                  <i class="bi bi-patch-check-fill text-primary"></i> Verified company
+                <% } %>
+                <% if (company && company.industry) { %><%= company.industry %><% } %>
+              </span>
+            </div>
+          </div>
+
+          <p class="text-body-secondary"><%= format.truncate(opportunity.description, 400) %><%= opportunity.description.length > 400 ? '...' : '' %></p>
+
+          <div class="row g-3 mt-3">
+            <div class="col-6 col-md-3">
+              <div class="small text-body-secondary"><i class="bi bi-geo-alt me-1"></i>Location</div>
+              <div class="fw-semibold"><%= opportunity.location %></div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="small text-body-secondary"><i class="bi bi-calendar-range me-1"></i>Duration</div>
+              <div class="fw-semibold"><%= opportunity.duration || 'Not specified' %></div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="small text-body-secondary"><i class="bi bi-cash-coin me-1"></i><%= isInternship ? 'Stipend' : 'Award' %></div>
+              <div class="fw-semibold"><%= opportunity.stipendLabel %></div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="small text-body-secondary"><i class="bi bi-people me-1"></i>Openings</div>
+              <div class="fw-semibold"><%= opportunity.openings %></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer bg-body-tertiary">
+          <div class="d-flex flex-wrap gap-3 small text-body-secondary">
+            <span><i class="bi bi-calendar-x me-1"></i>Apply before <strong><%= format.formatDate(opportunity.deadline) %></strong></span>
+            <span><i class="bi bi-eye me-1"></i><%= opportunity.views %> views</span>
+            <span><i class="bi bi-clock-history me-1"></i>Posted <%= format.timeAgo(opportunity.createdAt) %></span>
+            <% if (opportunity.minCgpa) { %>
+              <span><i class="bi bi-mortarboard me-1"></i>Minimum CGPA <%= opportunity.minCgpa %>/10</span>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- description -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3"><i class="bi bi-file-text me-2 text-primary"></i>About this opportunity</h2>
+          <p style="white-space: pre-line"><%= opportunity.description %></p>
+        </div>
+      </div>
+
+      <!-- requirements -->
+      <% if (opportunity.requirements) { %>
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-body p-4">
+            <h2 class="h5 mb-3"><i class="bi bi-list-check me-2 text-primary"></i>Requirements</h2>
+            <p style="white-space: pre-line"><%= opportunity.requirements %></p>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- skills + tags -->
+      <% if ((opportunity.requiredSkills && opportunity.requiredSkills.length) || (opportunity.tags && opportunity.tags.length)) { %>
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-body p-4">
+            <% if (opportunity.requiredSkills && opportunity.requiredSkills.length) { %>
+              <h2 class="h6 text-uppercase text-body-secondary mb-2">Required skills</h2>
+              <div class="kbd-list mb-3">
+                <% opportunity.requiredSkills.forEach(function (s) { %>
+                  <span class="badge text-bg-primary-subtle text-primary border border-primary-subtle"><%= s %></span>
+                <% }); %>
+              </div>
+            <% } %>
+            <% if (opportunity.tags && opportunity.tags.length) { %>
+              <h2 class="h6 text-uppercase text-body-secondary mb-2">Tags</h2>
+              <div class="kbd-list">
+                <% opportunity.tags.forEach(function (t) { %>
+                  <span class="badge text-bg-light border">#<%= t %></span>
+                <% }); %>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- recommendations -->
+      <% if (isStudent && recommendations && recommendations.length) { %>
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-body p-4">
+            <h2 class="h5 mb-3"><i class="bi bi-magic me-2 text-primary"></i>Recommended for you</h2>
+            <p class="small text-body-secondary">Ranked by the overlap between your profile skills and the required skills.</p>
+            <div class="row g-3">
+              <% recommendations.forEach(function (o) { %>
+                <div class="col-md-6 col-xl-4">
+                  <%- include('../partials/opportunityCard', { o: o, applied: false }) %>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- similar -->
+      <% if (similar && similar.length) { %>
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <h2 class="h5 mb-3"><i class="bi bi-copy me-2 text-primary"></i>Similar opportunities</h2>
+            <div class="row g-3">
+              <% similar.forEach(function (o) { %>
+                <div class="col-md-6 col-xl-4">
+                  <%- include('../partials/opportunityCard', { o: o }) %>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- ============ SIDEBAR ============ -->
+    <div class="col-lg-4">
+      <div class="sticky-filter">
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-body p-4 text-center">
+            <% if (isOwner || (currentUser && isAdmin)) { %>
+              <!-- Owner / admin view -->
+              <a class="btn btn-outline-primary w-100 mb-2" href="/company/opportunities/<%= opportunity._id %>">
+                <i class="bi bi-gear me-1"></i>Manage this post
+              </a>
+              <a class="btn btn-outline-secondary w-100" href="/company/opportunities/<%= opportunity._id %>/applicants">
+                <i class="bi bi-people me-1"></i>View applicants
+              </a>
+            <% } else if (existingApplication) { %>
+              <div class="alert alert-success mb-3">
+                <i class="bi bi-check-circle-fill me-1"></i>
+                You applied on <%= format.formatDate(existingApplication.appliedAt) %>
+              </div>
+              <a class="btn btn-primary w-100" href="/student/applications/<%= existingApplication._id %>">
+                <i class="bi bi-clock-history me-1"></i>Track my application
+              </a>
+              <form action="/opportunities/<%= opportunity._id %>/bookmark" method="post" class="mt-2">
+                <button class="btn btn-outline-warning w-100" type="submit">
+                  <i class="bi <%= myBookmark ? 'bi-bookmark-fill' : 'bi-bookmark' %> me-1"></i>
+                  <%= myBookmark ? 'Saved' : 'Save for later' %>
+                </button>
+              </form>
+            <% } else if (!isStudent) { %>
+              <a class="btn btn-primary w-100 mb-2" href="/auth/login?returnTo=/opportunities/<%= opportunity._id %>">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Sign in to apply
+              </a>
+              <a class="btn btn-outline-secondary w-100" href="/auth/register?role=student">Create a student account</a>
+            <% } else if (opportunity.isExpired) { %>
+              <div class="alert alert-secondary mb-0">
+                <i class="bi bi-clock-history me-1"></i>
+                The application deadline passed on <%= format.formatDate(opportunity.deadline) %>.
+              </div>
+            <% } else if (opportunity.status !== 'approved' || !opportunity.isActive) { %>
+              <div class="alert alert-warning mb-0">
+                <i class="bi bi-hourglass-split me-1"></i>
+                This opportunity is not open for applications at the moment.
+              </div>
+            <% } else { %>
+              <a class="btn btn-primary btn-lg w-100 mb-2" href="/opportunities/<%= opportunity._id %>/apply">
+                <i class="bi bi-send me-1"></i>Apply now
+              </a>
+              <form action="/opportunities/<%= opportunity._id %>/bookmark" method="post">
+                <button class="btn btn-outline-warning w-100" type="submit">
+                  <i class="bi <%= myBookmark ? 'bi-bookmark-fill' : 'bi-bookmark' %> me-1"></i>
+                  <%= myBookmark ? 'Saved' : 'Save for later' %>
+                </button>
+              </form>
+              <p class="small text-body-secondary mt-3 mb-0">
+                <i class="bi bi-shield-lock me-1"></i>
+                Your CV is shared with this company only when you apply.
+              </p>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- company summary -->
+        <% if (company) { %>
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+              <h2 class="h6 text-uppercase text-body-secondary mb-3">About the company</h2>
+              <h3 class="h5 mb-1"><%= company.companyName %></h3>
+              <div class="mb-2">
+                <% if (company.verified) { %>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
+                    <i class="bi bi-patch-check-fill me-1"></i>Verified
+                  </span>
+                <% } %>
+                <% if (company.averageRating > 0) { %>
+                  <span class="badge text-bg-warning">
+                    <i class="bi bi-star-fill me-1"></i><%= company.averageRating.toFixed(1) %>
+                    <span class="fw-normal">(<%= company.reviewCount %>)</span>
+                  </span>
+                <% } %>
+              </div>
+
+              <% if (company.industry) { %><p class="small mb-1"><i class="bi bi-building me-2"></i><%= company.industry %></p><% } %>
+              <% if (company.location) { %><p class="small mb-1"><i class="bi bi-geo-alt me-2"></i><%= company.location %></p><% } %>
+              <% if (company.size) { %><p class="small mb-1"><i class="bi bi-people me-2"></i><%= company.size %> employees</p><% } %>
+              <% if (company.description) { %><p class="small text-body-secondary mt-2"><%= format.truncate(company.description, 220) %></p><% } %>
+
+              <a class="btn btn-sm btn-outline-primary w-100 mt-3" href="/companies/<%= company.user %>">
+                View company profile
+              </a>
+            </div>
+          </div>
+        <% } %>
+
+        <!-- quick facts -->
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <h2 class="h6 text-uppercase text-body-secondary mb-3">Quick facts</h2>
+            <ul class="list-unstyled small d-grid gap-2 mb-0">
+              <li class="d-flex justify-content-between">
+                <span class="text-body-secondary">Category</span><span><%= opportunity.category %></span>
+              </li>
+              <li class="d-flex justify-content-between">
+                <span class="text-body-secondary">Work mode</span><span class="text-capitalize"><%= opportunity.mode %></span>
+              </li>
+              <li class="d-flex justify-content-between">
+                <span class="text-body-secondary">Deadline</span><span><%= format.formatDate(opportunity.deadline) %></span>
+              </li>
+              <li class="d-flex justify-content-between">
+                <span class="text-body-secondary">Days left</span>
+                <span class="badge <%= badge.className %>"><%= badge.text %></span>
+              </li>
+              <li class="d-flex justify-content-between">
+                <span class="text-body-secondary">Moderation</span>
+                <span class="badge <%= format.OPPORTUNITY_STATUS_BADGE[opportunity.status] %> text-capitalize"><%= opportunity.status %></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

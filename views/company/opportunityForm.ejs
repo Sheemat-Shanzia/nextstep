@@ -1,0 +1,187 @@
+<%
+const isEdit = Boolean(opportunity);
+const v = opportunity || {};
+const dayStr = (d) => (d ? new Date(d).toISOString().slice(0, 10) : '');
+%>
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/company/opportunities">My opportunities</a></li>
+      <% if (isEdit) { %>
+        <li class="breadcrumb-item"><a href="/company/opportunities/<%= v._id %>"><%= format.truncate(v.title, 30) %></a></li>
+        <li class="breadcrumb-item active">Edit</li>
+      <% } else { %>
+        <li class="breadcrumb-item active">New post</li>
+      <% } %>
+    </ol>
+  </nav>
+
+  <h1 class="h3 mb-1">
+    <i class="bi bi-plus-circle me-2 text-primary"></i><%= isEdit ? 'Edit opportunity' : 'Post a new opportunity' %>
+  </h1>
+  <p class="text-body-secondary mb-4">
+    <% if (isEdit && v.status === 'approved') { %>
+      <span class="alert alert-warning py-1 px-2 small mb-0">
+        <i class="bi bi-info-circle me-1"></i>Saving your changes sends this post back for administrator approval.
+      </span>
+    <% } else { %>
+      Every new post is reviewed by an administrator before students can see it.
+    <% } %>
+  </p>
+
+  <form action="<%= isEdit ? '/company/opportunities/' + v._id : '/company/opportunities' %>" method="post"
+        class="needs-validation" novalidate>
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <h2 class="h5 mb-3"><i class="bi bi-file-text me-2 text-primary"></i>Basic information</h2>
+
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label" for="title">Title <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="title" name="title" required minlength="5" maxlength="180"
+                       value="<%= v.title || '' %>" placeholder="e.g. Software Engineering Intern (Remote)">
+                <div class="invalid-feedback">Title must be between 5 and 180 characters.</div>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label" for="type">Type <span class="text-danger">*</span></label>
+                <select class="form-select" id="type" name="type" required>
+                  <option value="">Choose...</option>
+                  <option value="internship" <%= v.type === 'internship' ? 'selected' : '' %>>Internship</option>
+                  <option value="scholarship" <%= v.type === 'scholarship' ? 'selected' : '' %>>Scholarship</option>
+                </select>
+                <div class="invalid-feedback">Please choose internship or scholarship.</div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label" for="description">Description <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="description" name="description" rows="7" required minlength="30" maxlength="8000"
+                          placeholder="Describe the role / scholarship, what the student will do or study, and what they will gain (at least 30 characters)"><%= v.description || '' %></textarea>
+                <div class="invalid-feedback">Description must be at least 30 characters.</div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label" for="requirements">Requirements</label>
+                <textarea class="form-control" id="requirements" name="requirements" rows="5" maxlength="5000"
+                          placeholder="One requirement per line, e.g.&#10;- Final year student&#10;- CGPA 3.0 or above"><%= v.requirements || '' %></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mt-4">
+          <div class="card-body p-4">
+            <h2 class="h5 mb-3"><i class="bi bi-sliders me-2 text-primary"></i>Logistics</h2>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="location">Location <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="location" name="location" required maxlength="160"
+                       value="<%= v.location || '' %>" placeholder="e.g. Dhaka, Bangladesh / Remote">
+                <div class="invalid-feedback">Location is required.</div>
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label" for="mode">Work mode <span class="text-danger">*</span></label>
+                <select class="form-select" id="mode" name="mode" required>
+                  <% ['onsite', 'remote', 'hybrid'].forEach(function (m) { %>
+                    <option value="<%= m %>" <%= (v.mode || 'onsite') === m ? 'selected' : '' %>><%= m.charAt(0).toUpperCase() + m.slice(1) %></option>
+                  <% }); %>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label" for="duration">Duration</label>
+                <input type="text" class="form-control" id="duration" name="duration" maxlength="120"
+                       value="<%= v.duration || '' %>" placeholder="e.g. 3 months">
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label" for="stipend">Stipend / award (USD)</label>
+                <input type="number" class="form-control" id="stipend" name="stipend" min="0" step="1"
+                       value="<%= v.stipend || 0 %>">
+                <div class="form-text">0 = unpaid / not specified.</div>
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label" for="openings">Openings</label>
+                <input type="number" class="form-control" id="openings" name="openings" min="1" max="10000"
+                       value="<%= v.openings || 1 %>">
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label" for="category">Category</label>
+                <input type="text" class="form-control" id="category" name="category" maxlength="80"
+                       list="categoryList" value="<%= v.category || 'General' %>">
+                <datalist id="categoryList">
+                  <option value="Software Development"><option value="Data Science &amp; AI"><option value="Marketing">
+                  <option value="Design"><option value="Finance"><option value="Engineering"><option value="Research">
+                  <option value="Human Resources"><option value="Education"><option value="General">
+                </datalist>
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label" for="deadline">Application deadline <span class="text-danger">*</span></label>
+                <input type="date" class="form-control" id="deadline" name="deadline" required
+                       value="<%= dayStr(v.deadline) %>" min="<%= new Date().toISOString().slice(0,10) %>">
+                <div class="invalid-feedback">Please choose a valid deadline date.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="sticky-filter">
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+              <h2 class="h6 text-uppercase text-body-secondary mb-3">Matching criteria</h2>
+
+              <div class="mb-3">
+                <label class="form-label" for="requiredSkills">Required skills</label>
+                <textarea class="form-control form-control-sm" id="requiredSkills" name="requiredSkills" rows="4"
+                          placeholder="Comma separated, e.g.&#10;React, Node.js, SQL"><%= (v.requiredSkills || []).join(', ') %></textarea>
+                <div class="form-text">Used by the student recommendation engine. Maximum 25 skills.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="minCgpa">Minimum CGPA (out of 10)</label>
+                <input type="number" step="0.01" min="0" max="10" class="form-control form-control-sm"
+                       id="minCgpa" name="minCgpa" value="<%= v.minCgpa || 0 %>">
+                <div class="form-text">0 = no minimum requirement.</div>
+              </div>
+
+              <div class="mb-0">
+                <label class="form-label" for="tags">Tags</label>
+                <input type="text" class="form-control form-control-sm" id="tags" name="tags"
+                       value="<%= (v.tags || []).join(', ') %>" placeholder="e.g. remote, 2026, entry-level">
+                <div class="form-text">Comma separated, searchable keywords.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+              <div class="d-grid gap-2">
+                <button class="btn btn-primary" type="submit">
+                  <span class="spinner-border spinner-border-sm me-1 d-none" data-loading-spinner></span>
+                  <i class="bi bi-<%= isEdit ? 'save' : 'send' %> me-1"></i><%= isEdit ? 'Save changes' : 'Submit for approval' %>
+                </button>
+                <a class="btn btn-outline-secondary" href="/company/opportunities">Cancel</a>
+              </div>
+
+              <p class="small text-body-secondary mt-3 mb-0">
+                <i class="bi bi-shield-check me-1"></i>
+                Posting as <strong><%= profile.companyName %></strong>.
+                Only approved posts are visible to students.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

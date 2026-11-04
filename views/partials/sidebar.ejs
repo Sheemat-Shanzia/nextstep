@@ -1,0 +1,35 @@
+<%
+/**
+ * Dashboard sidebar. `links` = [{href,label,icon,badge,active,match}]
+ * Passed in from each dashboard view, so the three portals can share one file.
+ */
+%>
+<aside class="isms-sidebar">
+  <div class="card shadow-sm">
+    <div class="card-body p-2">
+      <ul class="nav nav-pills flex-column gap-1">
+        <% (links || []).forEach(function (l) { %>
+          <li class="nav-item">
+            <a class="nav-link d-flex justify-content-between align-items-center <%= l.active ? 'active' : '' %>"
+               href="<%= l.href %>">
+              <span><i class="bi <%= l.icon %> me-2"></i><%= l.label %></span>
+              <% if (l.badge) { %><span class="badge rounded-pill text-bg-light border"><%= l.badge %></span><% } %>
+            </a>
+          </li>
+        <% }); %>
+      </ul>
+    </div>
+  </div>
+
+  <% if (typeof sidebarCard !== 'undefined' && sidebarCard) { %>
+    <div class="card shadow-sm mt-3">
+      <div class="card-body">
+        <h6 class="card-title h6"><%= sidebarCard.title %></h6>
+        <p class="small text-body-secondary"><%= sidebarCard.text %></p>
+        <% if (sidebarCard.href) { %>
+          <a class="btn btn-sm btn-outline-primary w-100" href="<%= sidebarCard.href %>"><%= sidebarCard.action || 'Open' %></a>
+        <% } %>
+      </div>
+    </div>
+  <% } %>
+</aside>

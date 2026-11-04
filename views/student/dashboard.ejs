@@ -1,0 +1,247 @@
+<%
+const links = [
+  { href: '/student/dashboard', label: 'Dashboard', icon: 'bi-speedometer2', active: true },
+  { href: '/student/profile', label: 'My profile', icon: 'bi-person-badge' },
+  { href: '/student/skills', label: 'Skills', icon: 'bi-tools', badge: profile ? profile.skills.length : 0 },
+  { href: '/student/applications', label: 'My applications', icon: 'bi-send-check', badge: stats.totalApplications },
+  { href: '/student/bookmarks', label: 'Saved opportunities', icon: 'bi-bookmark-heart', badge: stats.saved },
+  { href: '/notifications', label: 'Notifications', icon: 'bi-bell' },
+  { href: '/auth/settings', label: 'Settings', icon: 'bi-gear' }
+];
+const sidebarCard = {
+  title: 'Complete your profile',
+  text: checklist.missing.length
+    ? `Your profile is ${checklist.percentage}% complete. ${checklist.missing.length} improvement(s) left.`
+    : 'Your profile is complete - great work!',
+  href: '/student/profile/edit',
+  action: checklist.missing.length ? 'Finish my profile' : 'Review my profile'
+};
+const statusChart = { type: 'doughnut', labels: chart.applicationsByStatus.labels, data: chart.applicationsByStatus.values, legend: true };
+const trendChart = {
+  type: 'line', labels: chart.trend.map(function (t) { return t._id; }), data: chart.trend.map(function (t) { return t.value; }),
+  label: 'Applications', colors: ['#014F86']
+};
+%>
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-speedometer2 me-2 text-primary"></i>Welcome back, <%= currentUser.name.split(' ')[0] %></h1>
+      <p class="text-body-secondary mb-0">Here is what is happening with your applications.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-primary" href="/search"><i class="bi bi-search me-1"></i>Find opportunities</a>
+      <a class="btn btn-outline-secondary" href="/student/profile/edit"><i class="bi bi-person-gear me-1"></i>Edit profile</a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-3 d-none d-lg-block">
+      <%- include('../partials/sidebar', { links: links, sidebarCard: sidebarCard }) %>
+    </div>
+
+    <div class="col-lg-9">
+      <!-- KPI tiles -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+          <%- include('../partials/statCard', { label: 'Total applications', value: stats.totalApplications, icon: 'bi-send-check', tone: 'primary', href: '/student/applications' }) %>
+        </div>
+        <div class="col-6 col-xl-3">
+          <%- include('../partials/statCard', { label: 'In progress', value: stats.activeApplications, icon: 'bi-hourglass-split', tone: 'info', href: '/student/applications' }) %>
+        </div>
+        <div class="col-6 col-xl-3">
+          <%- include('../partials/statCard', { label: 'Saved opportunities', value: stats.saved, icon: 'bi-bookmark-heart', tone: 'warning', href: '/student/bookmarks' }) %>
+        </div>
+        <div class="col-6 col-xl-3">
+          <%- include('../partials/statCard', { label: 'Profile strength', value: checklist.percentage + '%', icon: 'bi-person-check', tone: checklist.levelColor, href: '/student/profile', sub: checklist.level }) %>
+        </div>
+      </div>
+
+      <!-- announcements (bonus 20) -->
+      <% if (announcements && announcements.length) { %>
+        <div class="mb-4">
+          <% announcements.forEach(function (a) { %>
+            <div class="alert alert-<%= a.level || 'info' %> alert-dismissible fade show d-flex align-items-start gap-2" role="alert">
+              <i class="bi bi-megaphone-fill mt-1"></i>
+              <div class="flex-grow-1">
+                <strong><%= a.title %></strong>
+                <div class="small"><%= a.body %></div>
+                <div class="small text-body-secondary mt-1">
+                  <%= format.timeAgo(a.createdAt) %> &middot; <%= a.createdByName %>
+                </div>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <div class="row g-4">
+        <!-- charts -->
+        <div class="col-xl-7">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <h2 class="h6 mb-3"><i class="bi bi-pie-chart me-2 text-primary"></i>My applications by status</h2>
+              <div class="chart-box">
+                <canvas data-chart="<%= JSON.stringify(statusChart) %>" aria-label="Applications by status" role="img"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-5">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <h2 class="h6 mb-3"><i class="bi bi-graph-up me-2 text-primary"></i>Applications over 6 months</h2>
+              <div class="chart-box">
+                <canvas data-chart="<%= JSON.stringify(trendChart) %>" aria-label="Monthly applications" role="img"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- recent applications -->
+        <div class="col-xl-7">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h6 mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Recent applications</h2>
+                <a class="btn btn-sm btn-outline-secondary" href="/student/applications">View all</a>
+              </div>
+
+              <% if (!recentApplications.length) { %>
+                <div class="text-center py-4">
+                  <i class="bi bi-send display-6 text-body-secondary opacity-50"></i>
+                  <p class="text-body-secondary mb-2">You have not applied to anything yet.</p>
+                  <a class="btn btn-sm btn-primary" href="/search">Browse opportunities</a>
+                </div>
+              <% } else { %>
+                <div class="table-responsive">
+                  <table class="table table-sm table-hover align-middle mb-0">
+                    <thead><tr><th>Opportunity</th><th>Applied</th><th>Status</th></tr></thead>
+                    <tbody>
+                      <% recentApplications.forEach(function (a) { %>
+                        <tr>
+                          <td>
+                            <a href="/student/applications/<%= a._id %>" class="text-decoration-none fw-semibold">
+                              <%= a.opportunity ? a.opportunity.title : '(removed)' %>
+                            </a>
+                            <div class="small text-body-secondary"><%= a.opportunity ? a.opportunity.companyNameCopy : '' %></div>
+                          </td>
+                          <td class="small text-nowrap"><%= format.formatDate(a.appliedAt) %></td>
+                          <td>
+                            <span class="badge <%= format.APPLICATION_STATUS_BADGE[a.status] %>">
+                              <i class="bi <%= format.APPLICATION_STATUS_ICON[a.status] %> me-1"></i><%= format.applicationStatusLabel(a.status) %>
+                            </span>
+                          </td>
+                        </tr>
+                      <% }); %>
+                    </tbody>
+                  </table>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- deadlines + skill demand -->
+        <div class="col-xl-5">
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+              <h2 class="h6 mb-3"><i class="bi bi-alarm me-2 text-primary"></i>Upcoming deadlines</h2>
+              <% if (!upcomingDeadlines.length) { %>
+                <p class="small text-body-secondary mb-0">No open applications with a deadline in the future.</p>
+              <% } else { %>
+                <div class="list-group list-group-flush">
+                  <% upcomingDeadlines.forEach(function (a) { %>
+                    <% const days = Math.ceil((new Date(a.opportunity.deadline) - Date.now()) / 86400000); %>
+                    <a href="/student/applications/<%= a._id %>" class="list-group-item list-group-item-action px-0">
+                      <div class="d-flex justify-content-between align-items-start gap-2">
+                        <div class="min-w-0">
+                          <div class="fw-semibold text-truncate"><%= a.opportunity.title %></div>
+                          <div class="small text-body-secondary"><%= format.formatDate(a.opportunity.deadline) %></div>
+                        </div>
+                        <span class="badge <%= format.deadlineBadge(days).className %> text-nowrap"><%= format.deadlineBadge(days).text %></span>
+                      </div>
+                    </a>
+                  <% }); %>
+                </div>
+              <% } %>
+            </div>
+          </div>
+
+          <% if (skillDemand && skillDemand.length) { %>
+            <div class="card shadow-sm border-0">
+              <div class="card-body p-4">
+                <h2 class="h6 mb-1"><i class="bi bi-fire text-danger me-2"></i>Your skills in demand</h2>
+                <p class="small text-body-secondary mb-3">Openings currently requesting your skills.</p>
+                <% skillDemand.forEach(function (s) { %>
+                  <div class="d-flex justify-content-between small mb-1">
+                    <span><%= s._id %></span>
+                    <span class="badge text-bg-light border"><%= s.openings %> openings</span>
+                  </div>
+                <% }); %>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- recommendations (bonus 2) -->
+      <div class="card shadow-sm border-0 mt-4">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-2">
+            <h2 class="h5 mb-0"><i class="bi bi-magic me-2 text-primary"></i>Recommended for you</h2>
+            <a class="btn btn-sm btn-outline-primary" href="/search">See all</a>
+          </div>
+          <p class="small text-body-secondary">
+            Ranked by how many of your profile skills each opportunity requires.
+          </p>
+
+          <% if (!recommended.length) { %>
+            <%- include('../partials/emptyState', {
+              emptyState: {
+                icon: 'bi-magic',
+                title: 'No recommendations yet',
+                message: 'Add a few skills to your profile and we will match you with relevant opportunities.',
+                actionHref: '/student/skills', actionLabel: 'Add my skills', actionIcon: 'bi-plus-lg'
+              }
+            }) %>
+          <% } else { %>
+            <div class="row g-3">
+              <% recommended.forEach(function (o) { %>
+                <div class="col-md-6 col-xl-4">
+                  <%- include('../partials/opportunityCard', { o: o, applied: false }) %>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- saved -->
+      <div class="card shadow-sm border-0 mt-4">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h5 mb-0"><i class="bi bi-bookmark-heart me-2 text-primary"></i>Saved opportunities</h2>
+            <a class="btn btn-sm btn-outline-secondary" href="/student/bookmarks">Manage saved</a>
+          </div>
+
+          <% if (!savedOpportunities.length) { %>
+            <p class="text-body-secondary small mb-0">
+              Nothing saved yet. Click the <i class="bi bi-bookmark"></i> icon on any opportunity to save it here.
+            </p>
+          <% } else { %>
+            <div class="row g-3">
+              <% savedOpportunities.forEach(function (b) { %>
+                <div class="col-md-6 col-xl-3">
+                  <%- include('../partials/opportunityCard', { o: b.opportunity }) %>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

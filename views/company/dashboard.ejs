@@ -1,0 +1,172 @@
+<%
+const links = [
+  { href: '/company/dashboard', label: 'Dashboard', icon: 'bi-speedometer2', active: true },
+  { href: '/company/opportunities', label: 'My opportunities', icon: 'bi-briefcase', badge: counters.total },
+  { href: '/company/applications', label: 'All applications', icon: 'bi-people', badge: counters.totalApplicants },
+  { href: '/company/profile', label: 'Company profile', icon: 'bi-building' },
+  { href: '/notifications', label: 'Notifications', icon: 'bi-bell' },
+  { href: '/auth/settings', label: 'Settings', icon: 'bi-gear' }
+];
+const sidebarCard = { title: 'Post an opportunity', text: 'New posts are reviewed by an administrator before students can see them.', href: '/company/opportunities/new', action: 'Create a post' };
+const statusChart = { type: 'doughnut', labels: chart.applicantsByStatus.labels, data: chart.applicantsByStatus.values };
+const oppChart = {
+  type: 'bar', labels: perOpportunity.map(function (p) { return p.title.length > 18 ? p.title.slice(0, 18) + '...' : p.title; }),
+  data: perOpportunity.map(function (p) { return p.value; }), label: 'Applicants'
+};
+%>
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-speedometer2 me-2 text-primary"></i>Company dashboard</h1>
+      <p class="text-body-secondary mb-0">
+        <% if (profile) { %><%= profile.companyName %><% if (profile.verified) { %> <i class="bi bi-patch-check-fill text-primary"></i><% } %><% } %>
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-secondary" href="/company/profile"><i class="bi bi-building me-1"></i>Company profile</a>
+      <a class="btn btn-primary" href="/company/opportunities/new"><i class="bi bi-plus-lg me-1"></i>Post opportunity</a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-3 d-none d-lg-block">
+      <%- include('../partials/sidebar', { links: links, sidebarCard: sidebarCard }) %>
+    </div>
+
+    <div class="col-lg-9">
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+          <%- include('../partials/statCard', { label: 'Total opportunities', value: counters.total, icon: 'bi-briefcase', tone: 'primary', href: '/company/opportunities' }) %>
+        </div>
+        <div class="col-6 col-xl-3">
+          <%- include('../partials/statCard', { label: 'Currently open', value: counters.open, icon: 'bi-unlock', tone: 'success', href: '/company/opportunities?status=approved', sub: 'Approved & within deadline' }) %>
+        </div>
+        <div class="col-6 col-xl-3">
+          <%- include('../partials/statCard', { label: 'Awaiting review', value: counters.pending, icon: 'bi-hourglass-split', tone: 'warning', href: '/company/opportunities?status=pending', sub: 'Pending admin approval' }) %>
+        </div>
+        <div class="col-6 col-xl-3">
+          <%- include('../partials/statCard', { label: 'Total applicants', value: counters.totalApplicants, icon: 'bi-people', tone: 'info', href: '/company/applications', sub: counters.activeApplicants + ' still active' }) %>
+        </div>
+      </div>
+
+      <% if (announcements && announcements.length) { %>
+        <div class="mb-4">
+          <% announcements.forEach(function (a) { %>
+            <div class="alert alert-<%= a.level || 'info' %> alert-dismissible fade show d-flex align-items-start gap-2" role="alert">
+              <i class="bi bi-megaphone-fill mt-1"></i>
+              <div class="flex-grow-1">
+                <strong><%= a.title %></strong>
+                <div class="small"><%= a.body %></div>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <div class="row g-4">
+        <div class="col-xl-6">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <h2 class="h6 mb-3"><i class="bi bi-pie-chart me-2 text-primary"></i>Applicants by status</h2>
+              <div class="chart-box">
+                <canvas data-chart="<%= JSON.stringify(statusChart) %>" aria-label="Applicants by status" role="img"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <h2 class="h6 mb-3"><i class="bi bi-bar-chart me-2 text-primary"></i>Applicants per opportunity</h2>
+              <% if (perOpportunity.length) { %>
+                <div class="chart-box">
+                  <canvas data-chart="<%= JSON.stringify(oppChart) %>" aria-label="Applicants per opportunity" role="img"></canvas>
+                </div>
+              <% } else { %>
+                <p class="small text-body-secondary">No applications yet. Publish an opportunity to start receiving applicants.</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- recent applicants -->
+        <div class="col-xl-7">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h6 mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Recent applicants</h2>
+                <a class="btn btn-sm btn-outline-secondary" href="/company/applications">View all</a>
+              </div>
+
+              <% if (!recentApplicants.length) { %>
+                <p class="text-body-secondary small mb-0">No applications received yet.</p>
+              <% } else { %>
+                <div class="table-responsive">
+                  <table class="table table-sm table-hover align-middle mb-0">
+                    <thead><tr><th>Student</th><th>Opportunity</th><th>Status</th><th></th></tr></thead>
+                    <tbody>
+                      <% recentApplicants.forEach(function (a) { %>
+                        <tr>
+                          <td>
+                            <div class="fw-semibold"><%= a.student ? a.student.name : 'Unknown' %></div>
+                            <div class="small text-body-secondary"><%= a.student ? a.student.email : '' %></div>
+                          </td>
+                          <td class="small"><%= a.opportunity ? a.opportunity.title : '-' %></td>
+                          <td>
+                            <span class="badge <%= format.APPLICATION_STATUS_BADGE[a.status] %>"><%= format.applicationStatusLabel(a.status) %></span>
+                          </td>
+                          <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary" href="/company/applications/<%= a._id %>">
+                              <i class="bi bi-eye"></i>
+                            </a>
+                          </td>
+                        </tr>
+                      <% }); %>
+                    </tbody>
+                  </table>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- recent opportunities -->
+        <div class="col-xl-5">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h6 mb-0"><i class="bi bi-briefcase me-2 text-primary"></i>Latest posts</h2>
+                <a class="btn btn-sm btn-outline-secondary" href="/company/opportunities">Manage</a>
+              </div>
+
+              <% if (!recentOpps.length) { %>
+                <p class="small text-body-secondary mb-0">
+                  You have not posted anything yet. <a href="/company/opportunities/new">Create your first post</a>.
+                </p>
+              <% } else { %>
+                <div class="list-group list-group-flush">
+                  <% recentOpps.forEach(function (o) { %>
+                    <a href="/company/opportunities/<%= o._id %>" class="list-group-item list-group-item-action px-0">
+                      <div class="d-flex justify-content-between align-items-start gap-2">
+                        <div class="min-w-0">
+                          <div class="fw-semibold text-truncate"><%= o.title %></div>
+                          <div class="small text-body-secondary">
+                            <%= o.location %> &middot; closes <%= format.formatDate(o.deadline) %>
+                          </div>
+                        </div>
+                        <span class="badge <%= format.OPPORTUNITY_STATUS_BADGE[o.status] %> text-capitalize"><%= o.status %></span>
+                      </div>
+                    </a>
+                  <% }); %>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

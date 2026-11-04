@@ -1,0 +1,133 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/student/dashboard">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="/student/profile">My profile</a></li>
+      <li class="breadcrumb-item active">Skills</li>
+    </ol>
+  </nav>
+
+  <h1 class="h3 mb-1"><i class="bi bi-tools me-2 text-primary"></i>My skills</h1>
+  <p class="text-body-secondary mb-4">
+    Skills power the recommendation engine &mdash; the more you add, the better NextStep can match you with opportunities.
+  </p>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h2 class="h6 text-uppercase text-body-secondary mb-3">Add a skill</h2>
+          <form action="/student/skills" method="post" class="needs-validation" novalidate>
+            <div class="row g-2 align-items-end">
+              <div class="col-sm-7">
+                <label class="form-label" for="name">Skill name</label>
+                <input type="text" class="form-control" id="name" name="name" required minlength="2" maxlength="60"
+                       placeholder="e.g. React, Excel, Python">
+                <div class="invalid-feedback">Please enter a skill name.</div>
+              </div>
+              <div class="col-sm-5">
+                <label class="form-label" for="level">Proficiency</label>
+                <select class="form-select" id="level" name="level">
+                  <% skillLevels.forEach(function (l) { %>
+                    <option value="<%= l %>" <%= l === 'intermediate' ? 'selected' : '' %>><%= l.charAt(0).toUpperCase() + l.slice(1) %></option>
+                  <% }); %>
+                </select>
+              </div>
+              <div class="col-12">
+                <button class="btn btn-primary" type="submit"><i class="bi bi-plus-lg me-1"></i>Add skill</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card shadow-sm border-0 mt-4">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h6 text-uppercase text-body-secondary mb-0">Your skills (<%= profile.skills.length %>)</h2>
+            <span class="badge text-bg-<%= checklist.levelColor %>">Profile <%= checklist.percentage %>%</span>
+          </div>
+
+          <% if (!profile.skills.length) { %>
+            <div class="text-center py-4">
+              <i class="bi bi-tools display-6 text-body-secondary opacity-50"></i>
+              <p class="text-body-secondary">No skills yet. Add your first one above.</p>
+            </div>
+          <% } else { %>
+            <div class="accordion" id="skillsAccordion">
+              <% const widths = { beginner: 33, intermediate: 66, advanced: 85, expert: 100 }; %>
+              <% profile.skills.forEach(function (s, i) { %>
+                <div class="accordion-item">
+                  <h3 class="accordion-header">
+                    <button class="accordion-button collapsed <%= i === 0 ? '' : '' %>" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#skill<%= s._id %>" aria-expanded="false" aria-controls="skill<%= s._id %>">
+                      <span class="fw-semibold"><%= s.name %></span>
+                      <span class="badge text-bg-light border text-capitalize ms-2"><%= s.level %></span>
+                    </button>
+                  </h3>
+                  <div id="skill<%= s._id %>" class="accordion-collapse collapse" data-bs-parent="#skillsAccordion">
+                    <div class="accordion-body">
+                      <div class="progress progress-thin mb-3">
+                        <div class="progress-bar" style="width:<%= widths[s.level] || 50 %>%"></div>
+                      </div>
+                      <form action="/student/skills/<%= s._id %>" method="post" class="row g-2 align-items-end">
+                        <div class="col-sm-7">
+                          <label class="form-label small mb-1">Skill name</label>
+                          <input type="text" class="form-control form-control-sm" name="name" value="<%= s.name %>" required minlength="2" maxlength="60">
+                        </div>
+                        <div class="col-sm-5">
+                          <label class="form-label small mb-1">Proficiency</label>
+                          <select class="form-select form-select-sm" name="level">
+                            <% skillLevels.forEach(function (l) { %>
+                              <option value="<%= l %>" <%= l === s.level ? 'selected' : '' %>><%= l.charAt(0).toUpperCase() + l.slice(1) %></option>
+                            <% }); %>
+                          </select>
+                        </div>
+                        <div class="col-12 d-flex gap-2">
+                          <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-save me-1"></i>Update</button>
+                        </div>
+                      </form>
+                      <form action="/student/skills/<%= s._id %>" method="post" class="mt-2"
+                            data-confirm="Remove &quot;<%= s.name %>&quot; from your skill list?">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-trash me-1"></i>Remove skill</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <h2 class="h6 text-uppercase text-body-secondary mb-3">Profile strength</h2>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-semibold"><%= checklist.level %></span>
+            <span class="badge text-bg-<%= checklist.levelColor %>"><%= checklist.percentage %>%</span>
+          </div>
+          <div class="progress progress-thin" role="progressbar" aria-valuenow="<%= checklist.percentage %>" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar bg-<%= checklist.levelColor %>" style="width:<%= checklist.percentage %>%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h2 class="h6 text-uppercase text-body-secondary mb-3">How matching works</h2>
+          <ul class="small text-body-secondary ps-3 mb-0">
+            <li class="mb-1">NextStep compares your skills with the <code>requiredSkills</code> of every open opportunity.</li>
+            <li class="mb-1">The overlap becomes your <strong>match percentage</strong> on the student dashboard.</li>
+            <li class="mb-1">A higher proficiency level increases your score for that skill.</li>
+            <li>Matching opportunities that clear your CGPA get a small bonus.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

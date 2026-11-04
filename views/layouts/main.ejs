@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="NextStep - the Internship and Scholarship Management System. Find internships and scholarships, apply online and track your applications.">
+  <meta name="author" content="NextStep">
+  <title><%= title ? `${title} | NextStep` : 'NextStep - Internship & Scholarship Management System' %></title>
+
+  <!-- Bootstrap 5.3 + Bootstrap Icons (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127891;</text></svg>">
+
+  <!-- Blocking theme script: applies the saved light/dark choice before first paint
+       (kept in a separate file so the strict Content-Security-Policy holds). -->
+  <script src="/js/theme.js"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+  <%- include('../partials/navbar') %>
+
+  <main class="flex-grow-1">
+    <%- body %>
+  </main>
+
+  <%- include('../partials/footer') %>
+
+  <!-- Shared confirmation modal used by every destructive action -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmModalTitle"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Please confirm</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-0" id="confirmModalMessage"></p>
+          <form id="confirmModalForm" action="" method="post" class="d-none"></form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmModalConfirm">Yes, continue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

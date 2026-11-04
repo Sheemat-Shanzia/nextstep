@@ -1,0 +1,182 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/companies">Companies</a></li>
+      <li class="breadcrumb-item active"><%= profile.companyName %></li>
+    </ol>
+  </nav>
+
+  <!-- header -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-4">
+      <div class="d-flex flex-wrap align-items-start gap-3">
+        <% if (profile.logo) { %>
+          <img src="/files/company/logo/<%= profile.user %>" width="88" height="88" class="rounded"
+               style="object-fit:cover" alt="<%= profile.companyName %> logo" onerror="this.style.display='none'">
+        <% } else { %>
+          <span class="avatar avatar-xl"><%= profile.initial %></span>
+        <% } %>
+
+        <div class="flex-grow-1">
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+            <h1 class="h3 mb-0"><%= profile.companyName %></h1>
+            <% if (profile.verified) { %>
+              <span class="badge text-bg-primary-subtle text-primary border border-primary-subtle">
+                <i class="bi bi-patch-check-fill me-1"></i>Verified company
+              </span>
+            <% } %>
+          </div>
+
+          <div class="d-flex flex-wrap gap-3 small text-body-secondary">
+            <% if (profile.industry) { %><span><i class="bi bi-building me-1"></i><%= profile.industry %></span><% } %>
+            <% if (profile.location) { %><span><i class="bi bi-geo-alt me-1"></i><%= profile.location %></span><% } %>
+            <% if (profile.size) { %><span><i class="bi bi-people me-1"></i><%= profile.size %> employees</span><% } %>
+            <% if (profile.website) { %>
+              <span><i class="bi bi-globe me-1"></i><a href="<%= profile.website %>" target="_blank" rel="noopener noreferrer">Website</a></span>
+            <% } %>
+            <% if (owner) { %><span><i class="bi bi-calendar3 me-1"></i>Member since <%= format.formatDate(owner.createdAt) %></span><% } %>
+          </div>
+
+          <% if (profile.description) { %>
+            <p class="mt-3 mb-0 text-body-secondary"><%= profile.description %></p>
+          <% } %>
+
+          <div class="mt-2">
+            <% if (profile.reviewCount > 0) { %>
+              <span class="text-warning">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <i class="bi <%= i <= Math.round(profile.averageRating) ? 'bi-star-fill' : 'bi-star' %>"></i>
+                <% } %>
+                <span class="fw-semibold ms-1"><%= profile.averageRating.toFixed(1) %></span>
+                <span class="text-body-secondary small">(<%= profile.reviewCount %> review<%= profile.reviewCount === 1 ? '' : 's' %>)</span>
+              </span>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- opportunities -->
+    <div class="col-lg-8">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h2 class="h5 mb-0"><i class="bi bi-briefcase me-2 text-primary"></i>Open opportunities (<%= pager.total %>)</h2>
+        <div class="btn-group btn-group-sm">
+          <a class="btn btn-outline-secondary <%= !activeType ? 'active' : '' %>" href="/companies/<%= profile.user %>">All</a>
+          <a class="btn btn-outline-secondary <%= activeType === 'internship' ? 'active' : '' %>" href="/companies/<%= profile.user %>?type=internship">Internships</a>
+          <a class="btn btn-outline-secondary <%= activeType === 'scholarship' ? 'active' : '' %>" href="/companies/<%= profile.user %>?type=scholarship">Scholarships</a>
+        </div>
+      </div>
+
+      <% if (!opportunities.length) { %>
+        <%- include('../partials/emptyState', {
+          emptyState: {
+            icon: 'bi-briefcase',
+            title: 'No open opportunities right now',
+            message: 'This company has nothing available at the moment. Check back later!',
+            actionHref: '/opportunities', actionLabel: 'Browse all opportunities', actionIcon: 'bi-grid'
+          }
+        }) %>
+      <% } else { %>
+        <div class="row g-4">
+          <% opportunities.forEach(function (o) { %>
+            <div class="col-md-6 col-xxl-4">
+              <%- include('../partials/opportunityCard', { o: o }) %>
+            </div>
+          <% }); %>
+        </div>
+        <%- include('../partials/pagination', { pager: pager }) %>
+      <% } %>
+    </div>
+
+    <!-- reviews sidebar -->
+    <div class="col-lg-4">
+      <div class="sticky-filter">
+        <div class="card shadow-sm border-0 mb-4" id="reviews">
+          <div class="card-body p-4">
+            <h2 class="h6 text-uppercase text-body-secondary mb-3">Student reviews</h2>
+
+            <% if (profile.reviewCount > 0) { %>
+              <div class="text-center mb-3">
+                <div class="display-5 fw-bold"><%= profile.averageRating.toFixed(1) %></div>
+                <div class="text-warning">
+                  <% for (let i = 1; i <= 5; i++) { %>
+                    <i class="bi <%= i <= Math.round(profile.averageRating) ? 'bi-star-fill' : 'bi-star' %>"></i>
+                  <% } %>
+                </div>
+                <div class="small text-body-secondary"><%= profile.reviewCount %> review<%= profile.reviewCount === 1 ? '' : 's' %></div>
+              </div>
+
+              <% [5,4,3,2,1].forEach(function (star) { %>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span class="small text-nowrap"><%= star %> <i class="bi bi-star-fill text-warning"></i></span>
+                  <div class="progress flex-grow-1 progress-thin">
+                    <div class="progress-bar bg-warning" style="width:<%= profile.reviewCount ? Math.round(((ratingDistribution[star] || 0) / profile.reviewCount) * 100) : 0 %>%"></div>
+                  </div>
+                  <span class="small text-body-secondary" style="width:24px"><%= ratingDistribution[star] || 0 %></span>
+                </div>
+              <% }); %>
+            <% } %>
+
+            <hr>
+
+            <% if (!reviews.length) { %>
+              <p class="small text-body-secondary">No reviews yet.</p>
+            <% } else { %>
+              <div class="d-grid gap-2">
+                <% reviews.forEach(function (r) { %>
+                  <div class="border rounded p-2">
+                    <div class="d-flex justify-content-between align-items-start gap-2">
+                      <span class="small fw-semibold"><%= r.student ? r.student.name : 'Anonymous' %></span>
+                      <span class="text-warning text-nowrap">
+                        <% for (let i = 1; i <= 5; i++) { %><i class="bi <%= i <= r.rating ? 'bi-star-fill' : 'bi-star' %>"></i><% } %>
+                      </span>
+                    </div>
+                    <% if (r.comment) { %><div class="small"><%= r.comment %></div><% } %>
+                    <div class="small text-body-secondary"><%= format.timeAgo(r.createdAt) %></div>
+                  </div>
+                <% }); %>
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- write a review -->
+        <div class="card shadow-sm border-0" id="review-form">
+          <div class="card-body p-4">
+            <h2 class="h6 text-uppercase text-body-secondary mb-3">Write a review</h2>
+            <% if (!currentUser) { %>
+              <p class="small text-body-secondary">Please sign in as a student to review this company.</p>
+              <a class="btn btn-primary btn-sm w-100" href="/auth/login?returnTo=/companies/<%= profile.user %>">Sign in to review</a>
+            <% } else if (!isStudent) { %>
+              <p class="small text-body-secondary mb-0">
+                Only student accounts can leave a review. You are signed in as a <%= currentUser.role %>.
+              </p>
+            <% } else { %>
+              <form action="/companies/<%= profile.user %>/review" method="post" class="needs-validation" novalidate>
+                <div class="mb-3">
+                  <label class="form-label small mb-1">Your rating <span class="text-danger">*</span></label>
+                  <div class="star-rating d-flex align-items-center">
+                    <% [5,4,3,2,1].forEach(function (n, i) { %>
+                      <input type="radio" name="rating" id="star<%= n %>" value="<%= n %>" <%= i === 1 ? 'checked' : '' %> required>
+                      <label for="star<%= n %>" title="<%= n %> star<%= n === 1 ? '' : 's' %>"><i class="bi bi-star-fill"></i></label>
+                    <% }); %>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small mb-1" for="comment">Comment</label>
+                  <textarea class="form-control form-control-sm" id="comment" name="comment" rows="3" maxlength="1000"
+                            placeholder="How was your experience with this company?"></textarea>
+                </div>
+                <button class="btn btn-primary btn-sm w-100" type="submit"><i class="bi bi-star me-1"></i>Submit review</button>
+              </form>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

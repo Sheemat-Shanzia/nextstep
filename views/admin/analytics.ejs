@@ -1,0 +1,203 @@
+<%- include('../partials/flash') %>
+<%
+const c = chart;
+const usersRoleChart = { type: 'doughnut', labels: c.usersByRole.map(function (r) { return r._id; }), data: c.usersByRole.map(function (r) { return r.value; }) };
+const usersGrowthChart = { type: 'line', labels: c.usersGrowth.map(function (r) { return r._id; }), data: c.usersGrowth.map(function (r) { return r.value; }), label: 'New users', colors: ['#014F86'] };
+const oppTypeChart = { type: 'doughnut', labels: c.opportunitiesByType.map(function (r) { return r._id; }), data: c.opportunitiesByType.map(function (r) { return r.value; }) };
+const oppCatChart = { type: 'bar', labels: c.opportunitiesByCategory.map(function (r) { return r._id; }), data: c.opportunitiesByCategory.map(function (r) { return r.value; }), label: 'Opportunities' };
+const appStatusChart = { type: 'bar', labels: c.applicationsByStatus.map(function (r) { return r._id.replace(/_/g, ' '); }), data: c.applicationsByStatus.map(function (r) { return r.value; }), label: 'Applications' };
+const trendChart = { type: 'line', labels: c.trend.map(function (t) { return t._id; }), data: c.trend.map(function (t) { return t.value; }), label: 'Applications', colors: ['#2C7DA0'] };
+const skillsChart = { type: 'bar', labels: c.topSkills.map(function (s) { return s._id; }), data: c.topSkills.map(function (s) { return s.value; }), label: 'Posts requiring the skill', legend: false };
+const openingsChart = { type: 'bar', labels: c.openingsByCategory.map(function (r) { return r._id; }), data: c.openingsByCategory.map(function (r) { return r.value; }), label: 'Openings', colors: ['#61A5C2'] };
+%>
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-graph-up me-2 text-primary"></i>Platform analytics</h1>
+      <p class="text-body-secondary mb-0">Every chart below is produced by a MongoDB aggregation pipeline.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-secondary" href="/admin/users/export.csv"><i class="bi bi-filetype-csv me-1"></i>Users CSV</a>
+      <a class="btn btn-outline-secondary" href="/admin/opportunities/export.csv"><i class="bi bi-filetype-csv me-1"></i>Opportunities CSV</a>
+    </div>
+  </div>
+
+  <!-- headline numbers -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-xl-2"><%- include('../partials/statCard', { label: 'Total users', value: totals.users, icon: 'bi-people', tone: 'primary' }) %></div>
+    <div class="col-6 col-xl-2"><%- include('../partials/statCard', { label: 'Students', value: totals.students, icon: 'bi-mortarboard', tone: 'success' }) %></div>
+    <div class="col-6 col-xl-2"><%- include('../partials/statCard', { label: 'Companies', value: totals.companies, icon: 'bi-building', tone: 'info' }) %></div>
+    <div class="col-6 col-xl-2"><%- include('../partials/statCard', { label: 'Opportunities', value: totals.opportunities, icon: 'bi-briefcase', tone: 'warning' }) %></div>
+    <div class="col-6 col-xl-2"><%- include('../partials/statCard', { label: 'Open now', value: totals.openOpportunities, icon: 'bi-unlock', tone: 'success' }) %></div>
+    <div class="col-6 col-xl-2"><%- include('../partials/statCard', { label: 'Applications', value: totals.applications, icon: 'bi-send-check', tone: 'secondary' }) %></div>
+  </div>
+
+  <!-- moderation summary -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-4">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-4">
+          <h2 class="h6 mb-2"><i class="bi bi-patch-check me-2 text-primary"></i>Moderation summary</h2>
+          <p class="small text-body-secondary mb-3">
+            Of <strong><%= moderation.total %></strong> submitted opportunities,
+            <strong><%= moderation.approvalRate %>%</strong> were approved.
+          </p>
+          <div class="progress progress-thin mb-2" role="progressbar" aria-label="Approval rate"
+               aria-valuenow="<%= moderation.approvalRate %>" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar bg-success" style="width:<%= moderation.approvalRate %>%"></div>
+          </div>
+          <div class="small text-body-secondary">Approval rate</div>
+        </div>
+        <div class="col-lg-8">
+          <div class="row g-3 text-center">
+            <div class="col-4">
+              <div class="display-6 fw-bold text-warning"><%= moderation.pending %></div>
+              <div class="small text-body-secondary">Pending</div>
+            </div>
+            <div class="col-4">
+              <div class="display-6 fw-bold text-success"><%= moderation.approved %></div>
+              <div class="small text-body-secondary">Approved</div>
+            </div>
+            <div class="col-4">
+              <div class="display-6 fw-bold text-danger"><%= moderation.rejected %></div>
+              <div class="small text-body-secondary">Rejected</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-xl-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-1">Users by role</h2>
+          <p class="small text-body-secondary mb-3">$group by role</p>
+          <div class="chart-box">
+            <canvas data-chart="<%= JSON.stringify(usersRoleChart) %>" aria-label="Users by role" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-1">Opportunities by type</h2>
+          <p class="small text-body-secondary mb-3">$group by type</p>
+          <div class="chart-box">
+            <canvas data-chart="<%= JSON.stringify(oppTypeChart) %>" aria-label="Opportunities by type" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-1">Applications by status</h2>
+          <p class="small text-body-secondary mb-3">$group by application status</p>
+          <div class="chart-box">
+            <canvas data-chart="<%= JSON.stringify(appStatusChart) %>" aria-label="Applications by status" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-1">User growth (6 months)</h2>
+          <p class="small text-body-secondary mb-3">$dateToString on createdAt</p>
+          <div class="chart-box">
+            <canvas data-chart="<%= JSON.stringify(usersGrowthChart) %>" aria-label="User growth" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-1">Applications trend (6 months)</h2>
+          <p class="small text-body-secondary mb-3">$group by month of appliedAt</p>
+          <div class="chart-box">
+            <canvas data-chart="<%= JSON.stringify(trendChart) %>" aria-label="Applications trend" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-1">Top 10 required skills</h2>
+          <p class="small text-body-secondary mb-3">$unwind requiredSkills + $group</p>
+          <div class="chart-box">
+            <canvas data-chart="<%= JSON.stringify(skillsChart) %>" aria-label="Top required skills" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-1">Openings by category</h2>
+          <p class="small text-body-secondary mb-3">$sum openings for open posts</p>
+          <div class="chart-box">
+            <canvas data-chart="<%= JSON.stringify(openingsChart) %>" aria-label="Openings by category" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-1">Opportunities by category</h2>
+          <p class="small text-body-secondary mb-3">$group by category</p>
+          <div class="chart-box">
+            <canvas data-chart="<%= JSON.stringify(oppCatChart) %>" aria-label="Opportunities by category" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-1">Companies</h2>
+          <p class="small text-body-secondary mb-3">Toggle verification directly from here.</p>
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0">
+              <thead><tr><th>Company</th><th>Industry</th><th>Since</th><th></th></tr></thead>
+              <tbody>
+                <% companies.forEach(function (c2) { %>
+                  <tr>
+                    <td class="small">
+                      <a href="/companies/<%= c2.user %>" target="_blank" rel="noopener" class="text-decoration-none"><%= c2.companyName %></a>
+                      <% if (c2.verified) { %> <i class="bi bi-patch-check-fill text-primary" title="Verified"></i><% } %>
+                    </td>
+                    <td class="small text-body-secondary"><%= c2.industry || '-' %></td>
+                    <td class="small text-nowrap"><%= format.formatDate(c2.createdAt) %></td>
+                    <td class="text-end">
+                      <form action="/admin/companies/<%= c2._id %>/verify" method="post">
+                        <input type="hidden" name="returnTo" value="/admin/analytics">
+                        <button class="btn btn-sm btn-outline-<%= c2.verified ? 'secondary' : 'primary' %>" type="submit"
+                                title="<%= c2.verified ? 'Remove verification' : 'Verify' %>">
+                          <i class="bi bi-patch-check"></i>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,126 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small mb-1">
+          <li class="breadcrumb-item"><a href="/student/dashboard">Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="/student/profile">My profile</a></li>
+          <li class="breadcrumb-item active">Edit</li>
+        </ol>
+      </nav>
+      <h1 class="h3 mb-0">Edit profile</h1>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-secondary" href="/student/profile">Cancel</a>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+      <div class="progress progress-thin mb-4" role="progressbar" aria-label="Profile strength"
+           aria-valuenow="<%= checklist.percentage %>" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar bg-<%= checklist.levelColor %>" style="width:<%= checklist.percentage %>%"></div>
+      </div>
+      <p class="small text-body-secondary">
+        Current strength: <strong><%= checklist.level %> (<%= checklist.percentage %>%)</strong>.
+        Every completed section makes your profile more visible to recruiters.
+      </p>
+
+      <form action="/student/profile" method="post" class="needs-validation" novalidate>
+        <!-- personal -->
+        <h2 class="h5 mb-3 mt-2"><i class="bi bi-person me-2 text-primary"></i>Personal information</h2>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label" for="phone">Phone number</label>
+            <input type="tel" class="form-control" id="phone" name="phone" value="<%= profile.phone %>" maxlength="25" placeholder="+880 1XXX-XXXXXX">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="dateOfBirth">Date of birth</label>
+            <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth"
+                   value="<%= profile.dateOfBirth ? profile.dateOfBirth.toISOString().slice(0,10) : '' %>">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="gender">Gender</label>
+            <select class="form-select" id="gender" name="gender">
+              <% ['prefer-not-to-say', 'male', 'female', 'other'].forEach(function (g) { %>
+                <option value="<%= g %>" <%= profile.gender === g ? 'selected' : '' %>><%= g.replace(/-/g, ' ') %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="address">Address</label>
+            <input type="text" class="form-control" id="address" name="address" value="<%= profile.address %>" maxlength="300" placeholder="City, Country">
+          </div>
+        </div>
+
+        <!-- academic -->
+        <h2 class="h5 mb-3"><i class="bi bi-mortarboard me-2 text-primary"></i>Academic information</h2>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label" for="university">University</label>
+            <input type="text" class="form-control" id="university" name="university" value="<%= profile.university %>" maxlength="160" placeholder="e.g. University of Dhaka">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="department">Department</label>
+            <input type="text" class="form-control" id="department" name="department" value="<%= profile.department %>" maxlength="120" placeholder="e.g. Computer Science &amp; Engineering">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="degree">Degree</label>
+            <input type="text" class="form-control" id="degree" name="degree" value="<%= profile.degree %>" maxlength="120" placeholder="e.g. BSc">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="currentSemester">Current semester</label>
+            <input type="number" class="form-control" id="currentSemester" name="currentSemester" min="1" max="12"
+                   value="<%= profile.currentSemester || '' %>">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="cgpa">CGPA (out of 10)</label>
+            <input type="number" step="0.01" min="0" max="10" class="form-control" id="cgpa" name="cgpa" value="<%= profile.cgpa ?? '' %>">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="graduationYear">Graduation year</label>
+            <input type="number" class="form-control" id="graduationYear" name="graduationYear" min="1950" max="2100"
+                   value="<%= profile.graduationYear || '' %>">
+          </div>
+        </div>
+
+        <!-- bio & links -->
+        <h2 class="h5 mb-3"><i class="bi bi-pencil-square me-2 text-primary"></i>About me</h2>
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <label class="form-label" for="bio">Bio</label>
+            <textarea class="form-control" id="bio" name="bio" rows="4" maxlength="1200"
+                      placeholder="Tell companies who you are (40+ characters improves your match score)"><%= profile.bio %></textarea>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="linkedin">LinkedIn URL</label>
+            <input type="url" class="form-control" id="linkedin" name="linkedin" value="<%= profile.linkedin %>" placeholder="https://linkedin.com/in/...">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="github">GitHub URL</label>
+            <input type="url" class="form-control" id="github" name="github" value="<%= profile.github %>" placeholder="https://github.com/...">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="portfolio">Portfolio URL</label>
+            <input type="url" class="form-control" id="portfolio" name="portfolio" value="<%= profile.portfolio %>" placeholder="https://...">
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="interests">Interests</label>
+            <input type="text" class="form-control" id="interests" name="interests"
+                   value="<%= (profile.interests || []).join(', ') %>" placeholder="Comma separated, e.g. Machine Learning, UI/UX, Open Source">
+            <div class="form-text">Maximum 20 interests.</div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary btn-lg" type="submit">
+            <span class="spinner-border spinner-border-sm me-1 d-none" data-loading-spinner></span>
+            <i class="bi bi-save me-1"></i>Save profile
+          </button>
+          <a class="btn btn-outline-secondary btn-lg" href="/student/profile">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

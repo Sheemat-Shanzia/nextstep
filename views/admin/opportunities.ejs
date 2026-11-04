@@ -1,0 +1,161 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-clipboard-check me-2 text-primary"></i>Opportunity moderation</h1>
+      <p class="text-body-secondary mb-0">Review, approve or reject every opportunity submitted by a company.</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="/admin/opportunities/export.csv">
+      <i class="bi bi-filetype-csv me-1"></i>Export (CSV)
+    </a>
+  </div>
+
+  <div class="card shadow-sm border-0 mb-3">
+    <div class="card-body">
+      <form action="/admin/opportunities" method="get" class="row g-2 align-items-end">
+        <div class="col-lg-4 col-md-6">
+          <label class="form-label small mb-1" for="q">Search</label>
+          <input type="search" class="form-control form-control-sm" id="q" name="q" value="<%= search %>" placeholder="Title, company or location">
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <label class="form-label small mb-1" for="status">Status</label>
+          <select class="form-select form-select-sm" id="status" name="status" data-auto-submit>
+            <option value="">All statuses</option>
+            <option value="pending" <%= activeStatus === 'pending' ? 'selected' : '' %>>Pending</option>
+            <option value="approved" <%= activeStatus === 'approved' ? 'selected' : '' %>>Approved</option>
+            <option value="rejected" <%= activeStatus === 'rejected' ? 'selected' : '' %>>Rejected</option>
+          </select>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <label class="form-label small mb-1" for="type">Type</label>
+          <select class="form-select form-select-sm" id="type" name="type" data-auto-submit>
+            <option value="">All types</option>
+            <option value="internship" <%= activeType === 'internship' ? 'selected' : '' %>>Internship</option>
+            <option value="scholarship" <%= activeType === 'scholarship' ? 'selected' : '' %>>Scholarship</option>
+          </select>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-funnel me-1"></i>Filter</button>
+          <a class="btn btn-outline-secondary btn-sm" href="/admin/opportunities">Clear</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <a class="btn btn-sm <%= !activeStatus ? 'btn-dark' : 'btn-outline-secondary' %>" href="/admin/opportunities">
+      All <span class="badge bg-light text-dark ms-1"><%= totalOpportunities %></span>
+    </a>
+    <% ['pending', 'approved', 'rejected'].forEach(function (s) { %>
+      <a class="btn btn-sm <%= activeStatus === s ? 'btn-dark' : 'btn-outline-secondary' %>" href="/admin/opportunities?status=<%= s %>">
+        <span class="text-capitalize"><%= s %></span> <span class="badge bg-light text-dark ms-1"><%= counts[s] || 0 %></span>
+      </a>
+    <% }); %>
+  </div>
+
+  <% if (!opportunities.length) { %>
+    <%- include('../partials/emptyState', {
+      emptyState: {
+        icon: 'bi-clipboard-check',
+        title: 'No opportunities match your filters',
+        message: 'Nothing is waiting in this state. Try another filter.',
+        actionHref: '/admin/opportunities', actionLabel: 'Clear filters', actionIcon: 'bi-x-circle'
+      }
+    }) %>
+  <% } else { %>
+    <div class="card shadow-sm border-0 table-card">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th style="width:36px"><input class="form-check-input" type="checkbox" id="checkAll" aria-label="Select all"></th>
+                <th>Opportunity</th>
+                <th>Type</th>
+                <th>Deadline</th>
+                <th>Applicants</th>
+                <th>Status</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% opportunities.forEach(function (o) { %>
+                <tr>
+                  <td><input class="form-check-input app-check" type="checkbox" value="<%= o._id %>" aria-label="Select opportunity"></td>
+                  <td>
+                    <a href="/admin/opportunities/<%= o._id %>" class="fw-semibold text-decoration-none"><%= o.title %></a>
+                    <div class="small text-body-secondary">
+                      <%= o.companyNameCopy %> &middot; <%= o.location %> &middot; <%= format.truncate(o.category, 20) %>
+                    </div>
+                    <% if (o.status === 'rejected' && o.rejectionReason) { %>
+                      <div class="small text-danger mt-1"><i class="bi bi-exclamation-circle me-1"></i><%= format.truncate(o.rejectionReason, 70) %></div>
+                    <% } %>
+                  </td>
+                  <td><span class="badge <%= o.type === 'internship' ? 'bg-primary' : 'bg-success' %>"><%= o.type === 'internship' ? 'Internship' : 'Scholarship' %></span></td>
+                  <td class="small text-nowrap"><%= format.formatDate(o.deadline) %></td>
+                  <td class="small"><%= o.applicantCount %></td>
+                  <td>
+                    <span class="badge <%= format.OPPORTUNITY_STATUS_BADGE[o.status] %> text-capitalize"><%= o.status %></span>
+                    <% if (o.reviewedAt) { %>
+                      <div class="small text-body-secondary"><%= format.formatDate(o.reviewedAt) %></div>
+                    <% } %>
+                  </td>
+                  <td class="text-end">
+                    <div class="d-inline-flex gap-1">
+                      <form action="/admin/opportunities/<%= o._id %>/moderate" method="post" class="d-inline">
+                        <input type="hidden" name="action" value="approve">
+                        <input type="hidden" name="returnTo" value="/admin/opportunities">
+                        <button class="btn btn-sm btn-success" type="submit" title="Approve"><i class="bi bi-check-lg"></i></button>
+                      </form>
+                      <a class="btn btn-sm btn-outline-primary" href="/admin/opportunities/<%= o._id %>" title="Review"><i class="bi bi-eye"></i></a>
+                      <% if (o.companyProfile && o.companyProfile._id) { %>
+                        <form action="/admin/companies/<%= o.companyProfile._id %>/verify" method="post" class="d-inline">
+                          <input type="hidden" name="returnTo" value="/admin/opportunities">
+                          <button class="btn btn-sm btn-outline-<%= o.companyProfile.verified ? 'secondary' : 'primary' %>" type="submit"
+                                  title="<%= o.companyProfile.verified ? 'Remove verification' : 'Verify company' %>">
+                            <i class="bi bi-patch-check"></i>
+                          </button>
+                        </form>
+                      <% } %>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- bulk moderation -->
+    <div class="card shadow-sm border-0 mt-3" id="bulkBar" style="display:none">
+      <div class="card-body p-3">
+        <form action="/admin/opportunities/bulk" method="post" class="row g-2 align-items-end">
+          <div id="bulkSelected"></div>
+          <div class="col-md-3">
+            <label class="form-label small mb-1" for="bulkAction">Bulk action</label>
+            <select class="form-select form-select-sm" id="bulkAction" name="bulkAction" required>
+              <option value="">Choose an action...</option>
+              <option value="approve">Approve selected</option>
+              <option value="reject">Reject selected</option>
+              <option value="pending">Move back to queue</option>
+              <option value="delete">Delete selected</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small mb-1" for="bulkReason">Rejection reason (required for bulk reject)</label>
+            <input type="text" class="form-control form-control-sm" id="bulkReason" name="reason" maxlength="1000"
+                   placeholder="e.g. The description does not contain enough detail">
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-primary btn-sm w-100" type="submit" data-confirm="Apply this action to all selected opportunities?">
+              <i class="bi bi-check2-all me-1"></i>Apply
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <%- include('../partials/pagination', { pager: pager }) %>
+  <% } %>
+</div>

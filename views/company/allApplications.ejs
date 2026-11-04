@@ -1,0 +1,89 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/company/dashboard">Dashboard</a></li>
+      <li class="breadcrumb-item active">All applications</li>
+    </ol>
+  </nav>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-people me-2 text-primary"></i>All applications</h1>
+      <p class="text-body-secondary mb-0">Every application received across all of your opportunities.</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="/company/applications/export.csv">
+      <i class="bi bi-filetype-csv me-1"></i>Export CSV
+    </a>
+  </div>
+
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <a class="btn btn-sm <%= !activeStatus ? 'btn-dark' : 'btn-outline-secondary' %>" href="/company/applications">All</a>
+    <% Object.keys(statuses).forEach(function (s) { %>
+      <a class="btn btn-sm <%= activeStatus === s ? 'btn-dark' : 'btn-outline-secondary' %>" href="/company/applications?status=<%= s %>">
+        <%= statuses[s] %>
+      </a>
+    <% }); %>
+  </div>
+
+  <% if (!applications.length) { %>
+    <%- include('../partials/emptyState', {
+      emptyState: {
+        icon: 'bi-people',
+        title: activeStatus ? `No ${statuses[activeStatus] || activeStatus} applications` : 'No applications yet',
+        message: activeStatus ? 'Try a different status filter.' : 'Applications will appear here as soon as students apply to your opportunities.',
+        actionHref: '/company/opportunities', actionLabel: 'My opportunities', actionIcon: 'bi-briefcase'
+      }
+    }) %>
+  <% } else { %>
+    <div class="card shadow-sm border-0 table-card">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Opportunity</th>
+                <th>Applied</th>
+                <th>Status</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% applications.forEach(function (a) { %>
+                <tr>
+                  <td>
+                    <a href="/company/applications/<%= a._id %>" class="fw-semibold text-decoration-none">
+                      <%= a.student ? a.student.name : 'Unknown' %>
+                    </a>
+                    <div class="small text-body-secondary"><%= a.student ? a.student.email : '' %></div>
+                  </td>
+                  <td>
+                    <% if (a.opportunity) { %>
+                      <a href="/company/opportunities/<%= a.opportunity._id %>" class="text-decoration-none small"><%= a.opportunity.title %></a>
+                      <div class="small text-body-secondary"><%= a.opportunity.companyNameCopy %></div>
+                    <% } else { %>
+                      <span class="text-body-secondary small">(opportunity removed)</span>
+                    <% } %>
+                  </td>
+                  <td class="small text-nowrap"><%= format.formatDate(a.appliedAt) %></td>
+                  <td><span class="badge <%= format.APPLICATION_STATUS_BADGE[a.status] %>"><%= format.applicationStatusLabel(a.status) %></span></td>
+                  <td class="text-end">
+                    <div class="d-inline-flex gap-1">
+                      <a class="btn btn-sm btn-outline-primary" href="/company/applications/<%= a._id %>" title="Review"><i class="bi bi-eye"></i></a>
+                      <% if (a.cvPath) { %>
+                        <a class="btn btn-sm btn-outline-secondary" href="/files/application/<%= a._id %>/cv" title="Download CV"><i class="bi bi-file-earmark-pdf"></i></a>
+                      <% } %>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/pagination', { pager: pager }) %>
+  <% } %>
+</div>

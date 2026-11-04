@@ -1,0 +1,164 @@
+<%- include('../partials/flash') %>
+<%
+const isInternship = opportunity.type === 'internship';
+const hasProfileCv = profile && profile.cvPath;
+%>
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/opportunities">Opportunities</a></li>
+      <li class="breadcrumb-item"><a href="/opportunities/<%= opportunity._id %>"><%= format.truncate(opportunity.title, 34) %></a></li>
+      <li class="breadcrumb-item active">Apply</li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+    <!-- ============ FORM ============ -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h1 class="h4 mb-1">Apply to &ldquo;<%= opportunity.title %>&rdquo;</h1>
+          <p class="text-body-secondary">
+            <%= opportunity.companyNameCopy %> &middot; <%= opportunity.location %> &middot;
+            deadline <strong><%= format.formatDate(opportunity.deadline) %></strong>
+          </p>
+
+          <hr>
+
+          <form action="/opportunities/<%= opportunity._id %>/apply" method="post"
+                enctype="multipart/form-data" class="needs-validation" novalidate>
+
+            <div class="mb-3">
+              <label class="form-label" for="coverLetter">Cover letter <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="coverLetter" name="coverLetter" rows="8" required minlength="20" maxlength="5000"
+                        placeholder="Explain why you are a strong fit for this opportunity (at least 20 characters)"><%= oldInput.coverLetter || '' %></textarea>
+              <div class="invalid-feedback">Your cover letter must be at least 20 characters long.</div>
+              <div class="form-text">Minimum 20 characters, maximum 5000.</div>
+            </div>
+
+            <!-- extra questions (FR-11) -->
+            <% if (questions && questions.length) { %>
+              <div class="mb-3">
+                <label class="form-label">Additional questions</label>
+                <% questions.forEach(function (q, i) { %>
+                  <div class="mb-2">
+                    <label class="form-label small fw-normal text-body-secondary" for="answer<%= i %>"><%= q %></label>
+                    <textarea class="form-control form-control-sm" id="answer<%= i %>" name="answer[]" rows="3"
+                              maxlength="500"><%= oldInput['answer[' + i + ']'] || '' %></textarea>
+                  </div>
+                <% }); %>
+                <div class="form-text">Optional &mdash; a good answer improves your chances.</div>
+              </div>
+            <% } %>
+
+            <!-- CV -->
+            <div class="mb-3">
+              <label class="form-label" for="cv">Curriculum Vitae</label>
+              <% if (hasProfileCv) { %>
+                <div class="alert alert-success d-flex align-items-center gap-2">
+                  <i class="bi bi-file-earmark-check-fill"></i>
+                  <div class="flex-grow-1 small">
+                    Using the CV from your profile: <strong><%= profile.cvOriginalName || profile.cvPath %></strong>
+                  </div>
+                  <a class="btn btn-sm btn-outline-success" href="/files/profile/cv" target="_blank" rel="noopener">
+                    <i class="bi bi-eye me-1"></i>Preview
+                  </a>
+                </div>
+              <% } %>
+
+              <input type="file" class="form-control" id="cv" name="cv"
+                     accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+              <div class="form-text">
+                <%= hasProfileCv ? 'Leave empty to keep using your profile CV.' : 'No CV on your profile yet - please upload one (PDF / DOC / DOCX, max 5 MB).' %>
+                <a href="/student/profile" class="ms-1">Manage my CV</a>
+              </div>
+            </div>
+
+            <!-- extra documents -->
+            <div class="mb-3">
+              <label class="form-label" for="documents">Supporting documents <span class="text-body-secondary fw-normal">(optional)</span></label>
+              <input type="file" class="form-control" id="documents" name="documents" multiple
+                     accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">
+              <div class="form-text">Transcripts, certificates or portfolios. PDF / JPG / PNG, max 5 MB each (up to 5 files).</div>
+            </div>
+
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="confirmShare" required>
+              <label class="form-check-label small" for="confirmShare">
+                I confirm the information in my application is accurate and I agree to share my CV and
+                documents with <strong><%= opportunity.companyNameCopy %></strong>.
+              </label>
+              <div class="invalid-feedback">Please confirm before submitting.</div>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-primary btn-lg" type="submit">
+                <span class="spinner-border spinner-border-sm me-1 d-none" data-loading-spinner></span>
+                <i class="bi bi-send me-1"></i>Submit application
+              </button>
+              <a class="btn btn-outline-secondary btn-lg" href="/opportunities/<%= opportunity._id %>">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SUMMARY ============ -->
+    <div class="col-lg-4">
+      <div class="sticky-filter">
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-body p-4">
+            <h2 class="h6 text-uppercase text-body-secondary mb-3">Opportunity summary</h2>
+            <h3 class="h6 mb-3"><%= opportunity.title %></h3>
+            <ul class="list-unstyled small d-grid gap-2">
+              <li><i class="bi bi-building me-2 text-body-secondary"></i><%= opportunity.companyNameCopy %></li>
+              <li><i class="bi bi-geo-alt me-2 text-body-secondary"></i><%= opportunity.location %> (<%= opportunity.mode %>)</li>
+              <li><i class="bi bi-calendar-range me-2 text-body-secondary"></i><%= opportunity.duration || 'Duration not specified' %></li>
+              <li><i class="bi bi-cash-coin me-2 text-body-secondary"></i><%= opportunity.stipendLabel %></li>
+              <li><i class="bi bi-clock me-2 text-body-secondary"></i>Closes <%= format.formatDate(opportunity.deadline) %></li>
+            </ul>
+          </div>
+        </div>
+
+        <% if (opportunity.requiredSkills && opportunity.requiredSkills.length) { %>
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+              <h2 class="h6 text-uppercase text-body-secondary mb-2">Required skills</h2>
+              <div class="kbd-list">
+                <% opportunity.requiredSkills.forEach(function (s) { %>
+                  <span class="badge text-bg-light border"><%= s %></span>
+                <% }); %>
+              </div>
+              <% if (profile && profile.skills && profile.skills.length) { %>
+                <hr>
+                <h3 class="h6 text-uppercase text-body-secondary mb-2">Your skills</h3>
+                <div class="kbd-list">
+                  <% profile.skills.forEach(function (s) { %>
+                    <% const has = opportunity.requiredSkills.some(function (r) { return r.toLowerCase() === s.name.toLowerCase(); }); %>
+                    <span class="badge <%= has ? 'text-bg-success' : 'text-bg-light border' %>">
+                      <% if (has) { %><i class="bi bi-check-lg"></i> <% } %><%= s.name %>
+                    </span>
+                  <% }); %>
+                </div>
+                <p class="small text-body-secondary mt-2 mb-0">
+                  Green skills match this opportunity.
+                </p>
+              <% } %>
+            </div>
+          </div>
+        <% } %>
+
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4 small text-body-secondary">
+            <h2 class="h6 text-body-secondary mb-2"><i class="bi bi-shield-check me-1"></i>Privacy</h2>
+            <p class="mb-0">
+              Your CV is stored privately. Only you, this company and NextStep administrators can download it
+              through an authenticated download route.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,93 @@
+<%- include('../partials/flash') %>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-md-10">
+      <div class="text-center mb-4">
+        <span class="brand-mark brand-mark-lg mb-2"><i class="bi bi-chat-left-text"></i></span>
+        <h1 class="h3 mb-1">Contact the NextStep team</h1>
+        <p class="text-body-secondary mb-0">Report a bug, request a feature or just say hello.</p>
+      </div>
+
+      <% if (query.sent === '1') { %>
+        <div class="alert alert-success">
+          <i class="bi bi-check-circle-fill me-1"></i>Thank you! Your message has been sent to the NextStep team.
+        </div>
+      <% } %>
+
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-lg-5">
+          <form action="/feedback" method="post" class="needs-validation" novalidate>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="name">Your name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="name" name="name" required minlength="2" maxlength="120"
+                       value="<%= currentUser ? currentUser.name : (oldInput.name || '') %>" placeholder="Jane Doe">
+                <div class="invalid-feedback">Please enter your name.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label" for="email">E-mail address <span class="text-danger">*</span></label>
+                <input type="email" class="form-control" id="email" name="email" required
+                       value="<%= currentUser ? currentUser.email : (oldInput.email || '') %>" placeholder="you@example.com">
+                <div class="invalid-feedback">Please enter a valid e-mail address.</div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label" for="subject">Subject</label>
+                <select class="form-select" id="subject" name="subject">
+                  <% subjects.forEach(function (s) { %>
+                    <option value="<%= s %>"><%= s %></option>
+                  <% }); %>
+                </select>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label" for="message">Message <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="message" name="message" rows="6" required minlength="10" maxlength="3000"
+                          placeholder="Tell us what is on your mind (at least 10 characters)"><%= oldInput.message || '' %></textarea>
+                <div class="invalid-feedback">Message must be at least 10 characters.</div>
+              </div>
+
+              <div class="col-12">
+                <button class="btn btn-primary" type="submit">
+                  <span class="spinner-border spinner-border-sm me-1 d-none" data-loading-spinner></span>
+                  <i class="bi bi-send me-1"></i>Send message
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="row g-3 mt-3 text-center">
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-shield-check fs-3 text-primary"></i>
+              <h2 class="h6 mt-2">Privacy first</h2>
+              <p class="small text-body-secondary mb-0">Your message is only visible to NextStep administrators.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-hourglass-split fs-3 text-warning"></i>
+              <h2 class="h6 mt-2">Fast replies</h2>
+              <p class="small text-body-secondary mb-0">Every message lands in the admin feedback inbox.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-bell fs-3 text-info"></i>
+              <h2 class="h6 mt-2">Announcements</h2>
+              <p class="small text-body-secondary mb-0">Platform news reaches every dashboard.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

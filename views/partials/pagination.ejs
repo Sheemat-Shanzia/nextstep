@@ -1,0 +1,36 @@
+<% if (typeof pager !== 'undefined' && pager && pager.totalPages > 1) { %>
+  <nav aria-label="Pagination" class="mt-4">
+    <ul class="pagination pagination-sm justify-content-center flex-wrap mb-0">
+      <li class="page-item <%= pager.hasPrev ? '' : 'disabled' %>">
+        <a class="page-link" href="<%= qs({ page: pager.prevPage }) %>" aria-label="Previous">
+          <i class="bi bi-chevron-left"></i>
+        </a>
+      </li>
+
+      <% pager.pages.forEach(function (p) { %>
+        <% if (p === '...') { %>
+          <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+        <% } else if (p === pager.page) { %>
+          <li class="page-item active" aria-current="page"><span class="page-link"><%= p %></span></li>
+        <% } else { %>
+          <li class="page-item"><a class="page-link" href="<%= qs({ page: p }) %>"><%= p %></a></li>
+        <% } %>
+      <% }); %>
+
+      <li class="page-item <%= pager.hasNext ? '' : 'disabled' %>">
+        <a class="page-link" href="<%= qs({ page: pager.nextPage }) %>" aria-label="Next">
+          <i class="bi bi-chevron-right"></i>
+        </a>
+      </li>
+    </ul>
+
+    <p class="text-center small text-body-secondary mt-2 mb-0">
+      Showing <strong><%= pager.from %></strong>&ndash;<strong><%= pager.to %></strong>
+      of <strong><%= pager.total %></strong>
+    </p>
+  </nav>
+<% } else if (typeof pager !== 'undefined' && pager && pager.total > 0) { %>
+  <p class="text-center small text-body-secondary mt-3 mb-0">
+    Showing <strong><%= pager.from %></strong>&ndash;<strong><%= pager.to %></strong> of <strong><%= pager.total %></strong>
+  </p>
+<% } %>

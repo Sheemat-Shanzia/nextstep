@@ -1,0 +1,18 @@
+<%
+/**
+ * Small KPI tile used by the three dashboards.
+ * Expects: label, value, icon, tone (primary|success|warning|danger|info), href, sub
+ */
+const toneClass = typeof tone === 'undefined' || !tone ? 'primary' : tone;
+const tag = typeof href === 'undefined' || !href ? 'div' : 'a';
+%>
+<<%= tag %> class="stat-tile <%= (tag === 'a') ? 'stat-tile-link' : '' %>" <%= (tag === 'a') ? `href="${href}"` : '' %>>
+  <span class="stat-tile-icon bg-<%= toneClass %> bg-opacity-10 text-<%= toneClass %>">
+    <i class="bi <%= icon %>"></i>
+  </span>
+  <span class="stat-tile-body">
+    <span class="stat-tile-value"><%= value %></span>
+    <span class="stat-tile-label"><%= label %></span>
+    <% if (typeof sub !== 'undefined' && sub) { %><span class="stat-tile-sub"><%= sub %></span><% } %>
+  </span>
+</<%= tag %>>

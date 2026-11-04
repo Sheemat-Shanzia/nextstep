@@ -1,0 +1,112 @@
+<%- include('../partials/flash') %>
+<div class="container py-4 py-lg-5">
+  <div class="mb-4">
+    <h1 class="h3 mb-1">Account settings</h1>
+    <p class="text-body-secondary mb-0">Manage your sign-in details and review your recent security activity.</p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3"><i class="bi bi-person-gear me-2 text-primary"></i>Profile details</h2>
+          <form action="/auth/settings" method="post" class="needs-validation" novalidate>
+            <div class="mb-3">
+              <label class="form-label" for="name">Full name</label>
+              <input type="text" class="form-control" id="name" name="name" required minlength="2" maxlength="120"
+                     value="<%= currentUser.name %>">
+              <div class="invalid-feedback">Name must be at least 2 characters.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="email">E-mail address</label>
+              <input type="email" class="form-control" id="email" name="email" required value="<%= currentUser.email %>">
+              <div class="form-text">Changing your e-mail resets the verification flag.</div>
+              <div class="invalid-feedback">Please enter a valid e-mail address.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Role &amp; status</label>
+              <div class="d-flex gap-2">
+                <span class="badge text-bg-secondary text-uppercase p-2"><%= currentUser.role %></span>
+                <span class="badge text-bg-<%= currentUser.status === 'active' ? 'success' : 'danger' %> p-2"><%= currentUser.status %></span>
+                <% if (!currentUser.isEmailVerified) { %>
+                  <span class="badge text-bg-warning p-2">e-mail not verified</span>
+                <% } %>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" type="submit">
+              <span class="spinner-border spinner-border-sm me-1 d-none" data-loading-spinner></span>
+              <i class="bi bi-save me-1"></i>Save changes
+            </button>
+            <a class="btn btn-outline-secondary" href="/auth/change-password"><i class="bi bi-key me-1"></i>Change password</a>
+          </form>
+        </div>
+      </div>
+
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3"><i class="bi bi-clock-history me-2 text-primary"></i>Recent activity</h2>
+          <% if (!activity || !activity.length) { %>
+            <p class="text-body-secondary small mb-0">No recorded activity yet.</p>
+          <% } else { %>
+            <div class="table-responsive">
+              <table class="table table-sm table-hover align-middle mb-0">
+                <thead><tr><th>Action</th><th>Details</th><th>When</th></tr></thead>
+                <tbody>
+                  <% activity.forEach(function (a) { %>
+                    <tr>
+                      <td><span class="badge text-bg-light border"><%= a.action %></span></td>
+                      <td class="small text-body-secondary"><%= a.details || '-' %></td>
+                      <td class="small text-nowrap" title="<%= format.formatDateTime(a.createdAt) %>"><%= format.timeAgo(a.createdAt) %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3"><i class="bi bi-shield-check me-2 text-primary"></i>Security</h2>
+          <ul class="list-unstyled small d-grid gap-2 mb-3">
+            <li class="d-flex justify-content-between">
+              <span>Last sign-in</span>
+              <span class="text-body-secondary"><%= currentUser.lastLogin ? format.formatDateTime(currentUser.lastLogin) : 'This is your first session' %></span>
+            </li>
+            <li class="d-flex justify-content-between">
+              <span>Account created</span>
+              <span class="text-body-secondary"><%= format.formatDate(currentUser.createdAt) %></span>
+            </li>
+            <li class="d-flex justify-content-between">
+              <span>Password storage</span>
+              <span class="text-body-secondary">bcrypt (salted hash)</span>
+            </li>
+            <li class="d-flex justify-content-between">
+              <span>Session</span>
+              <span class="text-body-secondary">JWT in an httpOnly cookie</span>
+            </li>
+          </ul>
+          <a class="btn btn-outline-primary w-100" href="/auth/change-password">
+            <i class="bi bi-key me-1"></i>Change password
+          </a>
+        </div>
+      </div>
+
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Sign out</h2>
+          <p class="small text-body-secondary">You will have to sign in again with your new password.</p>
+          <form action="/auth/logout" method="post">
+            <button class="btn btn-outline-danger w-100" type="submit">Sign out of NextStep</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

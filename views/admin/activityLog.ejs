@@ -1,0 +1,87 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-clock-history me-2 text-primary"></i>Activity log</h1>
+      <p class="text-body-secondary mb-0">Audit trail of every important action in the system.</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="/admin/dashboard"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a>
+  </div>
+
+  <div class="card shadow-sm border-0 mb-3">
+    <div class="card-body">
+      <form action="/admin/activity" method="get" class="row g-2 align-items-end">
+        <div class="col-lg-4 col-md-6">
+          <label class="form-label small mb-1" for="q">Search</label>
+          <input type="search" class="form-control form-control-sm" id="q" name="q" value="<%= search %>" placeholder="User, action or details">
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <label class="form-label small mb-1" for="action">Action</label>
+          <select class="form-select form-select-sm" id="action" name="action">
+            <option value="">All actions</option>
+            <% actions.forEach(function (a) { %>
+              <option value="<%= a %>" <%= activeAction === a ? 'selected' : '' %>><%= a %></option>
+            <% }); %>
+          </select>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <label class="form-label small mb-1" for="role">Role</label>
+          <select class="form-select form-select-sm" id="role" name="role">
+            <option value="">All roles</option>
+            <option value="student" <%= activeRole === 'student' ? 'selected' : '' %>>Student</option>
+            <option value="company" <%= activeRole === 'company' ? 'selected' : '' %>>Company</option>
+            <option value="admin" <%= activeRole === 'admin' ? 'selected' : '' %>>Admin</option>
+          </select>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-funnel me-1"></i>Filter</button>
+          <a class="btn btn-outline-secondary btn-sm" href="/admin/activity">Clear</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <% if (!logs.length) { %>
+    <%- include('../partials/emptyState', {
+      emptyState: {
+        icon: 'bi-clock-history',
+        title: 'No log entries match your filters',
+        message: 'Activity is recorded as users browse, apply and moderate.',
+        actionHref: '/admin/activity', actionLabel: 'Clear filters', actionIcon: 'bi-x-circle'
+      }
+    }) %>
+  <% } else { %>
+    <div class="card shadow-sm border-0 table-card">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-sm table-hover align-middle mb-0">
+            <thead>
+              <tr><th>When</th><th>User</th><th>Action</th><th>Entity</th><th>Details</th><th>IP</th></tr>
+            </thead>
+            <tbody>
+              <% logs.forEach(function (l) { %>
+                <tr>
+                  <td class="small text-nowrap" title="<%= format.formatDateTime(l.createdAt) %>"><%= format.timeAgo(l.createdAt) %></td>
+                  <td class="small">
+                    <% if (l.user) { %>
+                      <a href="/admin/users/<%= l.user._id %>" class="text-decoration-none"><%= l.userName %></a>
+                      <span class="badge text-bg-light border ms-1 text-uppercase"><%= l.userRole %></span>
+                    <% } else { %>
+                      <%= l.userName %>
+                    <% } %>
+                  </td>
+                  <td><span class="badge text-bg-light border"><%= l.action %></span></td>
+                  <td class="small text-body-secondary"><%= l.entity %></td>
+                  <td class="small text-body-secondary"><%= format.truncate(l.details, 70) %></td>
+                  <td class="small text-body-secondary"><%= l.ip || '-' %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/pagination', { pager: pager }) %>
+  <% } %>
+</div>

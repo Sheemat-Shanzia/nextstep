@@ -1,0 +1,153 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <div class="mb-4">
+    <h1 class="h3 mb-1"><i class="bi bi-sliders me-2 text-primary"></i>Advanced search</h1>
+    <p class="text-body-secondary mb-0">Combine every filter to find the opportunity that fits you.</p>
+  </div>
+
+  <form action="/search" method="get" class="needs-validation" novalidate>
+    <div class="row g-4">
+      <!-- ============ FILTER SIDEBAR ============ -->
+      <div class="col-lg-4 col-xl-3">
+        <div class="sticky-filter">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h2 class="h6 mb-3"><i class="bi bi-funnel me-2"></i>Filters</h2>
+
+              <div class="mb-3">
+                <label class="form-label small mb-1" for="q">Keyword</label>
+                <input type="search" class="form-control form-control-sm" id="q" name="q"
+                       value="<%= keyword %>" placeholder="e.g. React, marketing...">
+                <div class="form-text">Matches title, company, skill, tag and location.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small mb-1">Opportunity type</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="type" id="typeAll" value="" <%= !query.type ? 'checked' : '' %>>
+                  <label class="form-check-label small" for="typeAll">All types</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="type" id="typeIntern" value="internship" <%= query.type === 'internship' ? 'checked' : '' %>>
+                  <label class="form-check-label small" for="typeIntern">Internship</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="type" id="typeScholar" value="scholarship" <%= query.type === 'scholarship' ? 'checked' : '' %>>
+                  <label class="form-check-label small" for="typeScholar">Scholarship</label>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small mb-1" for="mode">Work mode</label>
+                <select class="form-select form-select-sm" id="mode" name="mode">
+                  <option value="">Any mode</option>
+                  <option value="remote" <%= query.mode === 'remote' ? 'selected' : '' %>>Remote</option>
+                  <option value="onsite" <%= query.mode === 'onsite' ? 'selected' : '' %>>Onsite</option>
+                  <option value="hybrid" <%= query.mode === 'hybrid' ? 'selected' : '' %>>Hybrid</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small mb-1" for="category">Category</label>
+                <select class="form-select form-select-sm" id="category" name="category">
+                  <option value="">Any category</option>
+                  <% categories.forEach(function (c) { %>
+                    <option value="<%= c %>" <%= query.category === c ? 'selected' : '' %>><%= c %></option>
+                  <% }); %>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small mb-1" for="location">Location</label>
+                <select class="form-select form-select-sm" id="location" name="location">
+                  <option value="">Any location</option>
+                  <% locations.forEach(function (l) { %>
+                    <option value="<%= l %>" <%= query.location === l ? 'selected' : '' %>><%= l %></option>
+                  <% }); %>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small mb-1" for="skill">Required skill</label>
+                <input type="text" class="form-control form-control-sm" id="skill" name="skill"
+                       value="<%= query.skill || '' %>" placeholder="e.g. Python">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small mb-1">Stipend / award range</label>
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">Min</span>
+                  <input type="number" class="form-control" name="minStipend" min="0" placeholder="0"
+                         value="<%= query.minStipend || '' %>">
+                </div>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">Max</span>
+                  <input type="number" class="form-control" name="maxStipend" min="0" placeholder="Any"
+                         value="<%= query.maxStipend || '' %>">
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small mb-1" for="deadline">Deadline</label>
+                <select class="form-select form-select-sm" id="deadline" name="deadline">
+                  <% deadlineWindows.forEach(function (w) { %>
+                    <option value="<%= w.value %>" <%= String(query.deadline || '') === w.value ? 'selected' : '' %>><%= w.label %></option>
+                  <% }); %>
+                </select>
+              </div>
+
+              <div class="d-grid gap-2">
+                <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-search me-1"></i>Search</button>
+                <a class="btn btn-outline-secondary btn-sm" href="/search">Reset filters</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ RESULTS ============ -->
+      <div class="col-lg-8 col-xl-9">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <div>
+            <span class="text-body-secondary">
+              <% if (keyword) { %>
+                <%= pager.total %> result<%= pager.total === 1 ? '' : 's' %> for &ldquo;<%= keyword %>&rdquo;
+              <% } else { %>
+                <%= pager.total %> open opportunit<%= pager.total === 1 ? 'y' : 'ies' %>
+              <% } %>
+            </span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <label class="form-label small mb-0 text-body-secondary" for="sort">Sort</label>
+            <select class="form-select form-select-sm" id="sort" name="sort" style="width:auto" data-auto-submit>
+              <% sortOptions.forEach(function (s) { %>
+                <option value="<%= s.value %>" <%= sort === s.value ? 'selected' : '' %>><%= s.label %></option>
+              <% }); %>
+            </select>
+          </div>
+        </div>
+
+        <% if (!opportunities.length) { %>
+          <%- include('../partials/emptyState', {
+            emptyState: {
+              icon: 'bi-funnel',
+              title: 'No opportunities match your filters',
+              message: 'Try widening the stipend range, removing the location filter or choosing a different deadline window.',
+              actionHref: '/search', actionLabel: 'Reset all filters', actionIcon: 'bi-arrow-counterclockwise'
+            }
+          }) %>
+        <% } else { %>
+          <div class="row g-4">
+            <% opportunities.forEach(function (o) { %>
+              <div class="col-md-6 col-xxl-4">
+                <%- include('../partials/opportunityCard', { o: o }) %>
+              </div>
+            <% }); %>
+          </div>
+
+          <%- include('../partials/pagination', { pager: pager }) %>
+        <% } %>
+      </div>
+    </div>
+  </form>
+</div>

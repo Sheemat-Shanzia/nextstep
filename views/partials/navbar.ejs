@@ -1,0 +1,117 @@
+<% const navLinks = [
+     { href: '/opportunities', label: 'Browse', icon: 'bi-grid' },
+     { href: '/search', label: 'Search', icon: 'bi-search' },
+     { href: '/opportunities/most-viewed', label: 'Popular', icon: 'bi-fire' },
+     { href: '/companies', label: 'Companies', icon: 'bi-building' }
+   ]; %>
+
+<nav class="navbar navbar-expand-lg sticky-top isms-navbar">
+  <div class="container">
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/">
+      <span class="brand-mark"><i class="bi bi-mortarboard-fill"></i></span>
+      <span class="d-none d-sm-inline">NextStep</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+            aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <% navLinks.forEach(function (link) { %>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath === link.href ? 'active' : '' %>" href="<%= link.href %>">
+              <i class="bi <%= link.icon %> me-1"></i><%= link.label %>
+            </a>
+          </li>
+        <% }); %>
+
+        <% if (currentUser) { %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-speedometer2 me-1"></i>Portal
+            </a>
+            <ul class="dropdown-menu">
+              <% if (isStudent) { %>
+                <li><a class="dropdown-item" href="/student/dashboard"><i class="bi bi-speedometer2 me-2"></i>My dashboard</a></li>
+                <li><a class="dropdown-item" href="/student/profile"><i class="bi bi-person-badge me-2"></i>My profile</a></li>
+                <li><a class="dropdown-item" href="/student/applications"><i class="bi bi-send-check me-2"></i>My applications</a></li>
+                <li><a class="dropdown-item" href="/student/bookmarks"><i class="bi bi-bookmark-heart me-2"></i>Saved opportunities</a></li>
+              <% } else if (isCompany) { %>
+                <li><a class="dropdown-item" href="/company/dashboard"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                <li><a class="dropdown-item" href="/company/opportunities"><i class="bi bi-briefcase me-2"></i>My opportunities</a></li>
+                <li><a class="dropdown-item" href="/company/applications"><i class="bi bi-people me-2"></i>Applicants</a></li>
+                <li><a class="dropdown-item" href="/company/profile"><i class="bi bi-building me-2"></i>Company profile</a></li>
+              <% } else if (isAdmin) { %>
+                <li><a class="dropdown-item" href="/admin/dashboard"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                <li><a class="dropdown-item" href="/admin/users"><i class="bi bi-people me-2"></i>Users</a></li>
+                <li><a class="dropdown-item" href="/admin/opportunities"><i class="bi bi-clipboard-check me-2"></i>Moderation queue</a></li>
+                <li><a class="dropdown-item" href="/admin/analytics"><i class="bi bi-graph-up me-2"></i>Analytics</a></li>
+              <% } %>
+            </ul>
+          </li>
+        <% } %>
+      </ul>
+
+      <form class="d-none d-lg-block me-2" action="/search" method="get" role="search">
+        <div class="input-group input-group-sm isms-search">
+          <span class="input-group-text bg-transparent"><i class="bi bi-search"></i></span>
+          <input type="search" class="form-control" name="q" placeholder="Search internships, scholarships, skills&hellip;"
+                 value="<%= typeof query.q !== 'undefined' ? query.q : '' %>" aria-label="Search opportunities" autocomplete="off">
+        </div>
+      </form>
+
+      <div class="d-flex align-items-center gap-2">
+        <!-- Bonus 15: dark / light toggle -->
+        <button class="btn btn-sm btn-outline-secondary theme-toggle" id="themeToggle" type="button"
+                title="Switch between dark and light mode" aria-label="Toggle dark mode">
+          <i class="bi bi-moon-stars-fill"></i>
+        </button>
+
+        <% if (currentUser) { %>
+          <!-- Bonus 3: notification bell -->
+          <a class="btn btn-sm btn-outline-secondary position-relative" href="/notifications" title="Notifications" aria-label="Notifications">
+            <i class="bi bi-bell-fill"></i>
+            <% if (unreadCount > 0) { %>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="unreadBadge">
+                <%= unreadCount > 99 ? '99+' : unreadCount %>
+              </span>
+            <% } %>
+          </a>
+
+          <div class="dropdown">
+            <a class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="avatar avatar-sm"><%= currentUser.initials %></span>
+              <span class="d-none d-md-inline text-truncate" style="max-width:120px"><%= currentUser.name %></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li class="px-3 py-1">
+                <div class="fw-semibold"><%= currentUser.name %></div>
+                <div class="small text-body-secondary text-truncate"><%= currentUser.email %></div>
+                <span class="badge text-bg-secondary mt-1 text-uppercase"><%= currentUser.role %></span>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/auth/settings"><i class="bi bi-gear me-2"></i>Account settings</a></li>
+              <% if (isCompany) { %>
+                <li><a class="dropdown-item" href="/company/profile"><i class="bi bi-building me-2"></i>Company profile</a></li>
+              <% } %>
+              <% if (isStudent) { %>
+                <li><a class="dropdown-item" href="/student/profile"><i class="bi bi-person-badge me-2"></i>My profile</a></li>
+              <% } %>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form action="/auth/logout" method="post" class="px-1">
+                  <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Sign out</button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        <% } else { %>
+          <a class="btn btn-sm btn-outline-secondary" href="/auth/login">Sign in</a>
+          <a class="btn btn-sm btn-primary" href="/auth/register">Create account</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>

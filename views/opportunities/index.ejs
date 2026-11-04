@@ -1,0 +1,109 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <div class="mb-4">
+    <h1 class="h3 mb-1"><i class="bi bi-grid me-2 text-primary"></i>Browse opportunities</h1>
+    <p class="text-body-secondary mb-0">
+      Only administrator-approved opportunities that are still open are listed here.
+    </p>
+  </div>
+
+  <!-- Quick filter bar -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <form action="/opportunities" method="get" class="row g-2 align-items-end">
+        <div class="col-lg-4 col-md-6">
+          <label class="form-label small mb-1" for="q">Keyword</label>
+          <input type="search" class="form-control form-control-sm" id="q" name="q"
+                 value="<%= keyword %>" placeholder="Title, company or skill">
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <label class="form-label small mb-1" for="type">Type</label>
+          <select class="form-select form-select-sm" id="type" name="type">
+            <option value="">All types</option>
+            <option value="internship" <%= query.type === 'internship' ? 'selected' : '' %>>Internship</option>
+            <option value="scholarship" <%= query.type === 'scholarship' ? 'selected' : '' %>>Scholarship</option>
+          </select>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <label class="form-label small mb-1" for="mode">Work mode</label>
+          <select class="form-select form-select-sm" id="mode" name="mode">
+            <option value="">Any mode</option>
+            <option value="remote" <%= query.mode === 'remote' ? 'selected' : '' %>>Remote</option>
+            <option value="onsite" <%= query.mode === 'onsite' ? 'selected' : '' %>>Onsite</option>
+            <option value="hybrid" <%= query.mode === 'hybrid' ? 'selected' : '' %>>Hybrid</option>
+          </select>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <label class="form-label small mb-1" for="deadline">Deadline</label>
+          <select class="form-select form-select-sm" id="deadline" name="deadline">
+            <% deadlineWindows.forEach(function (w) { %>
+              <option value="<%= w.value %>" <%= String(query.deadline || '') === w.value ? 'selected' : '' %>><%= w.label %></option>
+            <% }); %>
+          </select>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <label class="form-label small mb-1" for="sort">Sort by</label>
+          <select class="form-select form-select-sm" id="sort" name="sort">
+            <% sortOptions.forEach(function (s) { %>
+              <option value="<%= s.value %>" <%= sort === s.value ? 'selected' : '' %>><%= s.label %></option>
+            <% }); %>
+          </select>
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-funnel me-1"></i>Apply filters</button>
+          <a class="btn btn-outline-secondary btn-sm" href="/opportunities"><i class="bi bi-x-circle me-1"></i>Clear</a>
+          <a class="btn btn-outline-primary btn-sm ms-auto" href="/search"><i class="bi bi-sliders me-1"></i>Advanced search</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Featured (most viewed) strip -->
+  <% if (featured && featured.length) { %>
+    <div class="mb-4">
+      <h2 class="h6 text-uppercase text-body-secondary mb-2"><i class="bi bi-fire text-danger me-1"></i>Trending now</h2>
+      <div class="row g-3">
+        <% featured.forEach(function (o) { %>
+          <div class="col-md-6 col-xl-4">
+            <%- include('../partials/opportunityCard', { o: o }) %>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Results -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h6 mb-0 text-body-secondary">
+      <% if (keyword) { %>
+        <%= pager.total %> result<%= pager.total === 1 ? '' : 's' %> for &ldquo;<%= keyword %>&rdquo;
+      <% } else { %>
+        <%= pager.total %> open opportunit<%= pager.total === 1 ? 'y' : 'ies' %>
+      <% } %>
+    </h2>
+    <a class="btn btn-sm btn-outline-secondary" href="/opportunities/most-viewed">
+      <i class="bi bi-fire me-1"></i>Most viewed
+    </a>
+  </div>
+
+  <% if (!opportunities.length) { %>
+    <%- include('../partials/emptyState', {
+      emptyState: {
+        icon: 'bi-search',
+        title: 'No opportunities match your filters',
+        message: 'Try removing a filter, widening the deadline window, or searching for a different skill.',
+        actionHref: '/opportunities', actionLabel: 'Clear all filters', actionIcon: 'bi-x-circle'
+      }
+    }) %>
+  <% } else { %>
+    <div class="row g-4">
+      <% opportunities.forEach(function (o) { %>
+        <div class="col-md-6 col-xl-4">
+          <%- include('../partials/opportunityCard', { o: o }) %>
+        </div>
+      <% }); %>
+    </div>
+
+    <%- include('../partials/pagination', { pager: pager }) %>
+  <% } %>
+</div>

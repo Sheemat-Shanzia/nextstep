@@ -1,0 +1,67 @@
+<%- include('../partials/flash') %>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-lg-5">
+          <div class="text-center mb-4">
+            <span class="brand-mark brand-mark-lg mb-2"><i class="bi bi-box-arrow-in-right"></i></span>
+            <h1 class="h4 mb-1">Sign in to NextStep</h1>
+            <p class="text-body-secondary small mb-0">Students, companies and administrators</p>
+          </div>
+
+          <form action="/auth/login" method="post" class="needs-validation" novalidate>
+            <input type="hidden" name="returnTo" value="<%= returnTo %>">
+
+            <div class="mb-3">
+              <label class="form-label" for="email">E-mail address</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="email" class="form-control" id="email" name="email"
+                       value="<%= typeof oldInput !== 'undefined' && oldInput.email ? oldInput.email : '' %>"
+                       required autocomplete="email" placeholder="you@example.com">
+              </div>
+              <div class="invalid-feedback">Please enter a valid e-mail address.</div>
+            </div>
+
+            <div class="mb-3">
+              <div class="d-flex justify-content-between">
+                <label class="form-label" for="password">Password</label>
+                <a class="small" href="/auth/forgot-password">Forgot password?</a>
+              </div>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                <input type="password" class="form-control" id="password" name="password" required autocomplete="current-password" placeholder="Your password">
+              </div>
+              <div class="invalid-feedback">Please enter your password.</div>
+            </div>
+
+            <button class="btn btn-primary w-100" type="submit">
+              <span class="spinner-border spinner-border-sm me-1 d-none" data-loading-spinner></span>
+              <i class="bi bi-box-arrow-in-right me-1"></i>Sign in
+            </button>
+          </form>
+
+          <hr class="my-4">
+
+          <p class="text-center small mb-3">
+            Don't have an account?
+            <a href="/auth/register?role=student" class="fw-semibold">Register as a student</a> or
+            <a href="/auth/register?role=company" class="fw-semibold">as a company</a>.
+          </p>
+
+          <div class="alert alert-light border small mb-0">
+            <div class="fw-semibold mb-1"><i class="bi bi-info-circle me-1"></i>Demo accounts</div>
+            <table class="table table-sm mb-0 small">
+              <tbody>
+                <tr><td><span class="badge text-bg-secondary">admin</span></td><td><code>admin@isms.com</code> / <code>Admin@123</code></td></tr>
+                <tr><td><span class="badge text-bg-primary">company</span></td><td><code>company@isms.com</code> / <code>Company@123</code></td></tr>
+                <tr><td><span class="badge text-bg-success">student</span></td><td><code>student@isms.com</code> / <code>Student@123</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

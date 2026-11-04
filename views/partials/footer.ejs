@@ -1,0 +1,64 @@
+<footer class="isms-footer mt-5">
+  <div class="container py-4">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <span class="brand-mark"><i class="bi bi-mortarboard-fill"></i></span>
+          <span class="fw-bold">NextStep</span>
+        </div>
+        <p class="small mb-0">
+          Internship and Scholarship Management System &mdash; a 3-tier web platform that
+          connects <strong>students</strong>, <strong>companies</strong> and
+          <strong>administrators</strong> around internships and scholarships.
+        </p>
+      </div>
+
+      <div class="col-6 col-lg-2">
+        <h6 class="text-uppercase small fw-bold mb-2">For students</h6>
+        <ul class="list-unstyled small d-grid gap-1">
+          <li><a class="footer-link" href="/opportunities">Browse</a></li>
+          <li><a class="footer-link" href="/search">Search</a></li>
+          <li><a class="footer-link" href="/auth/register">Create account</a></li>
+          <li><a class="footer-link" href="/auth/login">Sign in</a></li>
+        </ul>
+      </div>
+
+      <div class="col-6 col-lg-2">
+        <h6 class="text-uppercase small fw-bold mb-2">For companies</h6>
+        <ul class="list-unstyled small d-grid gap-1">
+          <li><a class="footer-link" href="/auth/register?role=company">Register company</a></li>
+          <li><a class="footer-link" href="/companies">Company directory</a></li>
+          <li><a class="footer-link" href="/auth/login">Post an opportunity</a></li>
+        </ul>
+      </div>
+
+      <div class="col-6 col-lg-2">
+        <h6 class="text-uppercase small fw-bold mb-2">Platform</h6>
+        <ul class="list-unstyled small d-grid gap-1">
+          <li><a class="footer-link" href="/opportunities/most-viewed">Most viewed</a></li>
+          <li><a class="footer-link" href="/feedback">Contact / feedback</a></li>
+          <li><a class="footer-link" href="/auth/forgot-password">Forgot password</a></li>
+        </ul>
+      </div>
+
+      <div class="col-6 col-lg-2">
+        <h6 class="text-uppercase small fw-bold mb-2">Account</h6>
+        <ul class="list-unstyled small d-grid gap-1">
+          <% if (currentUser) { %>
+            <li><a class="footer-link" href="/auth/settings">Settings</a></li>
+            <li><a class="footer-link" href="/notifications">Notifications</a></li>
+          <% } else { %>
+            <li><span class="text-body-secondary">Signed out</span></li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="my-3 opacity-25">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small">
+      <span>&copy; <%= new Date().getFullYear() %> NextStep. Built with Node.js, Express, MongoDB, Mongoose, EJS and Bootstrap 5.</span>
+      <span class="text-body-secondary">Database: <code>isms_db</code> &middot; MongoDB</span>
+    </div>
+  </div>
+</footer>

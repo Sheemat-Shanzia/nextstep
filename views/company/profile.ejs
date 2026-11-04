@@ -1,0 +1,183 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/company/dashboard">Dashboard</a></li>
+      <li class="breadcrumb-item active">Company profile</li>
+    </ol>
+  </nav>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-building me-2 text-primary"></i>Company profile</h1>
+      <p class="text-body-secondary mb-0">
+        This information appears on your job posts and on your public company page.
+        <a href="/companies/<%= currentUser._id %>" target="_blank" rel="noopener">View public page <i class="bi bi-box-arrow-up-right"></i></a>
+      </p>
+    </div>
+    <% if (profile.verified) { %>
+      <span class="badge text-bg-primary fs-6"><i class="bi bi-patch-check-fill me-1"></i>Verified company</span>
+    <% } %>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3"><i class="bi bi-pencil-square me-2 text-primary"></i>Company information</h2>
+
+          <form action="/company/profile" method="post" class="needs-validation" novalidate>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="companyName">Company name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="companyName" name="companyName" required minlength="2" maxlength="160" value="<%= profile.companyName %>">
+                <div class="invalid-feedback">Company name must be at least 2 characters.</div>
+                <div class="form-text">Renaming updates all of your existing posts.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="industry">Industry</label>
+                <input type="text" class="form-control" id="industry" name="industry" value="<%= profile.industry %>" maxlength="120" placeholder="e.g. Information Technology">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="website">Website</label>
+                <input type="url" class="form-control" id="website" name="website" value="<%= profile.website %>" placeholder="https://example.com">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="location">Location</label>
+                <input type="text" class="form-control" id="location" name="location" value="<%= profile.location %>" maxlength="160" placeholder="City, Country">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="size">Company size</label>
+                <select class="form-select" id="size" name="size">
+                  <% ['1-10', '11-50', '51-200', '201-500', '501-1000', '1000+'].forEach(function (s) { %>
+                    <option value="<%= s %>" <%= profile.size === s ? 'selected' : '' %>><%= s %> employees</option>
+                  <% }); %>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="contactPerson">Contact person</label>
+                <input type="text" class="form-control" id="contactPerson" name="contactPerson" value="<%= profile.contactPerson %>" maxlength="120">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="contactPhone">Contact phone</label>
+                <input type="tel" class="form-control" id="contactPhone" name="contactPhone" value="<%= profile.contactPhone %>" maxlength="25">
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="description">About the company</label>
+                <textarea class="form-control" id="description" name="description" rows="5" maxlength="3000"
+                          placeholder="Tell students what your organisation does, its culture and what they can expect."><%= profile.description %></textarea>
+              </div>
+            </div>
+
+            <button class="btn btn-primary mt-3" type="submit">
+              <span class="spinner-border spinner-border-sm me-1 d-none" data-loading-spinner></span>
+              <i class="bi bi-save me-1"></i>Save profile
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- reviews -->
+      <div class="card shadow-sm border-0 mt-4">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3"><i class="bi bi-star me-2 text-warning"></i>Student reviews</h2>
+
+          <div class="row g-4 mb-4">
+            <div class="col-md-4 text-center">
+              <div class="display-4 fw-bold"><%= profile.averageRating ? profile.averageRating.toFixed(1) : '-' %></div>
+              <div class="text-warning mb-2">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <i class="bi <%= i <= Math.round(profile.averageRating || 0) ? 'bi-star-fill' : 'bi-star' %>"></i>
+                <% } %>
+              </div>
+              <div class="small text-body-secondary">Based on <%= profile.reviewCount %> review<%= profile.reviewCount === 1 ? '' : 's' %></div>
+            </div>
+            <div class="col-md-8">
+              <% [5,4,3,2,1].forEach(function (star) { %>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span class="small text-nowrap"><%= star %> <i class="bi bi-star-fill text-warning"></i></span>
+                  <div class="progress flex-grow-1 progress-thin">
+                    <div class="progress-bar bg-warning" style="width:<%= profile.reviewCount ? Math.round(((ratingBreakdown[star] || 0) / profile.reviewCount) * 100) : 0 %>%"></div>
+                  </div>
+                  <span class="small text-body-secondary" style="width:24px"><%= ratingBreakdown[star] || 0 %></span>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+
+          <% if (!reviews.length) { %>
+            <p class="small text-body-secondary mb-0">
+              No reviews yet. Students can review your company from your public company page.
+            </p>
+          <% } else { %>
+            <div class="d-grid gap-3">
+              <% reviews.forEach(function (r) { %>
+                <div class="border rounded p-3">
+                  <div class="d-flex justify-content-between align-items-start gap-2">
+                    <div>
+                      <div class="fw-semibold"><%= r.student ? r.student.name : 'Anonymous student' %></div>
+                      <div class="small text-body-secondary"><%= format.timeAgo(r.createdAt) %></div>
+                    </div>
+                    <span class="text-warning text-nowrap">
+                      <% for (let i = 1; i <= 5; i++) { %><i class="bi <%= i <= r.rating ? 'bi-star-fill' : 'bi-star' %>"></i><% } %>
+                    </span>
+                  </div>
+                  <% if (r.comment) { %><p class="mb-0 mt-2 small"><%= r.comment %></p><% } %>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="sticky-filter">
+        <!-- logo -->
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-body p-4 text-center">
+            <h2 class="h6 text-uppercase text-body-secondary mb-3">Company logo</h2>
+
+            <% if (profile.logo) { %>
+              <img src="/files/company/logo/<%= currentUser._id %>" alt="Company logo"
+                   class="img-fluid rounded mb-3" style="max-height:120px">
+              <form action="/company/profile/logo" method="post" class="mb-2"
+                    data-confirm="Remove the company logo?">
+                <input type="hidden" name="_method" value="DELETE">
+                <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-trash me-1"></i>Remove logo</button>
+              </form>
+            <% } else { %>
+              <div class="display-6 text-body-secondary opacity-50 mb-3"><i class="bi bi-image"></i></div>
+            <% } %>
+
+            <form action="/company/profile/logo" method="post" enctype="multipart/form-data">
+              <div class="mb-2">
+                <label class="form-label small mb-1" for="logo"><%= profile.logo ? 'Replace logo' : 'Upload logo' %></label>
+                <input type="file" class="form-control form-control-sm" id="logo" name="logo" required accept=".jpg,.jpeg,.png,image/jpeg,image/png">
+                <div class="form-text">JPG or PNG, max 5 MB.</div>
+              </div>
+              <button class="btn btn-primary btn-sm w-100" type="submit"><i class="bi bi-upload me-1"></i>Upload logo</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- summary -->
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <h2 class="h6 text-uppercase text-body-secondary mb-3">Profile completion</h2>
+            <ul class="small text-body-secondary ps-3 mb-0">
+              <li class="mb-1"><%= profile.companyName ? 'Company name' : 'Company name (missing)' %></li>
+              <li class="mb-1"><%= profile.description ? 'About the company' : 'About the company (missing)' %></li>
+              <li class="mb-1"><%= profile.industry ? 'Industry' : 'Industry (missing)' %></li>
+              <li class="mb-1"><%= profile.location ? 'Location' : 'Location (missing)' %></li>
+              <li><%= profile.logo ? 'Logo' : 'Logo (missing)' %></li>
+            </ul>
+            <a class="btn btn-outline-primary w-100 mt-3" href="/company/opportunities/new">
+              <i class="bi bi-plus-lg me-1"></i>Post an opportunity
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,181 @@
+<%
+const links = [
+  { href: '/admin/dashboard', label: 'Dashboard', icon: 'bi-speedometer2', active: true },
+  { href: '/admin/users', label: 'Users', icon: 'bi-people' },
+  { href: '/admin/opportunities', label: 'Moderation queue', icon: 'bi-clipboard-check', badge: moderation.pending },
+  { href: '/admin/analytics', label: 'Analytics', icon: 'bi-graph-up' },
+  { href: '/admin/activity', label: 'Activity log', icon: 'bi-clock-history' },
+  { href: '/admin/feedback', label: 'Feedback', icon: 'bi-chat-left-text', badge: stats.newFeedback },
+  { href: '/admin/announcements', label: 'Announcements', icon: 'bi-megaphone' }
+];
+const sidebarCard = { title: 'CSV export', text: 'Download the full user list or every opportunity for offline analysis.', href: '/admin/users/export.csv', action: 'Export users' };
+const roleChart = { type: 'doughnut', labels: chart.usersByRole.labels, data: chart.usersByRole.values };
+const typeChart = { type: 'bar', labels: chart.opportunitiesByType.labels, data: chart.opportunitiesByType.values, label: 'Opportunities' };
+const trendChart = { type: 'line', labels: chart.trend.labels, data: chart.trend.values, label: 'Applications', colors: ['#2C7DA0'] };
+%>
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-speedometer2 me-2 text-primary"></i>Admin dashboard</h1>
+      <p class="text-body-secondary mb-0">Platform overview, moderation queue and recent activity.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-secondary" href="/admin/analytics"><i class="bi bi-graph-up me-1"></i>Full analytics</a>
+      <a class="btn btn-primary" href="/admin/opportunities?status=pending">
+        <i class="bi bi-clipboard-check me-1"></i>Review queue (<%= moderation.pending %>)
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-3 d-none d-lg-block">
+      <%- include('../partials/sidebar', { links: links, sidebarCard: sidebarCard }) %>
+    </div>
+
+    <div class="col-lg-9">
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+          <%- include('../partials/statCard', { label: 'Total users', value: stats.totalUsers, icon: 'bi-people', tone: 'primary', href: '/admin/users', sub: 'All roles' }) %>
+        </div>
+        <div class="col-6 col-xl-3">
+          <%- include('../partials/statCard', { label: 'Pending moderation', value: moderation.pending, icon: 'bi-hourglass-split', tone: 'warning', href: '/admin/opportunities?status=pending', sub: moderation.approvalRate + '% approval rate' }) %>
+        </div>
+        <div class="col-6 col-xl-3">
+          <%- include('../partials/statCard', { label: 'Open opportunities', value: stats.openOpportunities, icon: 'bi-briefcase', tone: 'success', href: '/admin/opportunities?status=approved', sub: moderation.total + ' total posts' }) %>
+        </div>
+        <div class="col-6 col-xl-3">
+          <%- include('../partials/statCard', { label: 'Applications', value: stats.totalApplications, icon: 'bi-send-check', tone: 'info', href: '/admin/analytics' }) %>
+        </div>
+      </div>
+
+      <% if (announcements && announcements.length) { %>
+        <div class="mb-4">
+          <% announcements.forEach(function (a) { %>
+            <div class="alert alert-<%= a.level || 'info' %> alert-dismissible fade show" role="alert">
+              <strong><i class="bi bi-megaphone-fill me-1"></i><%= a.title %></strong>
+              <div class="small"><%= a.body %></div>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <div class="row g-4 mb-4">
+        <div class="col-xl-4">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <h2 class="h6 mb-3"><i class="bi bi-people me-2 text-primary"></i>Users by role</h2>
+              <div class="chart-box">
+                <canvas data-chart="<%= JSON.stringify(roleChart) %>" aria-label="Users by role" role="img"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-4">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <h2 class="h6 mb-3"><i class="bi bi-briefcase me-2 text-primary"></i>Opportunities by type</h2>
+              <div class="chart-box">
+                <canvas data-chart="<%= JSON.stringify(typeChart) %>" aria-label="Opportunities by type" role="img"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-4">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <h2 class="h6 mb-3"><i class="bi bi-graph-up me-2 text-primary"></i>Applications trend</h2>
+              <div class="chart-box">
+                <canvas data-chart="<%= JSON.stringify(trendChart) %>" aria-label="Applications trend" role="img"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- moderation queue -->
+        <div class="col-xl-7">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h6 mb-0"><i class="bi bi-clipboard-check me-2 text-primary"></i>Pending moderation queue</h2>
+                <a class="btn btn-sm btn-outline-secondary" href="/admin/opportunities?status=pending">View all</a>
+              </div>
+
+              <% if (!pendingQueue.length) { %>
+                <div class="text-center py-4">
+                  <i class="bi bi-check-circle display-6 text-success"></i>
+                  <p class="text-body-secondary mb-0">Nothing waiting for review. Nice work!</p>
+                </div>
+              <% } else { %>
+                <div class="table-responsive">
+                  <table class="table table-sm table-hover align-middle mb-0">
+                    <thead><tr><th>Opportunity</th><th>Company</th><th>Submitted</th><th></th></tr></thead>
+                    <tbody>
+                      <% pendingQueue.forEach(function (o) { %>
+                        <tr>
+                          <td>
+                            <a href="/admin/opportunities/<%= o._id %>" class="fw-semibold text-decoration-none"><%= o.title %></a>
+                            <div class="small text-body-secondary"><span class="text-capitalize"><%= o.type %></span> &middot; <%= o.location %></div>
+                          </td>
+                          <td class="small"><%= o.companyNameCopy %></td>
+                          <td class="small text-nowrap"><%= format.timeAgo(o.createdAt) %></td>
+                          <td class="text-end">
+                            <div class="d-inline-flex gap-1">
+                              <form action="/admin/opportunities/<%= o._id %>/moderate" method="post" class="d-inline">
+                                <input type="hidden" name="action" value="approve">
+                                <input type="hidden" name="returnTo" value="/admin/dashboard">
+                                <button class="btn btn-sm btn-success" type="submit" title="Approve"><i class="bi bi-check-lg"></i></button>
+                              </form>
+                              <a class="btn btn-sm btn-outline-secondary" href="/admin/opportunities/<%= o._id %>" title="Review"><i class="bi bi-eye"></i></a>
+                            </div>
+                          </td>
+                        </tr>
+                      <% }); %>
+                    </tbody>
+                  </table>
+                </div>
+
+                <%- include('../partials/pagination', { pager: pager }) %>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- activity -->
+        <div class="col-xl-5">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h6 mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Recent activity</h2>
+                <a class="btn btn-sm btn-outline-secondary" href="/admin/activity">Full log</a>
+              </div>
+
+              <% if (!recentActivity.length) { %>
+                <p class="small text-body-secondary mb-0">No activity recorded yet.</p>
+              <% } else { %>
+                <div class="activity-feed d-grid gap-2">
+                  <% recentActivity.forEach(function (a) { %>
+                    <div class="d-flex gap-2 small">
+                      <i class="bi bi-dot"></i>
+                      <div class="min-w-0">
+                        <div><strong><%= a.userName %></strong> <%= a.action.replace(/_/g, ' ') %></div>
+                        <% if (a.details) { %>
+                          <div class="text-body-secondary text-truncate"><%= a.details %></div>
+                        <% } %>
+                        <div class="text-body-secondary"><%= format.timeAgo(a.createdAt) %></div>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

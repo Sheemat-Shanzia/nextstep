@@ -1,0 +1,82 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-bell me-2 text-primary"></i>Notifications</h1>
+      <p class="text-body-secondary mb-0">
+        <% if (unread) { %><strong><%= unread %></strong> unread notification<%= unread === 1 ? '' : 's' %><% } else { %>You are all caught up.<% } %>
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <% if (unread) { %>
+        <form action="/notifications/read-all" method="post">
+          <button class="btn btn-outline-primary" type="submit"><i class="bi bi-check2-all me-1"></i>Mark all as read</button>
+        </form>
+      <% } %>
+      <form action="/notifications" method="post" data-confirm="Delete all of your notifications?">
+        <input type="hidden" name="_method" value="DELETE">
+        <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash me-1"></i>Clear inbox</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mb-3">
+    <a class="btn btn-sm <%= !unreadOnly ? 'btn-dark' : 'btn-outline-secondary' %>" href="/notifications">All</a>
+    <a class="btn btn-sm <%= unreadOnly ? 'btn-dark' : 'btn-outline-secondary' %>" href="/notifications?unread=1">
+      Unread <span class="badge bg-light text-dark ms-1"><%= unread %></span>
+    </a>
+  </div>
+
+  <% if (!notifications.length) { %>
+    <%- include('../partials/emptyState', {
+      emptyState: {
+        icon: 'bi-bell-slash',
+        title: unreadOnly ? 'No unread notifications' : 'Your inbox is empty',
+        message: 'You will be notified when your application status changes, when a post is approved or when a new applicant arrives.',
+        actionHref: '/dashboard', actionLabel: 'Back to dashboard', actionIcon: 'bi-speedometer2'
+      }
+    }) %>
+  <% } else { %>
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-0">
+        <div class="list-group list-group-flush">
+          <% const icons = { application: 'bi-send-check', status: 'bi-clipboard-check', moderation: 'bi-patch-check', account: 'bi-person-gear', announcement: 'bi-megaphone', review: 'bi-star', system: 'bi-info-circle' }; %>
+          <% notifications.forEach(function (n) { %>
+            <div class="list-group-item d-flex gap-3 align-items-start <%= n.isRead ? '' : 'bg-primary-subtle' %>">
+              <span class="avatar avatar-sm mt-1"><i class="bi <%= icons[n.type] || 'bi-bell' %>"></i></span>
+              <div class="flex-grow-1 min-w-0">
+                <div class="d-flex flex-wrap justify-content-between gap-2">
+                  <span class="fw-semibold"><%= n.title %></span>
+                  <span class="small text-body-secondary text-nowrap" title="<%= format.formatDateTime(n.createdAt) %>"><%= format.timeAgo(n.createdAt) %></span>
+                </div>
+                <div class="small"><%= n.message %></div>
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                  <% if (n.link) { %>
+                    <form action="/notifications/<%= n._id %>/read" method="post" class="d-inline">
+                      <input type="hidden" name="returnTo" value="<%= n.link %>">
+                      <button class="btn btn-sm btn-outline-primary" type="submit">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>Open
+                      </button>
+                    </form>
+                  <% } %>
+                  <% if (!n.isRead) { %>
+                    <form action="/notifications/<%= n._id %>/read" method="post" class="d-inline">
+                      <button class="btn btn-sm btn-outline-secondary" type="submit"><i class="bi bi-check2 me-1"></i>Mark as read</button>
+                    </form>
+                  <% } %>
+                  <form action="/notifications/<%= n._id %>" method="post" class="d-inline"
+                        data-confirm="Delete this notification?">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/pagination', { pager: pager }) %>
+  <% } %>
+</div>

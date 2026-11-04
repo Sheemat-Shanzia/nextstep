@@ -1,0 +1,944 @@
+/* ==========================================================================
+   ISMS / NextStep - shared stylesheet
+   --------------------------------------------------------------------------
+   Bootstrap 5.3 (CDN) handles layout and components; this file supplies the
+   Coastal Blues brand identity.
+
+   Because style.css is loaded AFTER bootstrap.min.css (views/layouts/main.ejs),
+   every Bootstrap themeable component is re-coloured here through its own
+   custom properties - no !important wars and no duplicated rules.
+
+   Palette (see README):
+     Deep Navy      #012A4A   navbar, footer
+     Dark Blue      #013A63   sidebar, dark panels
+     Ocean Blue     #01497C   button hover
+     Atlantic Blue  #014F86   primary actions
+     Steel Blue     #2A6F97   badges, subtle highlights
+     Coastal Blue   #2C7DA0   links, icons, secondary actions
+     Sky Blue       #61A5C2   decorative accents, charts
+     Light Blue     #89C2D9   focus rings, borders, hover backgrounds
+     Pale Blue      #A9D6E5   page backgrounds, soft panels (used sparingly)
+   ========================================================================== */
+
+/* ==========================================================================
+   1. PALETTE + DESIGN TOKENS
+   ========================================================================== */
+:root {
+  /* --- Coastal Blues palette ------------------------------------------- */
+  --deep-navy: #012A4A;
+  --dark-blue: #013A63;
+  --ocean-blue: #01497C;
+  --atlantic-blue: #014F86;
+  --steel-blue: #2A6F97;
+  --coastal-blue: #2C7DA0;
+  --sky-blue: #61A5C2;
+  --light-blue: #89C2D9;
+  --pale-blue: #A9D6E5;
+
+  /* --- RGB channels (needed by Bootstrap's rgba(var(--bs-*-rgb)) rules) --- */
+  --deep-navy-rgb: 1, 42, 74;
+  --dark-blue-rgb: 1, 58, 99;
+  --ocean-blue-rgb: 1, 73, 124;
+  --atlantic-rgb: 1, 79, 134;
+  --steel-rgb: 42, 111, 151;
+  --coastal-rgb: 44, 125, 160;
+  --sky-rgb: 97, 165, 194;
+  --light-rgb: 137, 194, 217;
+  --pale-rgb: 169, 214, 229;
+
+  /* --- semantic aliases used across this file --------------------------- */
+  --isms-brand: var(--atlantic-blue);
+  --isms-brand-hover: var(--ocean-blue);
+  --isms-accent: var(--sky-blue);
+  --isms-radius: .75rem;
+  --isms-radius-sm: .5rem;
+  --isms-shadow: 0 .125rem .5rem rgba(1, 42, 74, .07);
+  --isms-shadow-lg: 0 1rem 2.5rem rgba(1, 42, 74, .12);
+  --isms-transition: .18s ease;
+
+  /* --- Chart.js series palette (read from JS via getComputedStyle) ------- */
+  --chart-1: var(--atlantic-blue);
+  --chart-2: var(--sky-blue);
+  --chart-3: var(--coastal-blue);
+  --chart-4: var(--steel-blue);
+  --chart-5: var(--light-blue);
+  --chart-6: var(--pale-blue);
+  --chart-7: var(--ocean-blue);
+  --chart-8: var(--dark-blue);
+  --chart-text: var(--steel-blue);
+  --chart-grid: rgba(137, 194, 217, .38);
+  --chart-ring: #ffffff;
+
+  /* --- Bootstrap 5.3 theme overrides ------------------------------------ */
+  --bs-primary: var(--atlantic-blue);
+  --bs-primary-rgb: var(--atlantic-rgb);
+  --bs-link-color: var(--coastal-blue);
+  --bs-link-hover-color: var(--ocean-blue);
+  --bs-secondary-color: var(--steel-blue);
+  --bs-tertiary-color: var(--steel-blue);
+  --bs-emphasis-color: var(--deep-navy);
+  --bs-border-color: var(--light-blue);
+  --bs-border-color-translucent: rgba(137, 194, 217, .5);
+  --bs-secondary-bg: rgba(169, 214, 229, .28);
+  --bs-tertiary-bg: rgba(169, 214, 229, .18);
+  --bs-body-bg: #f7fbfd;
+  --bs-body-color: #14364f;
+  --bs-focus-ring-color: rgba(var(--light-rgb), .55);
+  --bs-form-select-focus-border-color: var(--light-blue);
+  --bs-form-check-input-checked-bg-color: var(--atlantic-blue);
+  --bs-form-check-input-checked-border-color: var(--atlantic-blue);
+}
+
+/* ==========================================================================
+   2. BASE
+   ========================================================================== */
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Links + icons default to Coastal Blue */
+a { color: var(--coastal-blue); transition: color var(--isms-transition); }
+a:hover, a:focus { color: var(--ocean-blue); }
+
+h1, h2, h3, h4, h5, h6 { color: var(--deep-navy); }
+
+/* ==========================================================================
+   3. BOOTSTRAP COMPONENT OVERRIDES
+   ========================================================================== */
+
+/* ---------- buttons ---------------------------------------------------- */
+.btn {
+  --bs-btn-border-radius: var(--isms-radius-sm);
+  font-weight: 600;
+  transition: background-color var(--isms-transition),
+              border-color var(--isms-transition),
+              color var(--isms-transition),
+              box-shadow var(--isms-transition),
+              transform var(--isms-transition);
+}
+.btn:active { transform: translateY(1px); }
+
+/* Primary / important actions -> Atlantic Blue, hover -> Ocean Blue */
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--atlantic-blue);
+  --bs-btn-border-color: var(--atlantic-blue);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--ocean-blue);
+  --bs-btn-hover-border-color: var(--ocean-blue);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--dark-blue);
+  --bs-btn-active-border-color: var(--dark-blue);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: var(--steel-blue);
+  --bs-btn-disabled-border-color: var(--steel-blue);
+  --bs-btn-focus-shadow-rgb: var(--atlantic-rgb);
+  box-shadow: 0 1px 2px rgba(1, 42, 74, .12);
+}
+.btn-primary:hover { box-shadow: 0 .25rem .75rem rgba(1, 73, 124, .28); }
+
+/* Secondary / ghost actions -> Coastal Blue */
+.btn-outline-primary {
+  --bs-btn-color: var(--atlantic-blue);
+  --bs-btn-border-color: var(--coastal-blue);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--coastal-blue);
+  --bs-btn-hover-border-color: var(--coastal-blue);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--ocean-blue);
+  --bs-btn-active-border-color: var(--ocean-blue);
+  --bs-btn-disabled-color: var(--coastal-blue);
+  --bs-btn-disabled-border-color: var(--pale-blue);
+  --bs-btn-focus-shadow-rgb: var(--coastal-rgb);
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: var(--steel-blue);
+  --bs-btn-border-color: var(--light-blue);
+  --bs-btn-hover-color: var(--ocean-blue);
+  --bs-btn-hover-bg: rgba(169, 214, 229, .32);
+  --bs-btn-hover-border-color: var(--sky-blue);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--ocean-blue);
+  --bs-btn-active-border-color: var(--ocean-blue);
+  --bs-btn-disabled-color: var(--steel-blue);
+  --bs-btn-disabled-border-color: var(--pale-blue);
+  --bs-btn-focus-shadow-rgb: var(--sky-rgb);
+}
+
+.btn-link {
+  --bs-btn-color: var(--coastal-blue);
+  --bs-btn-hover-color: var(--ocean-blue);
+  --bs-btn-active-color: var(--dark-blue);
+  --bs-btn-focus-shadow-rgb: var(--coastal-rgb);
+  text-decoration: none;
+}
+.btn-link:hover { text-decoration: underline; }
+
+/* Secondary button used for "Track / Apply" secondary CTAs */
+.btn-light {
+  --bs-btn-color: var(--ocean-blue);
+  --bs-btn-bg: rgba(169, 214, 229, .3);
+  --bs-btn-border-color: var(--light-blue);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--atlantic-blue);
+  --bs-btn-hover-border-color: var(--atlantic-blue);
+  --bs-btn-disabled-color: var(--steel-blue);
+  --bs-btn-disabled-bg: rgba(169, 214, 229, .18);
+  --bs-btn-disabled-border-color: var(--pale-blue);
+}
+
+/* Success / danger keep their semantics so destructive actions stay obvious,
+   but are retinted slightly deeper so they sit well beside the blue palette. */
+.btn-success {
+  --bs-btn-bg: #14705a; --bs-btn-border-color: #14705a;
+  --bs-btn-hover-bg: #0f5a49; --bs-btn-hover-border-color: #0f5a49;
+  --bs-btn-active-bg: #0d4c3e; --bs-btn-active-border-color: #0d4c3e;
+}
+.btn-danger {
+  --bs-btn-bg: #a32b3a; --bs-btn-border-color: #a32b3a;
+  --bs-btn-hover-bg: #8a2230; --bs-btn-hover-border-color: #8a2230;
+  --bs-btn-active-bg: #741d29; --bs-btn-active-border-color: #741d29;
+}
+.btn-warning {
+  --bs-btn-color: var(--deep-navy);
+  --bs-btn-bg: #e3b23c; --bs-btn-border-color: #e3b23c;
+  --bs-btn-hover-bg: #d19f2c; --bs-btn-hover-border-color: #d19f2c;
+}
+
+/* ---------- forms / focus rings ---------------------------------------- */
+.form-control,
+.form-select,
+.input-group-text {
+  border-color: var(--light-blue);
+  color: var(--deep-navy);
+  transition: border-color var(--isms-transition), box-shadow var(--isms-transition);
+}
+.input-group-text {
+  background-color: rgba(169, 214, 229, .22);
+  border-color: var(--light-blue);
+  color: var(--steel-blue);
+}
+.form-control::placeholder { color: rgba(42, 111, 151, .72); }
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--light-blue);
+  background-color: #fff;
+  box-shadow: 0 0 0 .22rem rgba(169, 214, 229, .55);
+  color: var(--deep-navy);
+}
+.form-control:focus-within { border-color: var(--light-blue); }
+.form-check-input { border-color: var(--sky-blue); }
+.form-check-input:checked,
+.form-check-input[type="checkbox"]:checked,
+.form-check-input[type="radio"]:checked {
+  background-color: var(--atlantic-blue);
+  border-color: var(--atlantic-blue);
+}
+.form-check-input:focus { border-color: var(--light-blue); box-shadow: 0 0 0 .2rem rgba(169, 214, 229, .5); }
+
+.form-label { color: var(--steel-blue); font-weight: 500; }
+.form-text { color: var(--steel-blue); }
+.invalid-feedback { color: #a32b3a; }
+.is-invalid { border-color: #c0576a; }
+.is-invalid:focus { box-shadow: 0 0 0 .22rem rgba(195, 87, 106, .25); }
+
+/* ---------- cards ------------------------------------------------------- */
+.card {
+  --bs-card-border-color: var(--light-blue);
+  --bs-card-border-radius: var(--isms-radius);
+  --bs-card-cap-bg: rgba(169, 214, 229, .22);
+  background-color: #fff;
+}
+.card-header, .card-footer { border-color: var(--light-blue); }
+.dropdown-menu {
+  --bs-dropdown-bg: #fff;
+  --bs-dropdown-border-color: var(--light-blue);
+  --bs-dropdown-link-hover-bg: rgba(169, 214, 229, .38);
+  --bs-dropdown-link-active-bg: var(--atlantic-blue);
+  --bs-dropdown-link-active-color: #fff;
+  --bs-dropdown-link-color: var(--deep-navy);
+  --bs-dropdown-border-radius: var(--isms-radius-sm);
+  box-shadow: var(--isms-shadow-lg);
+}
+.dropdown-item { color: var(--deep-navy); }
+.dropdown-item:hover { color: var(--ocean-blue); }
+.dropdown-item.text-danger:hover { color: #8a2230; }
+
+/* ---------- badges ------------------------------------------------------ */
+.badge {
+  font-weight: 600;
+  letter-spacing: .01em;
+  border-radius: 50rem;
+}
+/* Neutral / "subtle highlight" badges -> Steel Blue + Light Blue border */
+.badge.text-bg-light,
+.badge.bg-light {
+  background-color: rgba(169, 214, 229, .34) !important;
+  color: var(--deep-navy) !important;
+  border-color: var(--light-blue) !important;
+}
+/* Solid primary badges */
+.badge.bg-primary, .badge.text-bg-primary { background-color: var(--atlantic-blue) !important; }
+/* Subtle primary badges used on cards (bg-primary-subtle + text-primary) */
+.bg-primary-subtle {
+  background-color: rgba(var(--atlantic-rgb), .12) !important;
+  color: var(--ocean-blue) !important;
+}
+.text-bg-primary-subtle { background-color: rgba(var(--atlantic-rgb), .12) !important; }
+.text-primary { color: var(--atlantic-blue) !important; }
+.text-success { color: #14705a !important; }
+.bg-success { background-color: #14705a !important; }
+.text-warning { color: #b07d16 !important; }
+.bg-warning { background-color: #e3b23c !important; color: var(--deep-navy) !important; }
+.text-danger { color: #a32b3a !important; }
+.bg-danger { background-color: #a32b3a !important; }
+.text-info { color: var(--coastal-blue) !important; }
+.bg-info { background-color: var(--coastal-blue) !important; }
+.text-secondary { color: var(--steel-blue) !important; }
+.bg-secondary { background-color: var(--steel-blue) !important; }
+
+/* ---------- alerts ------------------------------------------------------ */
+.alert { border-radius: var(--isms-radius-sm); border-width: 1px; }
+.alert-success { --bs-alert-color: #0f5a49; --bs-alert-bg: #e8f4f0; --bs-alert-border-color: #9ecfbe; }
+.alert-danger  { --bs-alert-color: #8a2230; --bs-alert-bg: #fbeaec; --bs-alert-border-color: #e0a3ac; }
+.alert-warning { --bs-alert-color: #8a6212; --bs-alert-bg: #fdf4e0; --bs-alert-border-color: #e6cd8a; }
+.alert-info    { --bs-alert-color: var(--dark-blue); --bs-alert-bg: #e7f1f7; --bs-alert-border-color: var(--light-blue); }
+.alert-light   { --bs-alert-color: var(--steel-blue); --bs-alert-bg: rgba(169, 214, 229, .25); --bs-alert-border-color: var(--light-blue); }
+
+/* ---------- tables ------------------------------------------------------ */
+.table {
+  --bs-table-color: var(--deep-navy);
+  --bs-table-bg: transparent;
+  --bs-table-border-color: var(--light-blue);
+  --bs-table-hover-color: var(--deep-navy);
+  --bs-table-hover-bg: rgba(169, 214, 229, .26);
+  --bs-table-striped-bg: rgba(169, 214, 229, .12);
+  --bs-table-striped-color: var(--deep-navy);
+}
+.table > :not(caption) > * > * { padding: .6rem .5rem; }
+.table thead th {
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  /* Ocean Blue (not Steel Blue) so the small uppercase label clears WCAG AA
+     against the pale-blue header background. */
+  color: var(--ocean-blue);
+  background-color: rgba(169, 214, 229, .3);
+  border-bottom-width: 1px;
+}
+.table-hover tbody tr:hover { background-color: rgba(169, 214, 229, .26); }
+.table-card { border-radius: var(--isms-radius); overflow: hidden; }
+
+/* ---------- progress ---------------------------------------------------- */
+.progress {
+  --bs-progress-bg: rgba(169, 214, 229, .4);
+  --bs-progress-bar-bg: var(--atlantic-blue);
+  --bs-progress-bar-color: #fff;
+}
+.progress-bar { background-color: var(--atlantic-blue); transition: width var(--isms-transition); }
+.bg-primary { background-color: var(--atlantic-blue) !important; }
+.bg-success { background-color: #14705a !important; }
+.bg-info    { background-color: var(--coastal-blue) !important; }
+.bg-warning { background-color: #e3b23c !important; color: var(--deep-navy); }
+.bg-danger  { background-color: #a32b3a !important; }
+
+/* ---------- pagination -------------------------------------------------- */
+.pagination {
+  --bs-pagination-color: var(--coastal-blue);
+  --bs-pagination-hover-color: var(--ocean-blue);
+  --bs-pagination-hover-bg: rgba(169, 214, 229, .34);
+  --bs-pagination-focus-color: var(--ocean-blue);
+  --bs-pagination-focus-bg: rgba(169, 214, 229, .34);
+  --bs-pagination-focus-box-shadow: 0 0 0 .2rem rgba(169, 214, 229, .5);
+  --bs-pagination-active-bg: var(--atlantic-blue);
+  --bs-pagination-active-border-color: var(--atlantic-blue);
+  --bs-pagination-disabled-bg: transparent;
+  --bs-pagination-disabled-color: var(--pale-blue);
+  --bs-pagination-border-color: var(--light-blue);
+  --bs-pagination-border-radius: var(--isms-radius-sm);
+  --bs-pagination-font-size: .9rem;
+}
+.page-link { transition: background-color var(--isms-transition), color var(--isms-transition), border-color var(--isms-transition); }
+
+/* ---------- modal ------------------------------------------------------- */
+.modal-content {
+  --bs-modal-bg: #fff;
+  --bs-modal-border-color: var(--light-blue);
+  --bs-modal-border-radius: var(--isms-radius);
+  box-shadow: 0 1.5rem 3rem rgba(1, 42, 74, .22);
+}
+.modal-header, .modal-footer { border-color: var(--light-blue); }
+.btn-close:focus { box-shadow: 0 0 0 .2rem rgba(169, 214, 229, .55); }
+
+/* ---------- misc Bootstrap --------------------------------------------- */
+.text-body-secondary { color: var(--steel-blue) !important; }
+.text-body-tertiary { color: var(--steel-blue) !important; }
+.bg-body-tertiary { background-color: rgba(169, 214, 229, .22) !important; }
+.shadow-sm { box-shadow: var(--isms-shadow) !important; }
+.shadow { box-shadow: var(--isms-shadow-lg) !important; }
+hr { border-color: var(--light-blue); opacity: 1; }
+code {
+  color: var(--ocean-blue);
+  background-color: rgba(169, 214, 229, .3);
+  border-radius: .3rem;
+  padding: .05rem .3rem;
+}
+kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
+
+/* ==========================================================================
+   4. BRAND MARK + AVATARS
+   ========================================================================== */
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: .6rem;
+  background: linear-gradient(140deg, var(--atlantic-blue), var(--ocean-blue));
+  color: #fff;
+  font-size: 1rem;
+}
+.brand-mark-lg {
+  width: 52px;
+  height: 52px;
+  font-size: 1.4rem;
+  border-radius: 1rem;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--atlantic-blue);
+  color: #fff;
+  font-size: .78rem;
+  font-weight: 700;
+}
+.avatar-sm { width: 22px; height: 22px; font-size: .68rem; }
+.avatar-lg { width: 72px; height: 72px; font-size: 1.6rem; }
+.avatar-xl { width: 110px; height: 110px; font-size: 2.4rem; }
+
+/* ==========================================================================
+   5. NAVBAR  (Deep Navy)
+   ========================================================================== */
+.isms-navbar {
+  background-color: var(--deep-navy);
+  border-bottom: 1px solid rgba(var(--sky-rgb), .28);
+  box-shadow: 0 .0625rem .75rem rgba(1, 42, 74, .28);
+}
+.isms-navbar .navbar-brand,
+.isms-navbar .nav-link,
+.isms-navbar .navbar-brand:hover,
+.isms-navbar .nav-link:hover { color: rgba(255, 255, 255, .84); }
+.isms-navbar .navbar-brand { letter-spacing: .02em; }
+.isms-navbar .navbar-brand:hover { color: #fff; }
+.isms-navbar .nav-link {
+  position: relative;
+  padding-inline: .7rem;
+  transition: color var(--isms-transition);
+}
+.isms-navbar .nav-link:hover { color: #fff; }
+.isms-navbar .nav-link.active { color: #fff; }
+.isms-navbar .nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: .7rem;
+  right: .7rem;
+  bottom: .35rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--sky-blue);
+}
+.isms-navbar .nav-link .dropdown-toggle::after { border-top-color: var(--sky-blue); }
+
+.isms-navbar .navbar-toggler {
+  border-color: rgba(var(--sky-rgb), .55);
+  color: #fff;
+}
+.isms-navbar .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.92)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* icon buttons inside the navy bar */
+.isms-navbar .btn-outline-secondary {
+  --bs-btn-color: rgba(255, 255, 255, .88);
+  --bs-btn-border-color: rgba(var(--sky-rgb), .5);
+  --bs-btn-hover-color: var(--deep-navy);
+  --bs-btn-hover-bg: var(--pale-blue);
+  --bs-btn-hover-border-color: var(--pale-blue);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--ocean-blue);
+  --bs-btn-active-border-color: var(--ocean-blue);
+  --bs-btn-disabled-color: rgba(255, 255, 255, .45);
+  --bs-btn-disabled-border-color: rgba(var(--sky-rgb), .28);
+}
+.isms-navbar .btn-primary {
+  --bs-btn-bg: var(--coastal-blue);
+  --bs-btn-border-color: var(--coastal-blue);
+  --bs-btn-hover-bg: var(--sky-blue);
+  --bs-btn-hover-border-color: var(--sky-blue);
+  --bs-btn-hover-color: var(--deep-navy);
+}
+
+/* dropdowns opened from the navy bar */
+.isms-navbar .dropdown-menu {
+  --bs-dropdown-bg: #fff;
+  --bs-dropdown-border-color: var(--light-blue);
+  margin-top: .5rem;
+}
+.isms-navbar .dropdown-item { color: var(--deep-navy); }
+.isms-navbar .dropdown-item:hover { background-color: rgba(169, 214, 229, .38); color: var(--ocean-blue); }
+.isms-navbar .dropdown-divider { border-color: var(--light-blue); }
+
+/* notification bell badge */
+.isms-navbar .badge.bg-danger { background-color: #d9534f !important; }
+
+/* navbar search field */
+.isms-search { min-width: 280px; }
+.isms-search .form-control {
+  background-color: rgba(255, 255, 255, .1);
+  border-color: rgba(var(--sky-rgb), .45);
+  border-left: 0;
+  color: #fff;
+}
+.isms-search .form-control::placeholder { color: rgba(255, 255, 255, .6); }
+.isms-search .form-control:focus {
+  background-color: rgba(255, 255, 255, .16);
+  border-color: var(--pale-blue);
+  color: #fff;
+  box-shadow: 0 0 0 .2rem rgba(var(--sky-rgb), .35);
+}
+.isms-search .input-group-text {
+  background-color: rgba(255, 255, 255, .1);
+  border-color: rgba(var(--sky-rgb), .45);
+  border-right: 0;
+  color: var(--pale-blue);
+}
+
+/* ==========================================================================
+   6. FOOTER  (Deep Navy)
+   ========================================================================== */
+.isms-footer {
+  background-color: var(--deep-navy);
+  color: rgba(255, 255, 255, .78);
+  border-top: 0;
+  margin-top: auto;
+}
+.isms-footer h6 {
+  color: var(--pale-blue);
+  letter-spacing: .06em;
+}
+.isms-footer p, .isms-footer li { color: rgba(255, 255, 255, .76); }
+.isms-footer strong { color: #fff; }
+.isms-footer hr { border-color: rgba(var(--sky-rgb), .3); opacity: 1; }
+.isms-footer .brand-mark { background: rgba(255, 255, 255, .14); }
+.isms-footer code {
+  color: var(--pale-blue);
+  background-color: rgba(var(--sky-rgb), .18);
+}
+.isms-footer a.footer-link {
+  color: rgba(255, 255, 255, .76);
+  text-decoration: none;
+  transition: color var(--isms-transition);
+}
+.isms-footer a.footer-link:hover,
+.isms-footer a.footer-link:focus {
+  color: var(--sky-blue);
+  text-decoration: underline;
+}
+.isms-footer .text-body-secondary { color: rgba(255, 255, 255, .55) !important; }
+
+/* ==========================================================================
+   7. HERO (homepage)
+   ========================================================================== */
+.hero-section {
+  background:
+    radial-gradient(1000px 420px at 8% -12%, rgba(97, 165, 194, .22), transparent 62%),
+    radial-gradient(820px 400px at 94% 0%, rgba(169, 214, 229, .3), transparent 60%);
+  border-bottom: 1px solid rgba(var(--light-rgb), .5);
+}
+.hero-search { position: relative; }
+.hero-search .input-group-text,
+.hero-search .form-control,
+.hero-search .btn { border-radius: 0; }
+.hero-search .input-group-text:first-child { border-radius: var(--isms-radius) 0 0 var(--isms-radius); }
+.hero-search .btn { border-radius: 0 var(--isms-radius) var(--isms-radius) 0; }
+.hero-search .input-group-text {
+  background: #fff;
+  border-color: var(--light-blue);
+  color: var(--steel-blue);
+}
+
+.hero-suggestions {
+  position: absolute;
+  z-index: 1050;
+  left: 0;
+  right: 0;
+  top: calc(100% + .25rem);
+  background: #fff;
+  border: 1px solid var(--light-blue);
+  border-radius: var(--isms-radius);
+  box-shadow: var(--isms-shadow-lg);
+  overflow: hidden;
+}
+.hero-suggestions a {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .6rem .9rem;
+  color: var(--deep-navy);
+  text-decoration: none;
+  border-bottom: 1px solid var(--light-blue);
+  transition: background-color var(--isms-transition);
+}
+.hero-suggestions a:last-child { border-bottom: 0; }
+.hero-suggestions a:hover,
+.hero-suggestions a.is-active { background: rgba(169, 214, 229, .38); color: var(--ocean-blue); }
+
+/* CTA panel at the bottom of the landing page */
+.card.bg-primary {
+  background: linear-gradient(135deg, var(--ocean-blue), var(--dark-blue)) !important;
+}
+.card.bg-primary h2 { color: #fff; }
+.card.bg-primary .btn-outline-light:hover { color: var(--deep-navy); }
+
+/* ==========================================================================
+   8. LANDING PAGE SECTIONS
+   ========================================================================== */
+.stat-counter { font-size: 2rem; font-weight: 700; line-height: 1; color: var(--atlantic-blue); }
+.stat-counter-label { font-size: .82rem; color: var(--steel-blue); margin-top: .35rem; }
+
+.how-card { transition: transform var(--isms-transition), box-shadow var(--isms-transition); }
+.how-card:hover { transform: translateY(-3px); box-shadow: var(--isms-shadow-lg) !important; }
+.how-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: .8rem;
+  background: rgba(var(--coastal-rgb), .14);
+  color: var(--coastal-blue);
+  font-size: 1.35rem;
+}
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border-radius: 50%;
+  background: rgba(169, 214, 229, .42);
+  color: var(--deep-navy);
+  font-weight: 700;
+  font-size: .8rem;
+}
+.list-group-item { border-color: var(--light-blue); background-color: #fff; }
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+  background-color: rgba(169, 214, 229, .3);
+  color: var(--ocean-blue);
+}
+.list-group-item.bg-primary-subtle { background-color: rgba(var(--atlantic-rgb), .07) !important; }
+
+/* ==========================================================================
+   9. OPPORTUNITY CARDS
+   ========================================================================== */
+.opportunity-card {
+  border-radius: var(--isms-radius);
+  border-color: var(--light-blue);
+  transition: transform var(--isms-transition), box-shadow var(--isms-transition), border-color var(--isms-transition);
+}
+.opportunity-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--isms-shadow-lg) !important;
+  border-color: var(--sky-blue);
+}
+.opportunity-card .card-title-link { color: var(--deep-navy); transition: color var(--isms-transition); }
+.opportunity-card .card-title-link:hover { color: var(--coastal-blue) !important; }
+.opportunity-card .card-footer { background: rgba(169, 214, 229, .14); }
+.min-w-0 { min-width: 0; }
+
+/* ==========================================================================
+   10. DASHBOARD SIDEBAR  (Dark Blue)
+   ========================================================================== */
+.isms-sidebar { position: sticky; top: 5rem; }
+.isms-sidebar > .card {
+  background: var(--dark-blue);
+  border-color: var(--dark-blue);
+  border-radius: var(--isms-radius);
+  box-shadow: var(--isms-shadow-lg);
+}
+.isms-sidebar .nav-pills .nav-link {
+  border-radius: var(--isms-radius-sm);
+  color: rgba(255, 255, 255, .82);
+  padding: .55rem .75rem;
+  transition: background-color var(--isms-transition), color var(--isms-transition);
+}
+.isms-sidebar .nav-link:hover {
+  background: rgba(var(--sky-rgb), .2);
+  color: #fff;
+}
+.isms-sidebar .nav-link.active {
+  background: var(--pale-blue);
+  color: var(--deep-navy);
+  font-weight: 600;
+}
+.isms-sidebar .badge.text-bg-light,
+.isms-sidebar .badge.bg-light {
+  background-color: rgba(255, 255, 255, .16) !important;
+  color: var(--pale-blue) !important;
+  border-color: rgba(var(--sky-rgb), .4) !important;
+}
+/* the small "profile strength" helper card that sits under the nav */
+.isms-sidebar > .card + .card {
+  background: #fff;
+  border-color: var(--light-blue);
+  box-shadow: var(--isms-shadow);
+}
+.isms-sidebar > .card + .card .card-title { color: var(--deep-navy); }
+
+/* ==========================================================================
+   11. STAT TILES
+   ========================================================================== */
+.stat-tile {
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+  padding: 1rem;
+  border: 1px solid var(--light-blue);
+  border-radius: var(--isms-radius);
+  background: #fff;
+  color: inherit;
+  text-decoration: none;
+  height: 100%;
+  transition: border-color var(--isms-transition), box-shadow var(--isms-transition), transform var(--isms-transition);
+}
+a.stat-tile:hover {
+  border-color: var(--sky-blue);
+  box-shadow: var(--isms-shadow);
+  color: inherit;
+  transform: translateY(-2px);
+}
+.stat-tile-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: .7rem;
+  font-size: 1.15rem;
+  background: rgba(var(--coastal-rgb), .14);
+  color: var(--coastal-blue);
+}
+.stat-tile-icon.bg-primary { color: var(--atlantic-blue) !important; background: rgba(var(--atlantic-rgb), .13) !important; }
+.stat-tile-icon.bg-success { color: #14705a !important; background: rgba(20, 112, 90, .13) !important; }
+.stat-tile-icon.bg-warning { color: #b07d16 !important; background: rgba(227, 178, 60, .18) !important; }
+.stat-tile-icon.bg-info    { color: var(--coastal-blue) !important; background: rgba(var(--coastal-rgb), .14) !important; }
+.stat-tile-icon.bg-danger  { color: #a32b3a !important; background: rgba(163, 43, 58, .12) !important; }
+.stat-tile-body { display: flex; flex-direction: column; min-width: 0; }
+.stat-tile-value { font-size: 1.45rem; font-weight: 700; line-height: 1.1; color: var(--deep-navy); }
+.stat-tile-label { font-size: .8rem; color: var(--steel-blue); }
+.stat-tile-sub { font-size: .72rem; color: var(--steel-blue); }
+
+/* ==========================================================================
+   12. STATUS TIMELINE
+   ========================================================================== */
+.status-timeline { list-style: none; margin: 0; padding: 0; position: relative; }
+.status-timeline::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: .5rem;
+  bottom: .5rem;
+  width: 2px;
+  background: var(--light-blue);
+}
+.status-timeline li { position: relative; padding: 0 0 1.1rem 2.25rem; }
+.status-timeline li:last-child { padding-bottom: 0; }
+.status-timeline .timeline-dot {
+  position: absolute;
+  left: 0;
+  top: .15rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 2px solid var(--light-blue);
+  color: var(--steel-blue);
+  font-size: .7rem;
+}
+.status-timeline li.is-current .timeline-dot {
+  background: var(--atlantic-blue);
+  border-color: var(--atlantic-blue);
+  color: #fff;
+}
+
+/* ==========================================================================
+   13. MISC COMPONENTS
+   ========================================================================== */
+.empty-state {
+  border: 1px dashed var(--light-blue);
+  border-radius: var(--isms-radius);
+  background: rgba(169, 214, 229, .12);
+}
+.error-page { min-height: 55vh; display: flex; flex-direction: column; justify-content: center; }
+.section-title { font-weight: 700; letter-spacing: -.01em; }
+.chart-box { position: relative; height: 260px; }
+.sticky-filter { position: sticky; top: 5rem; }
+.progress-thin { height: 6px; }
+
+.star-rating input { display: none; }
+.star-rating label { color: var(--pale-blue); cursor: pointer; font-size: 1.35rem; transition: color var(--isms-transition); }
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label { color: #e3b23c; }
+
+.kbd-list { display: flex; gap: .35rem; flex-wrap: wrap; }
+
+/* bookmark toggle on opportunity cards */
+.bookmark-btn { color: var(--steel-blue) !important; transition: color var(--isms-transition); }
+.bookmark-btn:hover { color: var(--atlantic-blue) !important; }
+.bookmark-btn.is-saved,
+.bookmark-btn.is-saved:hover { color: var(--atlantic-blue) !important; }
+
+/* "X days left" chips */
+.badge.bg-light { color: var(--deep-navy) !important; }
+.badge.bg-info { background: var(--coastal-blue) !important; color: #fff !important; }
+.badge.bg-warning { background: #e3b23c !important; color: var(--deep-navy) !important; }
+.badge.bg-danger { background: #a32b3a !important; }
+.badge.bg-secondary { background: var(--steel-blue) !important; }
+
+/* ==========================================================================
+   14. DARK MODE  (same coastal identity, deeper surfaces)
+   ========================================================================== */
+[data-bs-theme="dark"] {
+  --bs-body-bg: #08243c;
+  --bs-body-color: #d7e6ef;
+  --bs-emphasis-color: #ffffff;
+  --bs-secondary-color: #9fc2d6;
+  --bs-tertiary-color: #9fc2d6;
+  --bs-border-color: #17506f;
+  --bs-border-color-translucent: rgba(97, 165, 194, .35);
+  --bs-secondary-bg: rgba(97, 165, 194, .16);
+  --bs-tertiary-bg: rgba(97, 165, 194, .1);
+  --bs-link-color: var(--sky-blue);
+  --bs-link-hover-color: var(--pale-blue);
+
+  --isms-shadow: 0 .125rem .5rem rgba(0, 0, 0, .38);
+  --isms-shadow-lg: 0 1rem 2.5rem rgba(0, 0, 0, .5);
+
+  --chart-text: #b8d3e2;
+  --chart-grid: rgba(137, 194, 217, .2);
+  --chart-ring: #0d314e;
+}
+
+[data-bs-theme="dark"] body { background-color: var(--bs-body-bg); color: var(--bs-body-color); }
+[data-bs-theme="dark"] h1, [data-bs-theme="dark"] h2,
+[data-bs-theme="dark"] h3, [data-bs-theme="dark"] h4,
+[data-bs-theme="dark"] h5, [data-bs-theme="dark"] h6 { color: #eaf4fa; }
+[data-bs-theme="dark"] a { color: var(--sky-blue); }
+[data-bs-theme="dark"] a:hover { color: var(--pale-blue); }
+
+[data-bs-theme="dark"] .card,
+[data-bs-theme="dark"] .modal-content,
+[data-bs-theme="dark"] .dropdown-menu,
+[data-bs-theme="dark"] .list-group-item,
+[data-bs-theme="dark"] .hero-suggestions,
+[data-bs-theme="dark"] .hero-suggestions a,
+[data-bs-theme="dark"] .stat-tile {
+  background-color: #0d314e;
+  border-color: var(--bs-border-color);
+  color: var(--bs-body-color);
+}
+[data-bs-theme="dark"] .stat-tile-value { color: #fff; }
+[data-bs-theme="dark"] .dropdown-item,
+[data-bs-theme="dark"] .form-select,
+[data-bs-theme="dark"] .form-control { color: var(--bs-body-color); }
+[data-bs-theme="dark"] .table { --bs-table-color: #d7e6ef; --bs-table-border-color: var(--bs-border-color); }
+[data-bs-theme="dark"] .table thead th { color: var(--pale-blue); background-color: rgba(97, 165, 194, .12); }
+[data-bs-theme="dark"] .table-hover tbody tr:hover { background-color: rgba(97, 165, 194, .13); }
+
+[data-bs-theme="dark"] .btn-light {
+  --bs-btn-color: #eaf4fa;
+  --bs-btn-bg: rgba(97, 165, 194, .16);
+  --bs-btn-border-color: rgba(97, 165, 194, .4);
+  --bs-btn-hover-color: var(--deep-navy);
+  --bs-btn-hover-bg: var(--pale-blue);
+}
+[data-bs-theme="dark"] .btn-outline-secondary {
+  --bs-btn-color: var(--pale-blue);
+  --bs-btn-hover-color: var(--deep-navy);
+  --bs-btn-hover-bg: var(--pale-blue);
+}
+[data-bs-theme="dark"] .hero-search .input-group-text { background: #0d314e; border-color: var(--bs-border-color); }
+[data-bs-theme="dark"] .hero-section {
+  background:
+    radial-gradient(1000px 420px at 8% -12%, rgba(97, 165, 194, .16), transparent 62%),
+    radial-gradient(820px 400px at 94% 0%, rgba(169, 214, 229, .07), transparent 60%);
+}
+[data-bs-theme="dark"] .stat-counter { color: var(--sky-blue); }
+[data-bs-theme="dark"] .how-icon { background: rgba(97, 165, 194, .16); color: var(--pale-blue); }
+[data-bs-theme="dark"] .rank-badge { background: rgba(97, 165, 194, .2); color: #eaf4fa; }
+[data-bs-theme="dark"] .opportunity-card .card-footer { background: rgba(97, 165, 194, .1); }
+[data-bs-theme="dark"] .opportunity-card .card-title-link { color: #eaf4fa; }
+[data-bs-theme="dark"] .status-timeline .timeline-dot { background: #0d314e; }
+[data-bs-theme="dark"] .empty-state { background: rgba(97, 165, 194, .08); }
+[data-bs-theme="dark"] .badge.text-bg-light,
+[data-bs-theme="dark"] .badge.bg-light { background-color: rgba(97, 165, 194, .18) !important; color: #eaf4fa !important; }
+[data-bs-theme="dark"] .progress { --bs-progress-bg: rgba(97, 165, 194, .18); }
+[data-bs-theme="dark"] .input-group-text { background-color: rgba(97, 165, 194, .12); color: var(--pale-blue); }
+[data-bs-theme="dark"] code { color: var(--pale-blue); background-color: rgba(97, 165, 194, .18); }
+
+/* Alerts keep their semantic hue but switch to a translucent tint so they do
+   not read as bright light blocks on the dark navy surface. */
+[data-bs-theme="dark"] .alert-success { --bs-alert-color: #9ee0c8; --bs-alert-bg: rgba(20, 112, 90, .22); --bs-alert-border-color: rgba(20, 112, 90, .5); }
+[data-bs-theme="dark"] .alert-danger  { --bs-alert-color: #f2b3bd; --bs-alert-bg: rgba(163, 43, 58, .24); --bs-alert-border-color: rgba(163, 43, 58, .55); }
+[data-bs-theme="dark"] .alert-warning { --bs-alert-color: #f0d79a; --bs-alert-bg: rgba(227, 178, 60, .18); --bs-alert-border-color: rgba(227, 178, 60, .45); }
+[data-bs-theme="dark"] .alert-info    { --bs-alert-color: #cfe6f2; --bs-alert-bg: rgba(97, 165, 194, .18); --bs-alert-border-color: rgba(97, 165, 194, .45); }
+[data-bs-theme="dark"] .alert-light   { --bs-alert-color: #cfe6f2; --bs-alert-bg: rgba(97, 165, 194, .12); --bs-alert-border-color: rgba(97, 165, 194, .35); }
+
+/* navbar + footer stay Deep Navy in both themes (they are brand surfaces) */
+[data-bs-theme="dark"] .isms-navbar { background-color: var(--deep-navy); }
+[data-bs-theme="dark"] .isms-footer { background-color: var(--deep-navy); }
+[data-bs-theme="dark"] .isms-sidebar > .card { background: var(--dark-blue); border-color: var(--dark-blue); }
+[data-bs-theme="dark"] .isms-sidebar > .card + .card { background: #0d314e; border-color: var(--bs-border-color); }
+[data-bs-theme="dark"] .brand-mark { color: var(--deep-navy); }
+
+/* ==========================================================================
+   15. RESPONSIVE
+   ========================================================================== */
+@media (max-width: 991.98px) {
+  .isms-sidebar { position: static; margin-bottom: 1rem; }
+  .sticky-filter { position: static; }
+  .stat-tile { padding: .8rem; }
+}
+
+@media (max-width: 575.98px) {
+  .stat-tile-value { font-size: 1.2rem; }
+  .stat-tile-icon { width: 36px; height: 36px; flex-basis: 36px; font-size: 1rem; }
+  .display-4 { font-size: 2.1rem; }
+  .isms-navbar .nav-link.active::after { display: none; }
+}
+
+/* ==========================================================================
+   16. PRINT
+   ========================================================================== */
+@media print {
+  .isms-navbar, .isms-footer, .btn, .pagination { display: none !important; }
+  body { background: #fff; color: #000; }
+}

@@ -1,0 +1,359 @@
+<%- include('../partials/flash') %>
+<%
+const links = [
+  { href: '/student/dashboard', label: 'Dashboard', icon: 'bi-speedometer2' },
+  { href: '/student/profile', label: 'My profile', icon: 'bi-person-badge', active: true },
+  { href: '/student/skills', label: 'Skills', icon: 'bi-tools', badge: profile.skills.length },
+  { href: '/student/applications', label: 'My applications', icon: 'bi-send-check' },
+  { href: '/student/bookmarks', label: 'Saved opportunities', icon: 'bi-bookmark-heart' },
+  { href: '/notifications', label: 'Notifications', icon: 'bi-bell' },
+  { href: '/auth/settings', label: 'Settings', icon: 'bi-gear' }
+];
+const sidebarCard = { title: 'Profile strength', text: checklist.level + ' profile (' + checklist.percentage + '%). Keep going to unlock better matches.', href: '/student/profile/edit', action: 'Edit profile' };
+%>
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-person-badge me-2 text-primary"></i>My profile</h1>
+      <p class="text-body-secondary mb-0">This is what companies see when they review your application.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-primary" href="/student/profile/edit"><i class="bi bi-pencil me-1"></i>Edit profile</a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-3 d-none d-lg-block">
+      <%- include('../partials/sidebar', { links: links, sidebarCard: sidebarCard }) %>
+    </div>
+
+    <div class="col-lg-9">
+      <!-- strength meter -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h6 mb-0"><i class="bi bi-speedometer me-2 text-primary"></i>Profile strength</h2>
+            <span class="badge text-bg-<%= checklist.levelColor %>"><%= checklist.level %> &mdash; <%= checklist.percentage %>%</span>
+          </div>
+          <div class="progress progress-thin" role="progressbar" aria-label="Profile strength"
+               aria-valuenow="<%= checklist.percentage %>" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar bg-<%= checklist.levelColor %>" style="width:<%= checklist.percentage %>%"></div>
+          </div>
+
+          <% if (checklist.missing.length) { %>
+            <details class="mt-3">
+              <summary class="small text-primary" style="cursor:pointer">
+                <%= checklist.missing.length %> improvement<%= checklist.missing.length === 1 ? '' : 's' %> available
+              </summary>
+              <ul class="small text-body-secondary mt-2 mb-0">
+                <% checklist.missing.slice(0, 8).forEach(function (m) { %>
+                  <li><i class="bi bi-circle-fill me-2" style="font-size:.4rem"></i><%= m %></li>
+                <% }); %>
+              </ul>
+            </details>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- header card -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <div class="d-flex flex-wrap align-items-center gap-3">
+            <span class="avatar avatar-xl"><%= currentUser.initials %></span>
+            <div class="flex-grow-1">
+              <h2 class="h4 mb-1"><%= currentUser.name %></h2>
+              <p class="text-body-secondary mb-1"><%= profile.degree || 'Student' %><%= profile.university ? ' &middot; ' + profile.university : '' %></p>
+              <div class="d-flex flex-wrap gap-2">
+                <% if (profile.cgpa !== null && profile.cgpa !== undefined) { %>
+                  <span class="badge text-bg-light border"><i class="bi bi-award me-1"></i>CGPA <%= profile.cgpa %>/10</span>
+                <% } %>
+                <% if (profile.currentSemester) { %>
+                  <span class="badge text-bg-light border"><i class="bi bi-book me-1"></i>Semester <%= profile.currentSemester %></span>
+                <% } %>
+                <% if (profile.graduationYear) { %>
+                  <span class="badge text-bg-light border"><i class="bi bi-calendar-check me-1"></i>Graduating <%= profile.graduationYear %></span>
+                <% } %>
+              </div>
+            </div>
+          </div>
+
+          <% if (profile.bio) { %>
+            <p class="mt-3 mb-0 text-body-secondary"><%= profile.bio %></p>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- details -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <h2 class="h6 text-uppercase text-body-secondary mb-3">Personal information</h2>
+              <ul class="list-unstyled small d-grid gap-2 mb-0">
+                <li><i class="bi bi-envelope me-2 text-body-secondary"></i><%= currentUser.email %></li>
+                <li><i class="bi bi-telephone me-2 text-body-secondary"></i><%= profile.phone || 'Not provided' %></li>
+                <li><i class="bi bi-geo-alt me-2 text-body-secondary"></i><%= profile.address || 'Not provided' %></li>
+                <li><i class="bi bi-cake2 me-2 text-body-secondary"></i><%= profile.dateOfBirth ? format.formatDate(profile.dateOfBirth) : 'Not provided' %></li>
+                <li><i class="bi bi-venus-mars me-2 text-body-secondary"></i><span class="text-capitalize"><%= String(profile.gender || '').replace(/-/g, ' ') %></span></li>
+              </ul>
+
+              <h2 class="h6 text-uppercase text-body-secondary mt-4 mb-2">Links</h2>
+              <div class="d-flex flex-wrap gap-2">
+                <% if (profile.linkedin) { %>
+                  <a class="btn btn-sm btn-outline-secondary" href="<%= profile.linkedin %>" target="_blank" rel="noopener noreferrer"><i class="bi bi-linkedin me-1"></i>LinkedIn</a>
+                <% } %>
+                <% if (profile.github) { %>
+                  <a class="btn btn-sm btn-outline-secondary" href="<%= profile.github %>" target="_blank" rel="noopener noreferrer"><i class="bi bi-github me-1"></i>GitHub</a>
+                <% } %>
+                <% if (profile.portfolio) { %>
+                  <a class="btn btn-sm btn-outline-secondary" href="<%= profile.portfolio %>" target="_blank" rel="noopener noreferrer"><i class="bi bi-globe me-1"></i>Portfolio</a>
+                <% } %>
+                <% if (!profile.linkedin && !profile.github && !profile.portfolio) { %>
+                  <span class="small text-body-secondary">No links added yet.</span>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+              <h2 class="h6 text-uppercase text-body-secondary mb-3">Skills</h2>
+              <% if (profile.skills.length) { %>
+                <div class="d-flex flex-column gap-2">
+                  <% profile.skills.forEach(function (s) { %>
+                    <div>
+                      <div class="d-flex justify-content-between small mb-1">
+                        <span class="fw-semibold"><%= s.name %></span>
+                        <span class="badge text-bg-light border text-capitalize"><%= s.level %></span>
+                      </div>
+                      <% const widths = { beginner: 33, intermediate: 66, advanced: 85, expert: 100 }; %>
+                      <div class="progress progress-thin"><div class="progress-bar" style="width:<%= widths[s.level] || 50 %>%"></div></div>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <p class="small text-body-secondary">No skills added yet.</p>
+              <% } %>
+              <a class="btn btn-sm btn-outline-primary mt-3" href="/student/skills"><i class="bi bi-tools me-1"></i>Manage skills</a>
+
+              <% if (profile.interests && profile.interests.length) { %>
+                <h2 class="h6 text-uppercase text-body-secondary mt-4 mb-2">Interests</h2>
+                <div class="kbd-list">
+                  <% profile.interests.forEach(function (t) { %>
+                    <span class="badge text-bg-light border"><%= t %></span>
+                  <% }); %>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CV -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+            <h2 class="h6 mb-0"><i class="bi bi-file-earmark-person me-2 text-primary"></i>Curriculum Vitae</h2>
+            <div class="d-flex gap-2">
+              <% if (profile.cvPath) { %>
+                <a class="btn btn-sm btn-outline-primary" href="/files/profile/cv" target="_blank" rel="noopener">
+                  <i class="bi bi-download me-1"></i>Download
+                </a>
+              <% } %>
+            </div>
+          </div>
+
+          <% if (profile.cvPath) { %>
+            <div class="d-flex align-items-center gap-3 bg-body-tertiary rounded p-3 mb-3">
+              <i class="bi bi-file-earmark-pdf fs-3 text-danger"></i>
+              <div class="flex-grow-1">
+                <div class="fw-semibold"><%= profile.cvOriginalName %></div>
+                <div class="small text-body-secondary">Uploaded <%= format.formatDate(profile.cvUploadedAt) %></div>
+              </div>
+              <form action="/student/cv" method="post" class="d-inline"
+                    data-confirm="Remove your CV? You will need to upload a new one before you can apply.">
+                <input type="hidden" name="_method" value="DELETE">
+                <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash me-1"></i>Remove</button>
+              </form>
+            </div>
+          <% } else { %>
+            <div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-1"></i>You have not uploaded a CV yet &mdash; you need one to apply.</div>
+          <% } %>
+
+          <form action="/student/cv" method="post" enctype="multipart/form-data" class="row g-2 align-items-end">
+            <div class="col-md-9">
+              <label class="form-label small mb-1" for="cvUpload"><%= profile.cvPath ? 'Replace CV' : 'Upload CV' %></label>
+              <input type="file" class="form-control form-control-sm" id="cvUpload" name="cv" required
+                     accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+              <div class="form-text">PDF, DOC or DOCX &mdash; maximum 5 MB.</div>
+            </div>
+            <div class="col-md-3">
+              <button class="btn btn-primary btn-sm w-100" type="submit"><i class="bi bi-upload me-1"></i>Upload</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- documents -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-3"><i class="bi bi-paperclip me-2 text-primary"></i>Supporting documents</h2>
+
+          <% if (profile.documents.length) { %>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-hover align-middle mb-0">
+                <thead><tr><th>Document</th><th>Size</th><th>Uploaded</th><th></th></tr></thead>
+                <tbody>
+                  <% profile.documents.forEach(function (d) { %>
+                    <tr>
+                      <td><i class="bi bi-file-earmark me-1"></i><%= d.title %></td>
+                      <td class="small text-nowrap"><%= d.size ? (d.size / 1024).toFixed(0) + ' KB' : '-' %></td>
+                      <td class="small text-nowrap"><%= format.formatDate(d.uploadedAt) %></td>
+                      <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary" href="/files/profile/document/<%= d._id %>" title="Download">
+                          <i class="bi bi-download"></i>
+                        </a>
+                        <form action="/student/documents/<%= d._id %>" method="post" class="d-inline"
+                              data-confirm="Delete this document?">
+                          <input type="hidden" name="_method" value="DELETE">
+                          <button class="btn btn-sm btn-outline-danger" type="submit" title="Delete"><i class="bi bi-trash"></i></button>
+                        </form>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          <% } else { %>
+            <p class="small text-body-secondary">No supporting documents yet. Upload transcripts or certificates here.</p>
+          <% } %>
+
+          <form action="/student/documents" method="post" enctype="multipart/form-data" class="row g-2 align-items-end">
+            <div class="col-md-9">
+              <label class="form-label small mb-1" for="documents">Add documents</label>
+              <input type="file" class="form-control form-control-sm" id="documents" name="documents" multiple required
+                     accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">
+              <div class="form-text">PDF, JPG or PNG &mdash; maximum 5 MB each.</div>
+            </div>
+            <div class="col-md-3">
+              <button class="btn btn-primary btn-sm w-100" type="submit"><i class="bi bi-upload me-1"></i>Upload</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- education -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-3"><i class="bi bi-mortarboard me-2 text-primary"></i>Education</h2>
+
+          <% if (profile.education.length) { %>
+            <div class="d-grid gap-2 mb-3">
+              <% profile.education.forEach(function (e) { %>
+                <div class="d-flex justify-content-between align-items-start gap-2 border rounded p-2">
+                  <div>
+                    <div class="fw-semibold"><%= e.institution %></div>
+                    <div class="small text-body-secondary">
+                      <%= [e.degree, e.fieldOfStudy].filter(Boolean).join(' &middot; ') %>
+                      <%= e.startYear || e.endYear ? ' &middot; ' + [e.startYear, e.endYear].filter(Boolean).join(' - ') : '' %>
+                      <%= e.grade ? ' &middot; ' + e.grade : '' %>
+                    </div>
+                  </div>
+                  <form action="/student/education/<%= e._id %>" method="post" data-confirm="Remove this education entry?">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+                  </form>
+                </div>
+              <% }); %>
+            </div>
+          <% } else { %>
+            <p class="small text-body-secondary">No education entries yet.</p>
+          <% } %>
+
+          <form action="/student/education" method="post" class="row g-2">
+            <div class="col-md-6">
+              <input type="text" class="form-control form-control-sm" name="institution" placeholder="Institution *" required maxlength="160">
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control form-control-sm" name="degree" placeholder="Degree (e.g. BSc)" maxlength="120">
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control form-control-sm" name="fieldOfStudy" placeholder="Field of study" maxlength="120">
+            </div>
+            <div class="col-md-2 col-6">
+              <input type="number" class="form-control form-control-sm" name="startYear" placeholder="From" min="1950" max="2100">
+            </div>
+            <div class="col-md-2 col-6">
+              <input type="number" class="form-control form-control-sm" name="endYear" placeholder="To" min="1950" max="2100">
+            </div>
+            <div class="col-md-2 col-6">
+              <input type="text" class="form-control form-control-sm" name="grade" placeholder="Grade / CGPA">
+            </div>
+            <div class="col-md-4">
+              <input type="text" class="form-control form-control-sm" name="description" placeholder="Short description">
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-primary btn-sm w-100" type="submit"><i class="bi bi-plus-lg me-1"></i>Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- projects -->
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-3"><i class="bi bi-kanban me-2 text-primary"></i>Projects</h2>
+
+          <% if (profile.projects.length) { %>
+            <div class="row g-2 mb-3">
+              <% profile.projects.forEach(function (p) { %>
+                <div class="col-md-6">
+                  <div class="border rounded p-2 h-100">
+                    <div class="d-flex justify-content-between align-items-start gap-2">
+                      <div class="fw-semibold"><%= p.title %></div>
+                      <form action="/student/projects/<%= p._id %>" method="post" data-confirm="Remove this project?">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+                      </form>
+                    </div>
+                    <div class="small text-body-secondary"><%= p.description || '' %></div>
+                    <% if (p.technologies && p.technologies.length) { %>
+                      <div class="kbd-list mt-2">
+                        <% p.technologies.forEach(function (t) { %><span class="badge text-bg-light border"><%= t %></span><% }); %>
+                      </div>
+                    <% } %>
+                    <% if (p.link) { %>
+                      <a href="<%= p.link %>" target="_blank" rel="noopener noreferrer" class="small">View project <i class="bi bi-box-arrow-up-right"></i></a>
+                    <% } %>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } else { %>
+            <p class="small text-body-secondary">No projects added yet.</p>
+          <% } %>
+
+          <form action="/student/projects" method="post" class="row g-2">
+            <div class="col-md-6">
+              <input type="text" class="form-control form-control-sm" name="title" placeholder="Project title *" required maxlength="160">
+            </div>
+            <div class="col-md-4">
+              <input type="text" class="form-control form-control-sm" name="technologies" placeholder="Technologies (comma separated)">
+            </div>
+            <div class="col-md-2">
+              <input type="url" class="form-control form-control-sm" name="link" placeholder="Link">
+            </div>
+            <div class="col-md-9">
+              <textarea class="form-control form-control-sm" name="description" rows="2" placeholder="Short description" maxlength="600"></textarea>
+            </div>
+            <div class="col-md-3">
+              <button class="btn btn-primary btn-sm w-100" type="submit"><i class="bi bi-plus-lg me-1"></i>Add project</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

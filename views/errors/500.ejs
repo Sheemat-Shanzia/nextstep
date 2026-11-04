@@ -1,0 +1,18 @@
+<%- include('../partials/flash') %>
+<div class="container py-5 text-center error-page">
+  <div class="display-1 fw-bold text-danger">500</div>
+  <h1 class="h3 mb-3"><%= typeof title !== 'undefined' ? title : 'Something went wrong' %></h1>
+  <p class="text-body-secondary mb-4"><%= typeof message !== 'undefined' ? message : 'An unexpected error occurred while processing your request.' %></p>
+
+  <div class="d-flex gap-2 justify-content-center flex-wrap">
+    <a class="btn btn-primary" href="/"><i class="bi bi-house me-1"></i>Back to home</a>
+    <button type="button" class="btn btn-outline-secondary" data-history-back><i class="bi bi-arrow-left me-1"></i>Go back</button>
+  </div>
+
+  <% if (typeof stack !== 'undefined' && stack) { %>
+    <details class="mt-4 text-start">
+      <summary class="small text-body-secondary">Developer information (stack trace)</summary>
+      <pre class="small bg-body-tertiary p-3 rounded mt-2 text-break"><%= stack %></pre>
+    </details>
+  <% } %>
+</div>

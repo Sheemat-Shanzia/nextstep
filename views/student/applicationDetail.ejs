@@ -1,0 +1,171 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/student/dashboard">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="/student/applications">My applications</a></li>
+      <li class="breadcrumb-item active">Details</li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+            <div>
+              <h1 class="h4 mb-1"><%= opportunity ? opportunity.title : 'Opportunity removed' %></h1>
+              <p class="text-body-secondary mb-0">
+                <% if (opportunity) { %>
+                  <%= opportunity.companyNameCopy %> &middot; <%= opportunity.location %>
+                <% } %>
+              </p>
+            </div>
+            <span class="badge fs-6 <%= format.APPLICATION_STATUS_BADGE[application.status] %>">
+              <i class="bi <%= format.APPLICATION_STATUS_ICON[application.status] %> me-1"></i><%= format.applicationStatusLabel(application.status) %>
+            </span>
+          </div>
+
+          <div class="row g-3 text-center border-top border-bottom py-3 mb-3">
+            <div class="col-6 col-md-3">
+              <div class="small text-body-secondary">Applied on</div>
+              <div class="fw-semibold"><%= format.formatDate(application.appliedAt) %></div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="small text-body-secondary">Opportunity type</div>
+              <div class="fw-semibold text-capitalize"><%= opportunity ? opportunity.type : '-' %></div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="small text-body-secondary">CV sent</div>
+              <div class="fw-semibold"><%= application.cvSource === 'profile' ? 'Profile CV' : 'New upload' %></div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="small text-body-secondary">Documents</div>
+              <div class="fw-semibold"><%= (application.documents || []).length %></div>
+            </div>
+          </div>
+
+          <h2 class="h6 text-uppercase text-body-secondary mt-4 mb-2">My cover letter</h2>
+          <p style="white-space: pre-line" class="border rounded p-3 bg-body-tertiary"><%= application.coverLetter %></p>
+
+          <% if (application.answers && application.answers.length) { %>
+            <h2 class="h6 text-uppercase text-body-secondary mt-4 mb-2">My answers</h2>
+            <% application.answers.forEach(function (a) { %>
+              <div class="mb-3">
+                <div class="small text-body-secondary fw-semibold"><%= a.question %></div>
+                <div><%= a.answer %></div>
+              </div>
+            <% }); %>
+          <% } %>
+
+          <% if (application.companyNote) { %>
+            <div class="alert alert-info mt-4">
+              <div class="fw-semibold mb-1"><i class="bi bi-chat-left-text me-1"></i>Note from the company</div>
+              <div class="small"><%= application.companyNote %></div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- timeline (bonus 9) -->
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-4"><i class="bi bi-clock-history me-2 text-primary"></i>Status timeline</h2>
+
+          <% const history = (application.statusHistory || []).slice().sort(function (a, b) { return new Date(b.changedAt) - new Date(a.changedAt); }); %>
+          <ul class="status-timeline">
+            <% history.forEach(function (h, i) { %>
+              <li class="<%= i === 0 ? 'is-current' : '' %>">
+                <span class="timeline-dot"><i class="bi <%= format.APPLICATION_STATUS_ICON[h.status] || 'bi-dot' %>"></i></span>
+                <div class="fw-semibold"><%= format.applicationStatusLabel(h.status) %></div>
+                <div class="small text-body-secondary">
+                  <%= format.formatDateTime(h.changedAt) %> &middot; <%= format.timeAgo(h.changedAt) %>
+                </div>
+                <% if (h.note) { %>
+                  <div class="small mt-1"><%= h.note %></div>
+                <% } %>
+              </li>
+            <% }); %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="sticky-filter">
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-body p-4">
+            <h2 class="h6 text-uppercase text-body-secondary mb-3">Attached files</h2>
+
+            <div class="d-flex align-items-center gap-2 border rounded p-2 mb-2">
+              <i class="bi bi-file-earmark-pdf text-danger"></i>
+              <div class="flex-grow-1 min-w-0">
+                <div class="small fw-semibold text-truncate"><%= application.cvOriginalName || 'CV' %></div>
+                <div class="small text-body-secondary">CV sent with this application</div>
+              </div>
+              <a class="btn btn-sm btn-outline-secondary" href="/files/application/<%= application._id %>/cv" title="Download CV">
+                <i class="bi bi-download"></i>
+              </a>
+            </div>
+
+            <% (application.documents || []).forEach(function (d) { %>
+              <div class="d-flex align-items-center gap-2 border rounded p-2 mb-2">
+                <i class="bi bi-paperclip"></i>
+                <div class="flex-grow-1 min-w-0">
+                  <div class="small fw-semibold text-truncate"><%= d.title %></div>
+                  <div class="small text-body-secondary"><%= format.formatDate(d.uploadedAt) %></div>
+                </div>
+                <a class="btn btn-sm btn-outline-secondary" href="/files/application/<%= application._id %>/document/<%= d._id %>" title="Download">
+                  <i class="bi bi-download"></i>
+                </a>
+              </div>
+            <% }); %>
+
+            <% if (!(application.documents || []).length) { %>
+              <p class="small text-body-secondary mb-0">No extra documents were attached.</p>
+            <% } %>
+
+            <p class="small text-body-secondary mt-3 mb-0">
+              <i class="bi bi-shield-lock me-1"></i>
+              Only you, this company and NextStep administrators can download these files.
+            </p>
+          </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <% if (['submitted', 'under_review', 'shortlisted', 'interview'].includes(application.status)) { %>
+              <h2 class="h6 text-uppercase text-body-secondary mb-2">Withdraw application</h2>
+              <p class="small text-body-secondary">Changed your mind? Withdrawing notifies the company immediately.</p>
+              <form action="/student/applications/<%= application._id %>/withdraw" method="post"
+                    data-confirm="Withdraw your application? This cannot be undone.">
+                <input type="hidden" name="confirm" value="yes">
+                <button class="btn btn-outline-danger w-100" type="submit">
+                  <i class="bi bi-arrow-counterclockwise me-1"></i>Withdraw
+                </button>
+              </form>
+            <% } else if (application.status === 'withdrawn') { %>
+              <div class="alert alert-secondary mb-0 small">
+                <i class="bi bi-info-circle me-1"></i>This application has been withdrawn.
+              </div>
+            <% } else if (application.status === 'accepted') { %>
+              <div class="alert alert-success mb-0 small">
+                <i class="bi bi-trophy me-1"></i>Congratulations! The company accepted your application.
+              </div>
+            <% } else { %>
+              <div class="alert alert-danger mb-0 small">
+                <i class="bi bi-x-circle me-1"></i>This application was not successful this time. Keep applying!
+              </div>
+            <% } %>
+
+            <% if (opportunity) { %>
+              <a class="btn btn-outline-primary w-100 mt-3" href="/opportunities/<%= opportunity._id %>">
+                View the original posting
+              </a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

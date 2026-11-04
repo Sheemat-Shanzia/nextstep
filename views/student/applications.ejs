@@ -1,0 +1,123 @@
+<%- include('../partials/flash') %>
+<%
+const links = [
+  { href: '/student/dashboard', label: 'Dashboard', icon: 'bi-speedometer2' },
+  { href: '/student/profile', label: 'My profile', icon: 'bi-person-badge' },
+  { href: '/student/skills', label: 'Skills', icon: 'bi-tools' },
+  { href: '/student/applications', label: 'My applications', icon: 'bi-send-check', active: true },
+  { href: '/student/bookmarks', label: 'Saved opportunities', icon: 'bi-bookmark-heart' },
+  { href: '/notifications', label: 'Notifications', icon: 'bi-bell' },
+  { href: '/auth/settings', label: 'Settings', icon: 'bi-gear' }
+];
+%>
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/student/dashboard">Dashboard</a></li>
+      <li class="breadcrumb-item active">My applications</li>
+    </ol>
+  </nav>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-send-check me-2 text-primary"></i>My applications</h1>
+      <p class="text-body-secondary mb-0">Track every application and its status history.</p>
+    </div>
+    <a class="btn btn-primary" href="/search"><i class="bi bi-search me-1"></i>Find more opportunities</a>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-3 d-none d-lg-block">
+      <%- include('../partials/sidebar', { links: links }) %>
+    </div>
+
+    <div class="col-lg-9">
+      <!-- status tabs -->
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <a class="btn btn-sm <%= !activeStatus ? 'btn-dark' : 'btn-outline-secondary' %>" href="/student/applications">
+          All <span class="badge bg-light text-dark ms-1"><%= totalAll %></span>
+        </a>
+        <% statuses.forEach(function (s) { %>
+          <a class="btn btn-sm <%= activeStatus === s ? 'btn-dark' : 'btn-outline-secondary' %>" href="/student/applications?status=<%= s %>">
+            <%= statusLabel[s] || s %> <span class="badge bg-light text-dark ms-1"><%= counts[s] || 0 %></span>
+          </a>
+        <% }); %>
+      </div>
+
+      <% if (!applications.length) { %>
+        <%- include('../partials/emptyState', {
+          emptyState: {
+            icon: 'bi-send',
+            title: activeStatus ? `No ${statusLabel[activeStatus] || activeStatus} applications` : 'You have not applied to any opportunity yet',
+            message: activeStatus ? 'Try a different status filter.' : 'Browse the open opportunities and apply to the ones that fit you.',
+            actionHref: activeStatus ? '/student/applications' : '/search',
+            actionLabel: activeStatus ? 'Show all' : 'Browse opportunities',
+            actionIcon: 'bi-grid'
+          }
+        }) %>
+      <% } else { %>
+        <div class="card shadow-sm border-0 table-card">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Opportunity</th>
+                    <th>Type</th>
+                    <th>Applied</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% applications.forEach(function (a) { %>
+                    <tr>
+                      <td>
+                        <a href="/student/applications/<%= a._id %>" class="fw-semibold text-decoration-none">
+                          <%= a.opportunity ? a.opportunity.title : '(opportunity removed)' %>
+                        </a>
+                        <div class="small text-body-secondary">
+                          <%= a.opportunity ? a.opportunity.companyNameCopy : '' %>
+                          <% if (a.opportunity) { %>&middot; <%= a.opportunity.location %><% } %>
+                        </div>
+                      </td>
+                      <td>
+                        <% if (a.opportunity) { %>
+                          <span class="badge <%= a.opportunity.type === 'internship' ? 'bg-primary' : 'bg-success' %>">
+                            <%= a.opportunity.type === 'internship' ? 'Internship' : 'Scholarship' %>
+                          </span>
+                        <% } else { %>-<% } %>
+                      </td>
+                      <td class="small text-nowrap"><%= format.formatDate(a.appliedAt) %></td>
+                      <td>
+                        <span class="badge <%= format.APPLICATION_STATUS_BADGE[a.status] %>">
+                          <i class="bi <%= format.APPLICATION_STATUS_ICON[a.status] %> me-1"></i><%= format.applicationStatusLabel(a.status) %>
+                        </span>
+                      </td>
+                      <td class="text-end">
+                        <div class="d-inline-flex gap-1">
+                          <a class="btn btn-sm btn-outline-primary" href="/student/applications/<%= a._id %>" title="Track">
+                            <i class="bi bi-clock-history"></i>
+                          </a>
+                          <% if (['submitted', 'under_review', 'shortlisted', 'interview'].includes(a.status)) { %>
+                            <form action="/student/applications/<%= a._id %>/withdraw" method="post" class="d-inline"
+                                  data-confirm="Withdraw your application? The company will be notified.">
+                              <input type="hidden" name="confirm" value="yes">
+                              <button class="btn btn-sm btn-outline-danger" type="submit" title="Withdraw"><i class="bi bi-arrow-counterclockwise"></i></button>
+                            </form>
+                          <% } %>
+                        </div>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <%- include('../partials/pagination', { pager: pager }) %>
+      <% } %>
+    </div>
+  </div>
+</div>

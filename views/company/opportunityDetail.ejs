@@ -1,0 +1,131 @@
+<%- include('../partials/flash') %>
+<%
+const dl = opportunity.daysLeft;
+const badge = format.deadlineBadge(dl);
+%>
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/company/opportunities">My opportunities</a></li>
+      <li class="breadcrumb-item active"><%= format.truncate(opportunity.title, 30) %></li>
+    </ol>
+  </nav>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><%= opportunity.title %></h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge <%= opportunity.type === 'internship' ? 'bg-primary' : 'bg-success' %>"><%= opportunity.typeLabel %></span>
+        <span class="badge <%= format.OPPORTUNITY_STATUS_BADGE[opportunity.status] %> text-capitalize"><%= opportunity.status %></span>
+        <span class="badge <%= opportunity.isActive ? 'bg-light text-dark border' : 'bg-secondary' %>">
+          <%= opportunity.isActive ? 'Open for applications' : 'Closed' %>
+        </span>
+        <span class="badge <%= badge.className %>"><%= badge.text %></span>
+      </div>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-primary" href="/company/opportunities/<%= opportunity._id %>/applicants">
+        <i class="bi bi-people me-1"></i>Applicants (<%= applicantCount %>)
+      </a>
+      <a class="btn btn-outline-secondary" href="/company/opportunities/<%= opportunity._id %>/edit"><i class="bi bi-pencil me-1"></i>Edit</a>
+      <a class="btn btn-outline-secondary" href="/opportunities/<%= opportunity._id %>" target="_blank" rel="noopener">
+        <i class="bi bi-box-arrow-up-right me-1"></i>Preview
+      </a>
+    </div>
+  </div>
+
+  <% if (opportunity.status === 'rejected' && opportunity.rejectionReason) { %>
+    <div class="alert alert-danger">
+      <i class="bi bi-x-octagon me-1"></i>
+      <strong>Rejected by the administrator.</strong>
+      <div class="small mt-1">Reason: <%= opportunity.rejectionReason %></div>
+      <% if (opportunity.reviewedAt) { %>
+        <div class="small mt-1 text-body-secondary">Reviewed <%= format.formatDateTime(opportunity.reviewedAt) %></div>
+      <% } %>
+    </div>
+  <% } else if (opportunity.status === 'pending') { %>
+    <div class="alert alert-warning">
+      <i class="bi bi-hourglass-split me-1"></i>
+      This post is in the moderation queue. Students cannot see it until an administrator approves it.
+      <% if (opportunity.createdAt) { %>
+        <div class="small mt-1">Submitted <%= format.timeAgo(opportunity.createdAt) %></div>
+      <% } %>
+    </div>
+  <% } else if (opportunity.status === 'approved') { %>
+    <div class="alert alert-success">
+      <i class="bi bi-patch-check me-1"></i>
+      Approved and visible to students.
+      <% if (opportunity.reviewedAt) { %>
+        <div class="small mt-1">Approved <%= format.formatDateTime(opportunity.reviewedAt) %></div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <h2 class="h6 text-uppercase text-body-secondary mb-3">Description</h2>
+          <p style="white-space: pre-line"><%= opportunity.description %></p>
+
+          <% if (opportunity.requirements) { %>
+            <h2 class="h6 text-uppercase text-body-secondary mt-4 mb-2">Requirements</h2>
+            <p style="white-space: pre-line"><%= opportunity.requirements %></p>
+          <% } %>
+
+          <% if (opportunity.requiredSkills && opportunity.requiredSkills.length) { %>
+            <h2 class="h6 text-uppercase text-body-secondary mt-4 mb-2">Required skills</h2>
+            <div class="kbd-list">
+              <% opportunity.requiredSkills.forEach(function (s) { %>
+                <span class="badge text-bg-primary-subtle text-primary border border-primary-subtle"><%= s %></span>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="sticky-filter">
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-body p-4">
+            <h2 class="h6 text-uppercase text-body-secondary mb-3">Post details</h2>
+            <ul class="list-unstyled small d-grid gap-2 mb-0">
+              <li class="d-flex justify-content-between"><span class="text-body-secondary">Location</span><span><%= opportunity.location %></span></li>
+              <li class="d-flex justify-content-between"><span class="text-body-secondary">Mode</span><span class="text-capitalize"><%= opportunity.mode %></span></li>
+              <li class="d-flex justify-content-between"><span class="text-body-secondary">Duration</span><span><%= opportunity.duration || '-' %></span></li>
+              <li class="d-flex justify-content-between"><span class="text-body-secondary"><%= opportunity.type === 'internship' ? 'Stipend' : 'Award' %></span><span><%= format.formatNumber(opportunity.stipend) %></span></li>
+              <li class="d-flex justify-content-between"><span class="text-body-secondary">Openings</span><span><%= opportunity.openings %></span></li>
+              <li class="d-flex justify-content-between"><span class="text-body-secondary">Category</span><span><%= opportunity.category %></span></li>
+              <li class="d-flex justify-content-between"><span class="text-body-secondary">Min CGPA</span><span><%= opportunity.minCgpa || 'None' %></span></li>
+              <li class="d-flex justify-content-between"><span class="text-body-secondary">Deadline</span><span><%= format.formatDate(opportunity.deadline) %></span></li>
+              <li class="d-flex justify-content-between"><span class="text-body-secondary">Views</span><span><%= opportunity.views %></span></li>
+              <li class="d-flex justify-content-between"><span class="text-body-secondary">Created</span><span><%= format.formatDate(opportunity.createdAt) %></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <div class="d-grid gap-2">
+              <a class="btn btn-primary" href="/company/opportunities/<%= opportunity._id %>/applicants">
+                <i class="bi bi-people me-1"></i>Review applicants
+              </a>
+              <form action="/company/opportunities/<%= opportunity._id %>/toggle" method="post">
+                <button class="btn btn-outline-warning w-100" type="submit">
+                  <i class="bi <%= opportunity.isActive ? 'bi-lock' : 'bi-unlock' %> me-1"></i>
+                  <%= opportunity.isActive ? 'Close applications' : 'Reopen applications' %>
+                </button>
+              </form>
+              <form action="/company/opportunities/<%= opportunity._id %>" method="post"
+                    data-confirm="Delete &quot;<%= opportunity.title %>&quot;? This cannot be undone.">
+                <input type="hidden" name="_method" value="DELETE">
+                <button class="btn btn-outline-danger w-100" type="submit"><i class="bi bi-trash me-1"></i>Delete post</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

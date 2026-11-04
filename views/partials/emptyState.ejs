@@ -1,0 +1,14 @@
+<% if (typeof emptyState !== 'undefined' && emptyState) { %>
+  <div class="empty-state text-center py-5">
+    <div class="display-4 mb-2 opacity-50"><i class="bi <%= emptyState.icon || 'bi-inbox' %>"></i></div>
+    <h5 class="mb-1"><%= emptyState.title || 'Nothing here yet' %></h5>
+    <% if (emptyState.message) { %>
+      <p class="text-body-secondary mb-3"><%= emptyState.message %></p>
+    <% } %>
+    <% if (emptyState.actionHref) { %>
+      <a class="btn btn-primary btn-sm" href="<%= emptyState.actionHref %>">
+        <i class="bi <%= emptyState.actionIcon || 'bi-plus-lg' %> me-1"></i><%= emptyState.actionLabel || 'Get started' %>
+      </a>
+    <% } %>
+  </div>
+<% } %>

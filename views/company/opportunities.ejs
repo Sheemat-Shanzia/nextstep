@@ -1,0 +1,121 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/company/dashboard">Dashboard</a></li>
+      <li class="breadcrumb-item active">My opportunities</li>
+    </ol>
+  </nav>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-briefcase me-2 text-primary"></i>My opportunities</h1>
+      <p class="text-body-secondary mb-0">New and edited posts are reviewed by an administrator before students can see them.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-secondary" href="/company/applications/export.csv">
+        <i class="bi bi-filetype-csv me-1"></i>Export applicants
+      </a>
+      <a class="btn btn-primary" href="/company/opportunities/new"><i class="bi bi-plus-lg me-1"></i>Post opportunity</a>
+    </div>
+  </div>
+
+  <!-- status filter -->
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <a class="btn btn-sm <%= !activeStatus ? 'btn-dark' : 'btn-outline-secondary' %>" href="/company/opportunities">
+      All <span class="badge bg-light text-dark ms-1"><%= (counts.pending||0) + (counts.approved||0) + (counts.rejected||0) %></span>
+    </a>
+    <% ['pending', 'approved', 'rejected'].forEach(function (s) { %>
+      <a class="btn btn-sm <%= activeStatus === s ? 'btn-dark' : 'btn-outline-secondary' %>" href="/company/opportunities?status=<%= s %>">
+        <span class="text-capitalize"><%= s %></span> <span class="badge bg-light text-dark ms-1"><%= counts[s] || 0 %></span>
+      </a>
+    <% }); %>
+  </div>
+
+  <% if (!opportunities.length) { %>
+    <%- include('../partials/emptyState', {
+      emptyState: {
+        icon: 'bi-briefcase',
+        title: activeStatus ? `No ${activeStatus} opportunities` : 'You have not posted any opportunity yet',
+        message: activeStatus ? 'Try a different status filter.' : 'Create your first internship or scholarship post. An administrator will review it before it goes live.',
+        actionHref: '/company/opportunities/new', actionLabel: 'Post an opportunity', actionIcon: 'bi-plus-lg'
+      }
+    }) %>
+  <% } else { %>
+    <div class="card shadow-sm border-0 table-card">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Opportunity</th>
+                <th>Type</th>
+                <th>Deadline</th>
+                <th>Applicants</th>
+                <th>Status</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% opportunities.forEach(function (o) { %>
+                <tr>
+                  <td>
+                    <a href="/company/opportunities/<%= o._id %>" class="fw-semibold text-decoration-none"><%= o.title %></a>
+                    <div class="small text-body-secondary">
+                      <%= o.location %> &middot; <span class="text-capitalize"><%= o.mode %></span>
+                      <% if (!o.isActive) { %>&middot; <span class="text-danger">closed</span><% } %>
+                    </div>
+                    <% if (o.status === 'rejected' && o.rejectionReason) { %>
+                      <div class="small text-danger mt-1"><i class="bi bi-exclamation-circle me-1"></i><%= o.rejectionReason %></div>
+                    <% } %>
+                    <% if (o.status === 'pending') { %>
+                      <div class="small text-body-secondary mt-1"><i class="bi bi-hourglass-split me-1"></i>Awaiting administrator review</div>
+                    <% } %>
+                  </td>
+                  <td>
+                    <span class="badge <%= o.type === 'internship' ? 'bg-primary' : 'bg-success' %>"><%= o.type === 'internship' ? 'Internship' : 'Scholarship' %></span>
+                  </td>
+                  <td class="small text-nowrap">
+                    <%= format.formatDate(o.deadline) %>
+                    <% if (o.isExpired) { %>
+                      <div><span class="badge bg-secondary">Expired</span></div>
+                    <% } else if (o.isClosingSoon) { %>
+                      <div><span class="badge bg-danger">Soon</span></div>
+                    <% } %>
+                  </td>
+                  <td>
+                    <a class="badge text-bg-light border text-decoration-none" href="/company/opportunities/<%= o._id %>/applicants">
+                      <%= o.applicantCount %> applicant<%= o.applicantCount === 1 ? '' : 's' %>
+                    </a>
+                  </td>
+                  <td>
+                    <span class="badge <%= format.OPPORTUNITY_STATUS_BADGE[o.status] %> text-capitalize"><%= o.status %></span>
+                  </td>
+                  <td class="text-end">
+                    <div class="d-inline-flex gap-1">
+                      <a class="btn btn-sm btn-outline-primary" href="/company/opportunities/<%= o._id %>" title="View"><i class="bi bi-eye"></i></a>
+                      <a class="btn btn-sm btn-outline-secondary" href="/company/opportunities/<%= o._id %>/edit" title="Edit"><i class="bi bi-pencil"></i></a>
+                      <form action="/company/opportunities/<%= o._id %>/toggle" method="post" class="d-inline">
+                        <button class="btn btn-sm btn-outline-<%= o.isActive ? 'warning' : 'success' %>" type="submit"
+                                title="<%= o.isActive ? 'Close applications' : 'Reopen' %>">
+                          <i class="bi <%= o.isActive ? 'bi-lock' : 'bi-unlock' %>"></i>
+                        </button>
+                      </form>
+                      <form action="/company/opportunities/<%= o._id %>" method="post" class="d-inline"
+                            data-confirm="Delete &quot;<%= o.title %>&quot;? This cannot be undone.">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-sm btn-outline-danger" type="submit" title="Delete"><i class="bi bi-trash"></i></button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/pagination', { pager: pager }) %>
+  <% } %>
+</div>

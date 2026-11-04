@@ -1,0 +1,205 @@
+<%- include('../partials/flash') %>
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/company/dashboard">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="/company/applications">All applications</a></li>
+      <li class="breadcrumb-item active">Applicant</li>
+    </ol>
+  </nav>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1"><i class="bi bi-person-badge me-2 text-primary"></i><%= application.student.name %></h1>
+      <p class="text-body-secondary mb-0">
+        Applied for <a href="/company/opportunities/<%= application.opportunity._id %>"><%= application.opportunity.title %></a>
+        on <%= format.formatDate(application.appliedAt) %>
+      </p>
+    </div>
+    <span class="badge fs-6 <%= format.APPLICATION_STATUS_BADGE[application.status] %>">
+      <i class="bi <%= format.APPLICATION_STATUS_ICON[application.status] %> me-1"></i><%= format.applicationStatusLabel(application.status) %>
+    </span>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <!-- student profile -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <h2 class="h6 text-uppercase text-body-secondary mb-3">Student details</h2>
+
+          <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+            <span class="avatar avatar-lg"><%= application.student.name.split(' ').map(function (p) { return p[0]; }).slice(0,2).join('') %></span>
+            <div>
+              <div class="fw-semibold fs-5"><%= application.student.name %></div>
+              <div class="small text-body-secondary"><%= application.student.email %></div>
+              <div class="small text-body-secondary">Member since <%= format.formatDate(application.student.createdAt) %></div>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-6 col-md-4">
+              <div class="small text-body-secondary">University</div>
+              <div class="fw-semibold"><%= profile && profile.university ? profile.university : 'Not provided' %></div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="small text-body-secondary">Degree</div>
+              <div class="fw-semibold"><%= profile && profile.degree ? profile.degree : 'Not provided' %></div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="small text-body-secondary">CGPA</div>
+              <div class="fw-semibold"><%= profile && profile.cgpa !== null && profile.cgpa !== undefined ? profile.cgpa + ' / 10' : 'Not provided' %></div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="small text-body-secondary">Semester</div>
+              <div class="fw-semibold"><%= profile && profile.currentSemester ? profile.currentSemester : '-' %></div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="small text-body-secondary">Graduation year</div>
+              <div class="fw-semibold"><%= profile && profile.graduationYear ? profile.graduationYear : '-' %></div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="small text-body-secondary">Phone</div>
+              <div class="fw-semibold"><%= profile && profile.phone ? profile.phone : '-' %></div>
+            </div>
+          </div>
+
+          <% if (profile && profile.bio) { %>
+            <hr>
+            <h3 class="h6 text-uppercase text-body-secondary mb-2">Bio</h3>
+            <p class="mb-0"><%= profile.bio %></p>
+          <% } %>
+
+          <% if (profile && profile.skills && profile.skills.length) { %>
+            <hr>
+            <h3 class="h6 text-uppercase text-body-secondary mb-2">Skills</h3>
+            <div class="d-flex flex-column gap-2">
+              <% profile.skills.forEach(function (s) { %>
+                <% const required = (application.opportunity.requiredSkills || []).some(function (r) { return String(r).toLowerCase() === s.name.toLowerCase(); }); %>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span><%= s.name %> <% if (required) { %><span class="badge text-bg-success ms-1">matches this post</span><% } %></span>
+                  <span class="badge text-bg-light border text-capitalize"><%= s.level %></span>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+
+          <% if (profile && profile.education && profile.education.length) { %>
+            <hr>
+            <h3 class="h6 text-uppercase text-body-secondary mb-2">Education</h3>
+            <% profile.education.forEach(function (e) { %>
+              <div class="mb-2">
+                <div class="fw-semibold"><%= e.institution %></div>
+                <div class="small text-body-secondary">
+                  <%= [e.degree, e.fieldOfStudy].filter(Boolean).join(' - ') %>
+                  <%= e.grade ? ' | ' + e.grade : '' %>
+                </div>
+              </div>
+            <% }); %>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- application content -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <h2 class="h6 text-uppercase text-body-secondary mb-2">Cover letter</h2>
+          <p style="white-space: pre-line" class="border rounded p-3 bg-body-tertiary"><%= application.coverLetter %></p>
+
+          <% if (application.answers && application.answers.length) { %>
+            <h2 class="h6 text-uppercase text-body-secondary mt-4 mb-2">Answers</h2>
+            <% application.answers.forEach(function (a) { %>
+              <div class="mb-3">
+                <div class="small text-body-secondary fw-semibold"><%= a.question %></div>
+                <div><%= a.answer %></div>
+              </div>
+            <% }); %>
+          <% } %>
+
+          <h2 class="h6 text-uppercase text-body-secondary mt-4 mb-2">Timeline</h2>
+          <% const history = (application.statusHistory || []).slice().sort(function (a, b) { return new Date(b.changedAt) - new Date(a.changedAt); }); %>
+          <ul class="status-timeline">
+            <% history.forEach(function (h, i) { %>
+              <li class="<%= i === 0 ? 'is-current' : '' %>">
+                <span class="timeline-dot"><i class="bi <%= format.APPLICATION_STATUS_ICON[h.status] || 'bi-dot' %>"></i></span>
+                <div class="fw-semibold"><%= format.applicationStatusLabel(h.status) %></div>
+                <div class="small text-body-secondary"><%= format.formatDateTime(h.changedAt) %></div>
+                <% if (h.note) { %><div class="small mt-1"><%= h.note %></div><% } %>
+              </li>
+            <% }); %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="sticky-filter">
+        <!-- status update -->
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-body p-4">
+            <h2 class="h6 text-uppercase text-body-secondary mb-3">Update status</h2>
+            <form action="/company/applications/<%= application._id %>/status" method="post">
+              <div class="mb-3">
+                <label class="form-label" for="status">New status</label>
+                <select class="form-select" id="status" name="status" required>
+                  <% statuses.forEach(function (s) { %>
+                    <option value="<%= s %>" <%= application.status === s ? 'selected' : '' %>><%= statusLabel[s] %></option>
+                  <% }); %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="note">Note to the student</label>
+                <textarea class="form-control" id="note" name="note" rows="3" maxlength="2000"
+                          placeholder="Optional note - the student sees this in their timeline and notification."></textarea>
+              </div>
+              <button class="btn btn-primary w-100" type="submit">
+                <i class="bi bi-check2-circle me-1"></i>Save status &amp; notify student
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- files -->
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-body p-4">
+            <h2 class="h6 text-uppercase text-body-secondary mb-3">Documents</h2>
+
+            <a class="btn btn-outline-primary w-100 mb-2" href="/files/application/<%= application._id %>/cv">
+              <i class="bi bi-file-earmark-pdf me-1"></i>Download CV
+            </a>
+
+            <% (application.documents || []).forEach(function (d) { %>
+              <a class="btn btn-outline-secondary w-100 mb-2" href="/files/application/<%= application._id %>/document/<%= d._id %>">
+                <i class="bi bi-paperclip me-1"></i><%= format.truncate(d.title, 24) %>
+              </a>
+            <% }); %>
+
+            <p class="small text-body-secondary mt-2 mb-0">
+              CV source: <strong><%= application.cvSource === 'profile' ? 'profile CV' : 'uploaded with this application' %></strong>.
+            </p>
+          </div>
+        </div>
+
+        <!-- review -->
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <h2 class="h6 text-uppercase text-body-secondary mb-2">Your review of this student</h2>
+            <% if (myReview) { %>
+              <div class="text-warning mb-2">
+                <% for (let i = 1; i <= 5; i++) { %><i class="bi <%= i <= myReview.rating ? 'bi-star-fill' : 'bi-star' %>"></i><% } %>
+              </div>
+              <p class="small mb-0"><%= myReview.comment || '(no comment)' %></p>
+            <% } else { %>
+              <p class="small text-body-secondary mb-2">
+                You have not reviewed this student. After the process ends, rate them from the public company page.
+              </p>
+              <a class="btn btn-outline-secondary btn-sm w-100" href="/companies/<%= currentUser._id %>" target="_blank" rel="noopener">
+                Open public company page
+              </a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
