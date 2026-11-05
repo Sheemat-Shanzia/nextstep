@@ -1,15 +1,15 @@
 <%- include('../partials/flash') %>
 
 <!-- =========================================================================
-     1. HERO SECTION (Refined Career-Tech Lavender & Purple Aesthetic)
+     1. HERO SECTION (Refined International Career-Tech Aesthetic)
      ========================================================================= -->
-<section class="hero-section position-relative overflow-hidden pt-5 pb-5 pb-lg-6">
-  <!-- Subtle gradient blur background orbs -->
+<section class="hero-section position-relative overflow-hidden pt-4 pt-lg-5 pb-5">
+  <!-- Subtle gradient blur orbs for ambient glow -->
   <div class="hero-gradient-orb hero-orb-1" aria-hidden="true"></div>
   <div class="hero-gradient-orb hero-orb-2" aria-hidden="true"></div>
 
-  <div class="container position-relative z-1 py-lg-3">
-    <div class="row align-items-center g-5">
+  <div class="container position-relative z-1 py-lg-2">
+    <div class="row align-items-center g-4 g-xl-5">
       <!-- HERO LEFT COLUMN: Announcement, Headline, Subtitle, Search Bar, Trending, CTAs -->
       <div class="col-lg-6 text-center text-lg-start">
         <!-- Small Announcement Badge -->
@@ -20,16 +20,16 @@
         </div>
 
         <!-- Main Headline -->
-        <h1 class="display-4 fw-extrabold hero-title text-navy mb-3 lh-sm">
-          <span class="text-gradient-purple">NEXTSTEP</span>
+        <h1 class="hero-title fw-extrabold text-navy mb-3 lh-sm">
+          Your future starts with the <span class="text-gradient-purple">right opportunity</span>.
         </h1>
 
         <!-- Subtitle Description -->
-        <p class="lead text-navy-muted mb-4 pe-xl-3 hero-subtitle fs-5">
-          Where student impact meets innovation
+        <p class="hero-subtitle text-navy-muted mb-4 pe-xl-2 fs-5">
+          Discover internships, unlock scholarships, and take the next step toward your dream career. NextStep brings opportunities from companies and organizations into one place.
         </p>
 
-        <!-- Large Modern Search Bar -->
+        <!-- Horizontal Search Component -->
         <div class="hero-search-wrapper bg-white p-2 rounded-4 shadow-sm border border-purple-light mb-4">
           <form class="hero-search d-flex flex-column flex-md-row align-items-stretch gap-2" action="/search" method="get" role="search">
             <div class="input-group input-group-lg border-0 flex-grow-1 align-items-center">
@@ -60,32 +60,33 @@
           <% }); %>
         </div>
 
-        <!-- Two CTA Buttons -->
-        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
-          <a class="btn btn-purple-gradient btn-lg px-4 py-2.5 rounded-3 fw-semibold shadow-sm" href="/opportunities">
-            <i class="bi bi-grid-fill me-2"></i>Browse All Opportunities
+        <!-- Side-by-Side CTA Buttons -->
+        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start align-items-center">
+          <a class="btn btn-purple-gradient btn-lg px-4 py-2.5 rounded-3 fw-semibold shadow-sm d-inline-flex align-items-center gap-2" href="/opportunities">
+            <span>Browse Opportunities</span> <i class="bi bi-arrow-right"></i>
           </a>
           <% if (!currentUser) { %>
-            <a class="btn btn-outline-purple btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/auth/register?role=company">
-              <i class="bi bi-building-add me-2"></i>Post an Opportunity
+            <a class="btn btn-outline-purple btn-lg px-4 py-2.5 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" href="/auth/register?role=company">
+              <i class="bi bi-building-add"></i> <span>Post an Opportunity</span>
             </a>
           <% } else if (isCompany) { %>
-            <a class="btn btn-outline-purple btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/company/opportunities/new">
-              <i class="bi bi-plus-circle me-2"></i>Post an Opportunity
+            <a class="btn btn-outline-purple btn-lg px-4 py-2.5 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" href="/company/opportunities/new">
+              <i class="bi bi-plus-circle"></i> <span>Post an Opportunity</span>
             </a>
           <% } else { %>
-            <a class="btn btn-outline-purple btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/student/dashboard">
-              <i class="bi bi-speedometer2 me-2"></i>Open My Dashboard
+            <a class="btn btn-outline-purple btn-lg px-4 py-2.5 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" href="/student/dashboard">
+              <i class="bi bi-speedometer2"></i> <span>Open Dashboard</span>
             </a>
           <% } %>
         </div>
       </div>
 
-      <!-- HERO RIGHT COLUMN: Realistic Student Photo with Background Backdrop & 3 Floating UI Cards -->
+      <!-- HERO RIGHT COLUMN: Realistic Student Photograph + Lavender Backdrop Shapes + 2 Clean Floating Cards -->
       <div class="col-lg-6">
         <div class="hero-photo-wrapper position-relative mx-auto">
-          <!-- Subtle cyan/purple backdrop circle shape behind top-left of image (matching Reference Screenshot 2) -->
+          <!-- Subtle lavender decorative backdrop shapes -->
           <div class="hero-photo-backdrop-shape" aria-hidden="true"></div>
+          <div class="hero-photo-backdrop-glow" aria-hidden="true"></div>
 
           <!-- Main Rounded Photograph Container -->
           <div class="hero-photo-frame shadow-2xl position-relative overflow-hidden">
@@ -94,50 +95,33 @@
                  class="hero-photo-img"
                  loading="eager"
                  onerror="this.onerror=null; this.src='/img/nextstep-hero-student.jpg';">
-            <!-- Subtle gradient vignette overlay at the bottom for smooth blending -->
             <div class="hero-photo-vignette" aria-hidden="true"></div>
           </div>
 
-          <!-- FLOATING UI CARD 1: "Application Shortlisted" (Bottom-Left, matching Reference Screenshot 2) -->
+          <!-- FLOATING UI CARD 1: "Application Shortlisted" (Bottom-Left) -->
           <div class="hero-floating-card hero-card-shortlisted bg-white p-3 rounded-4 shadow-lg border border-light-subtle d-flex align-items-center gap-3">
-            <div class="hero-card-icon rounded-circle bg-success-subtle text-success d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
-              <i class="bi bi-check2-circle fs-4" style="color: #15966B !important;"></i>
+            <div class="hero-card-icon rounded-circle bg-success-subtle text-success d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px;">
+              <i class="bi bi-check2-circle fs-4" style="color: #10B981 !important;"></i>
             </div>
             <div class="min-w-0">
-              <div class="d-flex align-items-center gap-2 mb-1">
+              <div class="d-flex align-items-center gap-2 mb-0.5">
                 <span class="fw-bold small text-navy">Application Shortlisted</span>
-                <span class="badge rounded-pill text-white small px-2 py-0.5" style="background-color: #15966B !important; font-size: 0.68rem;">Active</span>
+                <span class="badge rounded-pill text-white px-2 py-0.5" style="background-color: #10B981 !important; font-size: 0.65rem;">Active</span>
               </div>
-              <div class="text-navy-muted small" style="font-size: 0.76rem;">
+              <div class="text-navy-muted small" style="font-size: 0.75rem;">
                 <span class="fw-semibold text-purple">Google</span> &middot; Software Engineering Intern
               </div>
             </div>
           </div>
 
-          <!-- FLOATING UI CARD 2: "Browse Opportunities" with small company logos (Top-Right, matching Reference Screenshot 2) -->
-          <div class="hero-floating-card hero-card-browse bg-white p-3 rounded-4 shadow-lg border border-light-subtle">
-            <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
-              <span class="fw-bold small text-navy">Browse Opportunities</span>
-              <span class="badge bg-purple-subtle text-purple rounded-pill small" style="font-size: 0.68rem;">250+ New</span>
-            </div>
-            <!-- Small company brand logos/chips -->
-            <div class="d-flex align-items-center gap-1.5">
-              <span class="company-mini-logo bg-danger text-white" title="Google"><i class="bi bi-google"></i></span>
-              <span class="company-mini-logo bg-primary text-white" title="Microsoft"><i class="bi bi-microsoft"></i></span>
-              <span class="company-mini-logo bg-dark text-white" title="Apple"><i class="bi bi-apple"></i></span>
-              <span class="company-mini-logo bg-info text-white" title="Intel"><i class="bi bi-cpu-fill"></i></span>
-              <span class="company-mini-more small fw-bold text-navy-muted ms-1">+120</span>
-            </div>
-          </div>
-
-          <!-- FLOATING UI CARD 3: "Scholarship Approved" with icon & award amount (Bottom-Right) -->
+          <!-- FLOATING UI CARD 2: "Scholarship Approved" (Bottom-Right) -->
           <div class="hero-floating-card hero-card-scholarship bg-white p-3 rounded-4 shadow-lg border border-light-subtle d-flex align-items-center gap-3">
-            <div class="hero-card-icon rounded-circle bg-purple-subtle text-purple d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
+            <div class="hero-card-icon rounded-circle bg-purple-subtle text-purple d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px;">
               <i class="bi bi-mortarboard-fill fs-5 text-purple"></i>
             </div>
             <div>
-              <div class="fw-bold small text-navy">Scholarship Approved</div>
-              <div class="small fw-bold d-flex align-items-center gap-1" style="color: #15966B; font-size: 0.78rem;">
+              <div class="fw-bold small text-navy mb-0.5">Scholarship Approved</div>
+              <div class="small fw-semibold d-flex align-items-center gap-1" style="color: #10B981; font-size: 0.75rem;">
                 <i class="bi bi-patch-check-fill"></i> $5,000 Award Granted
               </div>
             </div>
@@ -149,67 +133,60 @@
 </section>
 
 <!-- =========================================================================
-     2. PLATFORM STATISTICS (Matching PDF Page 4 Banner Style)
+     SECTION A. PLATFORM HIGHLIGHTS (Real DB Aggregations, No Fabricated Stats)
      ========================================================================= -->
-<section class="platform-stats-section py-4">
+<section class="platform-highlights-section py-5">
   <div class="container">
-    <div class="stats-banner-container bg-gradient-indigo text-white p-4 p-lg-5 rounded-5 shadow-xl">
-      <div class="text-center max-w-700 mx-auto mb-4">
-        <span class="badge rounded-pill bg-white bg-opacity-20 text-white px-3 py-1 mb-2 small text-uppercase fw-semibold">Our Impact in Numbers</span>
-        <h2 class="h3 fw-bold text-white mb-2">Connecting Ambition with Opportunity</h2>
-        <p class="small text-white text-opacity-80 mb-0">Empowering future leaders and fostering meaningful employer partnerships worldwide.</p>
+    <div class="row g-3 g-lg-4 text-center" id="statsCounters">
+      <!-- 1. Available Opportunities -->
+      <div class="col-6 col-md-3">
+        <div class="highlight-stat-card h-100">
+          <div class="highlight-stat-icon bg-indigo-subtle text-indigo mx-auto">
+            <i class="bi bi-briefcase-fill"></i>
+          </div>
+          <div class="highlight-stat-value text-navy">
+            <span class="counter-value" data-target="<%= stats.opportunities || 0 %>"><%= stats.opportunities || 0 %></span>+
+          </div>
+          <div class="highlight-stat-label">Available Opportunities</div>
+        </div>
       </div>
 
-      <!-- 5 Floating White Metric Cards (from real DB aggregations) -->
-      <div class="row g-3 g-lg-4 text-center" id="statsCounters">
-        <div class="col-6 col-lg">
-          <div class="stat-pill-card bg-white text-dark rounded-4 p-3 p-xl-4 h-100 shadow-sm transition-hover">
-            <div class="stat-icon-circle bg-indigo-subtle text-indigo mx-auto mb-2"><i class="bi bi-people-fill"></i></div>
-            <div class="stat-counter-number fw-extrabold text-indigo fs-3">
-              <span class="counter-value" data-target="<%= stats.students || 975 %>"><%= stats.students || 975 %></span>+
-            </div>
-            <div class="small fw-semibold text-secondary">Active Students</div>
+      <!-- 2. Verified Internships -->
+      <div class="col-6 col-md-3">
+        <div class="highlight-stat-card h-100">
+          <div class="highlight-stat-icon bg-purple-subtle text-purple mx-auto">
+            <i class="bi bi-code-slash"></i>
           </div>
+          <div class="highlight-stat-value text-navy">
+            <span class="counter-value" data-target="<%= stats.internships || stats.opportunities || 0 %>"><%= stats.internships || stats.opportunities || 0 %></span>+
+          </div>
+          <div class="highlight-stat-label">Verified Internships</div>
         </div>
+      </div>
 
-        <div class="col-6 col-lg">
-          <div class="stat-pill-card bg-white text-dark rounded-4 p-3 p-xl-4 h-100 shadow-sm transition-hover">
-            <div class="stat-icon-circle bg-emerald-subtle text-success mx-auto mb-2"><i class="bi bi-building-check"></i></div>
-            <div class="stat-counter-number fw-extrabold text-success fs-3">
-              <span class="counter-value" data-target="<%= stats.companies || 260 %>"><%= stats.companies || 260 %></span>+
-            </div>
-            <div class="small fw-semibold text-secondary">Hiring Companies</div>
+      <!-- 3. Active Scholarships -->
+      <div class="col-6 col-md-3">
+        <div class="highlight-stat-card h-100">
+          <div class="highlight-stat-icon bg-emerald-subtle text-success mx-auto">
+            <i class="bi bi-mortarboard-fill"></i>
           </div>
+          <div class="highlight-stat-value text-navy">
+            <span class="counter-value" data-target="<%= stats.scholarships || 0 %>"><%= stats.scholarships || 0 %></span>+
+          </div>
+          <div class="highlight-stat-label">Active Scholarships</div>
         </div>
+      </div>
 
-        <div class="col-6 col-lg">
-          <div class="stat-pill-card bg-white text-dark rounded-4 p-3 p-xl-4 h-100 shadow-sm transition-hover">
-            <div class="stat-icon-circle bg-amber-subtle text-warning mx-auto mb-2"><i class="bi bi-briefcase-fill"></i></div>
-            <div class="stat-counter-number fw-extrabold text-dark fs-3">
-              <span class="counter-value" data-target="<%= stats.opportunities || 724 %>"><%= stats.opportunities || 724 %></span>+
-            </div>
-            <div class="small fw-semibold text-secondary">Open Posts</div>
+      <!-- 4. Verified Companies -->
+      <div class="col-6 col-md-3">
+        <div class="highlight-stat-card h-100">
+          <div class="highlight-stat-icon bg-cyan-subtle text-info mx-auto">
+            <i class="bi bi-building-check"></i>
           </div>
-        </div>
-
-        <div class="col-6 col-lg">
-          <div class="stat-pill-card bg-white text-dark rounded-4 p-3 p-xl-4 h-100 shadow-sm transition-hover">
-            <div class="stat-icon-circle bg-cyan-subtle text-info mx-auto mb-2"><i class="bi bi-send-check-fill"></i></div>
-            <div class="stat-counter-number fw-extrabold text-info fs-3">
-              <span class="counter-value" data-target="<%= stats.applications || 890 %>"><%= stats.applications || 890 %></span>+
-            </div>
-            <div class="small fw-semibold text-secondary">Applications Sent</div>
+          <div class="highlight-stat-value text-navy">
+            <span class="counter-value" data-target="<%= stats.verifiedCompanies || stats.companies || 0 %>"><%= stats.verifiedCompanies || stats.companies || 0 %></span>+
           </div>
-        </div>
-
-        <div class="col-12 col-lg">
-          <div class="stat-pill-card bg-white text-dark rounded-4 p-3 p-xl-4 h-100 shadow-sm transition-hover">
-            <div class="stat-icon-circle bg-rose-subtle text-danger mx-auto mb-2"><i class="bi bi-star-fill"></i></div>
-            <div class="stat-counter-number fw-extrabold text-danger fs-3">
-              <span><%= avgRating.avg ? (avgRating.avg * 20).toFixed(0) : '96' %>%</span>
-            </div>
-            <div class="small fw-semibold text-secondary">Success &amp; Satisfaction</div>
-          </div>
+          <div class="highlight-stat-label">Verified Companies</div>
         </div>
       </div>
     </div>
@@ -217,59 +194,24 @@
 </section>
 
 <!-- =========================================================================
-     3. FEATURED INTERNSHIPS SECTION
+     SECTION B. FEATURED OPPORTUNITIES (Real Approved Opportunities)
      ========================================================================= -->
-<section class="container py-5">
-  <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
-    <div>
-      <span class="badge badge-subtle badge-subtle-indigo text-uppercase fw-bold px-3 py-1 mb-2">Career Launchpad</span>
-      <h2 class="h3 fw-bold text-dark mb-1">Featured Internship Opportunities</h2>
-      <p class="text-muted mb-0 small">Gain real-world experience, dedicated mentorship, and competitive monthly stipends.</p>
-    </div>
-    <a class="btn btn-outline-indigo px-4 py-2 rounded-3 fw-semibold small" href="/search?type=internship">
-      View All Internships <i class="bi bi-arrow-right ms-1"></i>
-    </a>
-  </div>
-
-  <% if (featuredInternships && featuredInternships.length) { %>
-    <div class="row g-4">
-      <% featuredInternships.slice(0, 6).forEach(function (o) { %>
-        <div class="col-md-6 col-lg-4">
-          <%- include('../partials/opportunityCard', { o: o }) %>
-        </div>
-      <% }); %>
-    </div>
-  <% } else { %>
-    <%- include('../partials/emptyState', {
-      emptyState: {
-        icon: 'bi-briefcase',
-        title: 'No internships available right now',
-        message: 'Check back soon or explore all open opportunities.',
-        actionHref: '/opportunities', actionLabel: 'Browse All Opportunities', actionIcon: 'bi-grid'
-      }
-    }) %>
-  <% } %>
-</section>
-
-<!-- =========================================================================
-     4. FEATURED SCHOLARSHIPS SECTION
-     ========================================================================= -->
-<section class="py-5 bg-body-tertiary border-top border-bottom">
-  <div class="container">
+<section class="featured-opportunities-section py-5 bg-slate-subtle">
+  <div class="container py-lg-3">
     <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
       <div>
-        <span class="badge badge-subtle badge-subtle-emerald text-uppercase fw-bold px-3 py-1 mb-2">Academic Excellence</span>
-        <h2 class="h3 fw-bold text-dark mb-1">Featured Scholarship Programs</h2>
-        <p class="text-muted mb-0 small">Merit and need-based grants to fund your tuition and educational aspirations.</p>
+        <span class="badge bg-purple-subtle text-purple rounded-pill px-3 py-1 fw-semibold text-uppercase small mb-2">Curated Openings</span>
+        <h2 class="h3 fw-extrabold text-navy mb-1">Featured Opportunities</h2>
+        <p class="text-navy-muted small mb-0">Handpicked internships and funded scholarships from verified institutions.</p>
       </div>
-      <a class="btn btn-outline-indigo px-4 py-2 rounded-3 fw-semibold small" href="/search?type=scholarship">
-        View All Scholarships <i class="bi bi-arrow-right ms-1"></i>
+      <a class="btn btn-outline-purple px-4 py-2 rounded-3 fw-semibold small d-inline-flex align-items-center gap-1" href="/opportunities">
+        <span>Browse All Opportunities</span> <i class="bi bi-arrow-right"></i>
       </a>
     </div>
 
-    <% if (featuredScholarships && featuredScholarships.length) { %>
+    <% if (featured && featured.length) { %>
       <div class="row g-4">
-        <% featuredScholarships.slice(0, 6).forEach(function (o) { %>
+        <% featured.slice(0, 3).forEach(function (o) { %>
           <div class="col-md-6 col-lg-4">
             <%- include('../partials/opportunityCard', { o: o }) %>
           </div>
@@ -278,10 +220,10 @@
     <% } else { %>
       <%- include('../partials/emptyState', {
         emptyState: {
-          icon: 'bi-mortarboard',
-          title: 'No scholarships posted yet',
-          message: 'Scholarships will appear as soon as academic partners publish them.',
-          actionHref: '/opportunities', actionLabel: 'Browse All Opportunities', actionIcon: 'bi-grid'
+          icon: 'bi-briefcase',
+          title: 'No opportunities open right now',
+          message: 'New opportunities are reviewed and published daily.',
+          actionHref: '/opportunities', actionLabel: 'Explore Open Listings', actionIcon: 'bi-grid'
         }
       }) %>
     <% } %>
@@ -289,292 +231,45 @@
 </section>
 
 <!-- =========================================================================
-     5. BROWSE BY CATEGORY (Matching PDF Page 3 Grid Style)
+     SECTION C. EXPLORE BY CATEGORY (Attractive Cards with Pastel Icons)
      ========================================================================= -->
-<section class="container py-5">
-  <div class="text-center max-w-700 mx-auto mb-5">
-    <span class="badge badge-subtle badge-subtle-violet text-uppercase fw-bold px-3 py-1 mb-2">Explore Fields</span>
-    <h2 class="h3 fw-bold text-dark mb-2">Browse Opportunities by Category</h2>
-    <p class="text-muted small mb-0">Find the ideal internship or grant tailored to your exact academic specialization.</p>
-  </div>
+<section class="categories-section py-5">
+  <div class="container py-lg-3">
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <span class="badge bg-purple-subtle text-purple rounded-pill px-3 py-1 fw-semibold text-uppercase small mb-2">Explore Fields</span>
+      <h2 class="h3 fw-extrabold text-navy mb-2">Explore by Category</h2>
+      <p class="text-navy-muted small mb-0">Find the right internship or scholarship tailored to your academic field and career passions.</p>
+    </div>
 
-  <%
-  const defaultCategoryIcons = {
-    'Software Development': { icon: 'bi-code-slash', color: 'indigo' },
-    'Data Science & AI': { icon: 'bi-cpu-fill', color: 'violet' },
-    'Marketing': { icon: 'bi-megaphone-fill', color: 'rose' },
-    'Design': { icon: 'bi-palette-fill', color: 'cyan' },
-    'Finance': { icon: 'bi-wallet2', color: 'emerald' },
-    'Human Resources': { icon: 'bi-person-hearts', color: 'amber' },
-    'Engineering': { icon: 'bi-gear-wide-connected', color: 'indigo' },
-    'Research': { icon: 'bi-journal-code', color: 'violet' },
-    'Education': { icon: 'bi-mortarboard-fill', color: 'emerald' },
-    'Business Development': { icon: 'bi-graph-up-arrow', color: 'cyan' }
-  };
-  %>
-
-  <div class="row g-3 row-cols-2 row-cols-md-3 row-cols-lg-5">
-    <% categories.slice(0, 10).forEach(function (cat) {
-         const meta = defaultCategoryIcons[cat] || { icon: 'bi-folder2-open', color: 'indigo' };
-         const statMatch = categoryStats.find(function (cs) { return cs._id === cat; });
-         const count = statMatch ? statMatch.count : '12+';
+    <%
+    const categoryThemeMap = {
+      'Software Development': { icon: 'bi-code-slash', bg: '#DBEAFE', color: '#1D4ED8' },
+      'Data Science & AI': { icon: 'bi-database-fill', bg: '#F3E8FF', color: '#7E22CE' },
+      'Design': { icon: 'bi-palette-fill', bg: '#FCE7F3', color: '#BE185D' },
+      'Marketing': { icon: 'bi-megaphone-fill', bg: '#FEF3C7', color: '#B45309' },
+      'Finance': { icon: 'bi-wallet2', bg: '#DCFCE7', color: '#15803D' },
+      'Engineering': { icon: 'bi-cpu-fill', bg: '#FFEDD5', color: '#C2410C' },
+      'Research': { icon: 'bi-journal-code', bg: '#CCFBF1', color: '#0F766E' },
+      'Education': { icon: 'bi-mortarboard-fill', bg: '#E0F2FE', color: '#0369A1' },
+      'Business Development': { icon: 'bi-graph-up-arrow', bg: '#E0E7FF', color: '#4338CA' },
+      'Human Resources': { icon: 'bi-people-fill', bg: '#F3E8FF', color: '#7E22CE' }
+    };
     %>
-      <div class="col">
-        <a href="/search?category=<%= encodeURIComponent(cat) %>" class="category-card p-3 p-xl-4 text-center d-flex flex-column align-items-center justify-content-center text-decoration-none h-100 rounded-4 bg-white shadow-sm border border-light-subtle transition-hover">
-          <div class="category-icon-box mb-3 rounded-4 category-icon-<%= meta.color %> d-flex align-items-center justify-content-center">
-            <i class="bi <%= meta.icon %> fs-4"></i>
-          </div>
-          <h3 class="h6 fw-bold text-dark mb-1 text-truncate w-100"><%= cat %></h3>
-          <span class="small text-muted"><%= count %> open roles</span>
-        </a>
-      </div>
-    <% }); %>
-  </div>
-</section>
 
-<!-- =========================================================================
-     6. HOW NEXTSTEP WORKS (3 Steps: Discover, Apply, Achieve - PDF Page 2)
-     ========================================================================= -->
-<section class="py-5 bg-gradient-subtle border-top border-bottom">
-  <div class="container">
-    <div class="text-center max-w-700 mx-auto mb-5">
-      <span class="badge badge-subtle badge-subtle-indigo text-uppercase fw-bold px-3 py-1 mb-2">Seamless Workflow</span>
-      <h2 class="h3 fw-bold text-dark mb-2">How NextStep Works</h2>
-      <p class="text-muted small mb-0">Three simple steps to transition from classroom learning to high-impact career milestones.</p>
-    </div>
-
-    <div class="row g-4">
-      <!-- Step 1: Discover -->
-      <div class="col-md-4">
-        <div class="work-step-card bg-white p-4 p-xl-5 rounded-4 shadow-sm h-100 border border-light-subtle position-relative overflow-hidden transition-hover">
-          <div class="step-watermark" aria-hidden="true">01</div>
-          <div class="step-icon-wrap rounded-3 bg-indigo text-white mb-4 d-inline-flex align-items-center justify-content-center">
-            <i class="bi bi-search fs-4"></i>
-          </div>
-          <h3 class="h5 fw-bold text-dark mb-2">1. Discover</h3>
-          <p class="text-muted small mb-3 lh-base">
-            Explore curated internships and grants filtered by your location, department, GPA, and verified skill proficiency.
-          </p>
-          <div class="d-flex align-items-center gap-2 small text-indigo fw-semibold">
-            <span>Skill Matching</span> &middot; <span>Verified Posts</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 2: Apply -->
-      <div class="col-md-4">
-        <div class="work-step-card bg-white p-4 p-xl-5 rounded-4 shadow-sm h-100 border border-light-subtle position-relative overflow-hidden transition-hover">
-          <div class="step-watermark" aria-hidden="true">02</div>
-          <div class="step-icon-wrap rounded-3 bg-violet text-white mb-4 d-inline-flex align-items-center justify-content-center">
-            <i class="bi bi-file-earmark-check fs-4"></i>
-          </div>
-          <h3 class="h5 fw-bold text-dark mb-2">2. Apply</h3>
-          <p class="text-muted small mb-3 lh-base">
-            Submit your profile CV, customized cover letters, and company questionnaire answers in a single click with zero hassle.
-          </p>
-          <div class="d-flex align-items-center gap-2 small text-violet fw-semibold">
-            <span>One-Click CV</span> &middot; <span>Fast Turnaround</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 3: Achieve -->
-      <div class="col-md-4">
-        <div class="work-step-card bg-white p-4 p-xl-5 rounded-4 shadow-sm h-100 border border-light-subtle position-relative overflow-hidden transition-hover">
-          <div class="step-watermark" aria-hidden="true">03</div>
-          <div class="step-icon-wrap rounded-3 bg-emerald text-white mb-4 d-inline-flex align-items-center justify-content-center">
-            <i class="bi bi-trophy-fill fs-4"></i>
-          </div>
-          <h3 class="h5 fw-bold text-dark mb-2">3. Achieve</h3>
-          <p class="text-muted small mb-3 lh-base">
-            Track live application status milestones, receive interview invitations, review employer notes, and secure your career offer.
-          </p>
-          <div class="d-flex align-items-center gap-2 small text-success fw-semibold">
-            <span>Live Timeline</span> &middot; <span>Direct Feedback</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- =========================================================================
-     7. WHY CHOOSE NEXTSTEP (Feature Cards - Matching PDF Page 2)
-     ========================================================================= -->
-<section class="container py-5">
-  <div class="row align-items-center g-5">
-    <div class="col-lg-5">
-      <span class="badge badge-subtle badge-subtle-indigo text-uppercase fw-bold px-3 py-1 mb-2">Built For You</span>
-      <h2 class="h3 fw-bold text-dark mb-3">Designed for the Next Generation of Professionals</h2>
-      <p class="text-muted small mb-4 lh-base">
-        Unlike generic job boards, NextStep is specifically engineered for students, university career centers, and forward-thinking recruiters who value real potential over decades of experience.
-      </p>
-
-      <div class="d-grid gap-3 mb-4">
-        <div class="d-flex align-items-start gap-3">
-          <div class="feature-check-icon rounded-circle bg-indigo-subtle text-indigo p-2 mt-1">
-            <i class="bi bi-check2 fs-6 fw-bold"></i>
-          </div>
-          <div>
-            <h4 class="h6 fw-bold mb-1 text-dark">Strict Moderation &amp; Zero Spam</h4>
-            <p class="small text-muted mb-0">Every posting is screened by an administrator before appearing to students.</p>
-          </div>
-        </div>
-
-        <div class="d-flex align-items-start gap-3">
-          <div class="feature-check-icon rounded-circle bg-violet-subtle text-violet p-2 mt-1">
-            <i class="bi bi-magic fs-6 fw-bold"></i>
-          </div>
-          <div>
-            <h4 class="h6 fw-bold mb-1 text-dark">Smart Skill Compatibility</h4>
-            <p class="small text-muted mb-0">Match percentages help you focus effort on roles where you have the highest likelihood of winning.</p>
-          </div>
-        </div>
-
-        <div class="d-flex align-items-start gap-3">
-          <div class="feature-check-icon rounded-circle bg-emerald-subtle text-success p-2 mt-1">
-            <i class="bi bi-clock-history fs-6 fw-bold"></i>
-          </div>
-          <div>
-            <h4 class="h6 fw-bold mb-1 text-dark">Full Application Transparency</h4>
-            <p class="small text-muted mb-0">Real-time status changes with direct recruiter feedback and in-app notifications.</p>
-          </div>
-        </div>
-      </div>
-
-      <a href="/opportunities" class="btn btn-indigo px-4 py-2.5 rounded-3 fw-semibold small">
-        Explore Opportunities Now <i class="bi bi-arrow-right ms-1"></i>
-      </a>
-    </div>
-
-    <!-- Visual Feature Grid Cards -->
-    <div class="col-lg-7">
-      <div class="row g-3">
-        <div class="col-sm-6">
-          <div class="feature-card p-4 rounded-4 bg-white shadow-sm border border-light-subtle h-100 transition-hover">
-            <div class="feature-card-icon rounded-3 bg-indigo text-white mb-3 d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-              <i class="bi bi-shield-check fs-5"></i>
-            </div>
-            <h3 class="h6 fw-bold text-dark mb-2">Verified Companies</h3>
-            <p class="small text-muted mb-0">Connect directly with vetted industry leaders, startups, and academic foundations.</p>
-          </div>
-        </div>
-
-        <div class="col-sm-6">
-          <div class="feature-card p-4 rounded-4 bg-white shadow-sm border border-light-subtle h-100 transition-hover">
-            <div class="feature-card-icon rounded-3 bg-violet text-white mb-3 d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-              <i class="bi bi-graph-up-arrow fs-5"></i>
-            </div>
-            <h3 class="h6 fw-bold text-dark mb-2">Resume Strength Meter</h3>
-            <p class="small text-muted mb-0">Actionable checklist tips help you complete your profile and attract recruiter eyes.</p>
-          </div>
-        </div>
-
-        <div class="col-sm-6">
-          <div class="feature-card p-4 rounded-4 bg-white shadow-sm border border-light-subtle h-100 transition-hover">
-            <div class="feature-card-icon rounded-3 bg-emerald text-white mb-3 d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-              <i class="bi bi-currency-dollar fs-5"></i>
-            </div>
-            <h3 class="h6 fw-bold text-dark mb-2">Fair Stipends &amp; Grants</h3>
-            <p class="small text-muted mb-0">Transparent pay rates and scholarship amounts clearly displayed on every card.</p>
-          </div>
-        </div>
-
-        <div class="col-sm-6">
-          <div class="feature-card p-4 rounded-4 bg-white shadow-sm border border-light-subtle h-100 transition-hover">
-            <div class="feature-card-icon rounded-3 bg-cyan text-white mb-3 d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-              <i class="bi bi-bell fs-5"></i>
-            </div>
-            <h3 class="h6 fw-bold text-dark mb-2">Instant In-App Alerts</h3>
-            <p class="small text-muted mb-0">Never miss a recruiter invitation, review stage update, or closing deadline.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- =========================================================================
-     8. STUDENT TESTIMONIALS (Matching PDF Page 1 Testimonials Style)
-     ========================================================================= -->
-<section class="py-5 bg-body-tertiary border-top border-bottom">
-  <div class="container">
-    <div class="text-center max-w-700 mx-auto mb-5">
-      <span class="badge badge-subtle badge-subtle-indigo text-uppercase fw-bold px-3 py-1 mb-2">Student Voices</span>
-      <h2 class="h3 fw-bold text-dark mb-2">What Our Students Are Saying</h2>
-      <p class="text-muted small mb-0">Over 95% of students report landing their first internship within 6 weeks of profile completion.</p>
-    </div>
-
-    <div class="row g-4">
-      <%
-      const sampleTestimonials = [
-        {
-          quote: "NextStep completely streamlined my summer internship search. Within two weeks of uploading my resume, I was interviewed and placed at a top tech consulting firm!",
-          name: "Farhan Ahmed",
-          role: "Software Engineering Intern",
-          university: "University of Dhaka",
-          rating: 5,
-          initials: "FA"
-        },
-        {
-          quote: "The scholarship search filter is a lifesaver. I was able to secure a merit-based tuition grant that covered my entire final year semester fees without any friction.",
-          name: "Tanzina Kabir",
-          role: "Merit Scholar Awardee",
-          university: "BRAC University",
-          rating: 5,
-          initials: "TK"
-        },
-        {
-          quote: "I love the live status tracking! Knowing exactly when my application moved to 'Under Review' and 'Shortlisted' kept me motivated and prepared for the interview.",
-          name: "Sabbir Hossain",
-          role: "Data Analyst Trainee",
-          university: "NSU",
-          rating: 5,
-          initials: "SH"
-        }
-      ];
-
-      const displayReviews = (reviews && reviews.length >= 3)
-        ? reviews.slice(0, 3).map(function (r) {
-            return {
-              quote: r.comment || "Great experience finding high quality internships and transparent application steps.",
-              name: r.student ? r.student.name : "Verified Student",
-              role: "Intern Candidate",
-              university: "Verified Scholar",
-              rating: r.rating || 5,
-              initials: r.student && r.student.name ? r.student.name.split(' ').map(function(w){return w[0];}).slice(0,2).join('') : "VS"
-            };
-          })
-        : sampleTestimonials;
+    <div class="row g-3 row-cols-2 row-cols-md-3 row-cols-lg-5">
+      <% (categories || []).slice(0, 10).forEach(function (cat) {
+           const theme = categoryThemeMap[cat] || { icon: 'bi-briefcase-fill', bg: '#E0E7FF', color: '#4338CA' };
+           const statMatch = (categoryStats || []).find(function (cs) { return cs._id === cat; });
+           const count = statMatch ? statMatch.count : 'Multiple';
       %>
-
-      <% displayReviews.forEach(function (t) { %>
-        <div class="col-md-4">
-          <div class="testimonial-card p-4 p-xl-4 rounded-4 bg-white shadow-sm border border-light-subtle h-100 d-flex flex-column justify-content-between transition-hover">
-            <div>
-              <div class="d-flex align-items-center justify-content-between mb-3">
-                <div class="text-warning">
-                  <% for (let i = 0; i < (t.rating || 5); i++) { %>
-                    <i class="bi bi-star-fill small"></i>
-                  <% } %>
-                </div>
-                <i class="bi bi-quote fs-3 text-indigo opacity-35"></i>
-              </div>
-              <p class="small text-body-secondary mb-4 lh-base italic">
-                &ldquo;<%= t.quote %>&rdquo;
-              </p>
+        <div class="col">
+          <a href="/search?category=<%= encodeURIComponent(cat) %>" class="category-pill-card h-100 text-decoration-none">
+            <div class="category-icon-box mb-3" style="width: 52px; height: 52px; border-radius: 14px; background-color: <%= theme.bg %>; color: <%= theme.color %>; display: flex; align-items: center; justify-content: center;">
+              <i class="bi <%= theme.icon %> fs-4"></i>
             </div>
-
-            <div class="d-flex align-items-center gap-3 pt-3 border-top border-light-subtle">
-              <div class="avatar avatar-md rounded-circle bg-gradient-indigo text-white fw-bold">
-                <%= t.initials %>
-              </div>
-              <div>
-                <div class="fw-bold small text-dark"><%= t.name %></div>
-                <div class="text-muted" style="font-size: 0.75rem;"><%= t.role %> &middot; <%= t.university %></div>
-              </div>
-            </div>
-          </div>
+            <h3 class="h6 fw-bold text-navy mb-1 text-truncate w-100"><%= cat %></h3>
+            <span class="small text-muted"><%= count %> open roles</span>
+          </a>
         </div>
       <% }); %>
     </div>
@@ -582,30 +277,108 @@
 </section>
 
 <!-- =========================================================================
-     9. NEWSLETTER / CAREER ALERTS CTA (Matching PDF Page 1 Newsletter Style)
+     SECTION D. HOW NEXTSTEP WORKS (Discover, Apply, Track)
      ========================================================================= -->
-<section class="container py-5 my-2">
-  <div class="newsletter-banner bg-gradient-indigo-violet text-white p-4 p-lg-5 rounded-5 shadow-2xl position-relative overflow-hidden">
-    <div class="row align-items-center g-4 position-relative z-1">
-      <div class="col-lg-6">
-        <span class="badge rounded-pill bg-white bg-opacity-25 backdrop-blur px-3 py-1 mb-3 small fw-semibold text-uppercase">
-          <i class="bi bi-envelope-paper-fill me-1 text-warning"></i>Weekly Career Dispatch
-        </span>
-        <h2 class="h3 fw-bold text-white mb-2">Subscribe to Opportunity Alerts</h2>
-        <p class="small text-white text-opacity-80 mb-0 pe-lg-3 lh-base">
-          Get the newest vetted internships, high-value scholarships, and expert resume tips delivered straight to your inbox every Monday.
-        </p>
+<section class="how-it-works-section py-5 bg-slate-subtle border-top border-bottom">
+  <div class="container py-lg-3">
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <span class="badge bg-purple-subtle text-purple rounded-pill px-3 py-1 fw-semibold text-uppercase small mb-2">Simple 3-Step Process</span>
+      <h2 class="h3 fw-extrabold text-navy mb-2">How NextStep Works</h2>
+      <p class="text-navy-muted small mb-0">From discovering curated postings to receiving interview calls in three seamless steps.</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Step 1: Discover Opportunities -->
+      <div class="col-md-4">
+        <div class="work-step-card bg-white p-4 p-xl-5 rounded-4 shadow-sm h-100 border border-light-subtle position-relative overflow-hidden transition-hover">
+          <div class="step-watermark" aria-hidden="true">01</div>
+          <div class="step-icon-wrap rounded-3 mb-4 d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #4338CA, #6366F1); color: #fff;">
+            <i class="bi bi-search fs-4"></i>
+          </div>
+          <h3 class="h5 fw-bold text-navy mb-2">1. Discover Opportunities</h3>
+          <p class="text-navy-muted small mb-3 lh-base">
+            Explore verified internships and prestigious scholarship programs filtered by field, GPA, and skills.
+          </p>
+          <div class="d-flex align-items-center gap-2 small text-purple fw-semibold">
+            <span>Skill Matching</span> &middot; <span>Verified Posts</span>
+          </div>
+        </div>
       </div>
 
-      <div class="col-lg-6">
-        <form class="newsletter-form d-flex flex-column flex-sm-row gap-2 bg-white p-2 rounded-4 shadow-lg" onsubmit="event.preventDefault(); this.querySelector('button').innerHTML='<i class=\'bi bi-check2\'></i> Subscribed!'; this.querySelector('input').value='';">
-          <input type="email" class="form-control border-0 shadow-none px-3 py-2 text-dark" placeholder="Enter your student email..." required>
-          <button class="btn btn-indigo px-4 py-2.5 rounded-3 fw-semibold text-nowrap" type="submit">
-            Get Alerts <i class="bi bi-arrow-right ms-1"></i>
-          </button>
-        </form>
-        <div class="small text-white text-opacity-70 mt-2 ps-1" style="font-size: 0.72rem;">
-          <i class="bi bi-shield-check me-1"></i>No spam ever. Unsubscribe anytime in one click.
+      <!-- Step 2: Apply with Your CV -->
+      <div class="col-md-4">
+        <div class="work-step-card bg-white p-4 p-xl-5 rounded-4 shadow-sm h-100 border border-light-subtle position-relative overflow-hidden transition-hover">
+          <div class="step-watermark" aria-hidden="true">02</div>
+          <div class="step-icon-wrap rounded-3 mb-4 d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #7C3AED, #A855F7); color: #fff;">
+            <i class="bi bi-file-earmark-person fs-4"></i>
+          </div>
+          <h3 class="h5 fw-bold text-navy mb-2">2. Apply with Your CV</h3>
+          <p class="text-navy-muted small mb-3 lh-base">
+            Submit your student profile, personalized cover letter, and resume directly to employers in one click.
+          </p>
+          <div class="d-flex align-items-center gap-2 small text-purple fw-semibold">
+            <span>One-Click CV</span> &middot; <span>Direct Submission</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Track Your Applications -->
+      <div class="col-md-4">
+        <div class="work-step-card bg-white p-4 p-xl-5 rounded-4 shadow-sm h-100 border border-light-subtle position-relative overflow-hidden transition-hover">
+          <div class="step-watermark" aria-hidden="true">03</div>
+          <div class="step-icon-wrap rounded-3 mb-4 d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #059669, #10B981); color: #fff;">
+            <i class="bi bi-clock-history fs-4"></i>
+          </div>
+          <h3 class="h5 fw-bold text-navy mb-2">3. Track Your Applications</h3>
+          <p class="text-navy-muted small mb-3 lh-base">
+            Stay informed with real-time status updates, recruiter notifications, and interview invitations.
+          </p>
+          <div class="d-flex align-items-center gap-2 small text-success fw-semibold">
+            <span>Live Timeline</span> &middot; <span>Status Tracking</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     SECTION E. FINAL CALL TO ACTION
+     ========================================================================= -->
+<section class="container py-5 my-3">
+  <div class="cta-banner-wrapper text-white p-4 p-lg-5 rounded-5 shadow-2xl position-relative overflow-hidden" style="background: linear-gradient(135deg, #312E81 0%, #4338CA 50%, #6D28D9 100%);">
+    <!-- Subtle decorative glow circles -->
+    <div class="position-absolute rounded-circle bg-white opacity-10" style="width: 350px; height: 350px; top: -120px; right: -80px; filter: blur(50px);" aria-hidden="true"></div>
+    <div class="position-absolute rounded-circle bg-purple opacity-20" style="width: 250px; height: 250px; bottom: -80px; left: -50px; filter: blur(40px);" aria-hidden="true"></div>
+
+    <div class="row align-items-center g-4 position-relative z-1 text-center text-lg-start">
+      <div class="col-lg-8">
+        <span class="badge rounded-pill bg-white bg-opacity-20 text-white px-3 py-1 mb-3 small fw-semibold text-uppercase">
+          <i class="bi bi-stars me-1 text-warning"></i>Accelerate Your Future
+        </span>
+        <h2 class="display-6 fw-extrabold text-white mb-2">Your next opportunity is waiting. Start exploring today.</h2>
+        <p class="text-white text-opacity-85 mb-0 fs-6 max-w-650 lh-base">
+          Join thousands of ambitious students and graduates discovering career-launching internships and life-changing scholarships with NextStep.
+        </p>
+      </div>
+      <div class="col-lg-4 text-center text-lg-end">
+        <div class="d-flex flex-column flex-sm-row justify-content-lg-end gap-2.5">
+          <a class="btn btn-light btn-lg px-4 py-2.5 rounded-3 fw-bold text-navy shadow-sm" href="/opportunities">
+            <span>Browse Opportunities</span> <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+          <% if (!currentUser) { %>
+            <a class="btn btn-outline-light btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/auth/register">
+              <span>Create Account</span>
+            </a>
+          <% } else if (isCompany) { %>
+            <a class="btn btn-outline-light btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/company/opportunities/new">
+              <span>Post Opportunity</span>
+            </a>
+          <% } else { %>
+            <a class="btn btn-outline-light btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/student/dashboard">
+              <span>My Dashboard</span>
+            </a>
+          <% } %>
         </div>
       </div>
     </div>

@@ -277,12 +277,15 @@ async function mostViewed(limit = 5) {
   ]);
 }
 
-/** The counters shown in the landing page hero. */
+/** The counters shown in the landing page hero and platform highlights. */
 async function siteStats() {
-  const [students, companies, opportunities, applications, reviews, dead] = await Promise.all([
+  const [students, companies, opportunities, internships, scholarships, verifiedCompanies, applications, reviews, dead] = await Promise.all([
     User.countDocuments({ role: 'student' }),
     User.countDocuments({ role: 'company' }),
     Opportunity.countDocuments({ status: 'approved', isActive: true, deadline: { $gt: new Date() } }),
+    Opportunity.countDocuments({ status: 'approved', isActive: true, type: 'internship', deadline: { $gt: new Date() } }),
+    Opportunity.countDocuments({ status: 'approved', isActive: true, type: 'scholarship', deadline: { $gt: new Date() } }),
+    CompanyProfile.countDocuments({ verified: true }),
     Application.countDocuments({}),
     Review.countDocuments({}),
     new Promise((resolve) => {
@@ -296,6 +299,9 @@ async function siteStats() {
     students,
     companies,
     opportunities,
+    internships,
+    scholarships,
+    verifiedCompanies,
     applications,
     reviews,
     totalUsers: dead,
