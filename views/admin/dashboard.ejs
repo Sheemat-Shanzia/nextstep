@@ -9,25 +9,33 @@ const links = [
   { href: '/admin/announcements', label: 'Announcements', icon: 'bi-megaphone' }
 ];
 const sidebarCard = { title: 'CSV export', text: 'Download the full user list or every opportunity for offline analysis.', href: '/admin/users/export.csv', action: 'Export users' };
-const roleChart = { type: 'doughnut', labels: chart.usersByRole.labels, data: chart.usersByRole.values };
+const roleChart = { type: 'doughnut', labels: chart.usersByRole.labels, data: chart.usersByRole.values, legend: true };
 const typeChart = { type: 'bar', labels: chart.opportunitiesByType.labels, data: chart.opportunitiesByType.values, label: 'Opportunities' };
-const trendChart = { type: 'line', labels: chart.trend.labels, data: chart.trend.values, label: 'Applications', colors: ['#2C7DA0'] };
+const trendChart = { type: 'line', labels: chart.trend.labels, data: chart.trend.values, label: 'Applications', colors: ['#4338CA'] };
 %>
 <%- include('../partials/flash') %>
 <div class="container py-4">
-  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-    <div class="d-flex align-items-center gap-3">
-      <img src="/img/logo.png" alt="NextStep Logo" class="dashboard-logo d-none d-sm-block">
-      <div>
-        <h1 class="h3 mb-1">Admin dashboard</h1>
-        <p class="text-body-secondary mb-0">Platform overview, moderation queue and recent activity.</p>
+  <!-- Admin Dashboard Welcome Banner -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white border border-light-subtle">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="company-logo-wrapper flex-shrink-0" style="width: 56px; height: 56px;">
+          <span class="company-logo-fallback rounded-3"><i class="bi bi-shield-lock-fill fs-4"></i></span>
+        </div>
+        <div>
+          <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+            <h1 class="h4 fw-bold text-dark mb-0">Platform Administration</h1>
+            <span class="badge bg-indigo-subtle text-indigo border border-indigo-subtle rounded-pill small">System Controller</span>
+          </div>
+          <p class="text-muted small mb-0">Platform overview, opportunity moderation queue, and system-wide telemetry.</p>
+        </div>
       </div>
-    </div>
-    <div class="d-flex gap-2">
-      <a class="btn btn-outline-secondary" href="/admin/analytics"><i class="bi bi-graph-up me-1"></i>Full analytics</a>
-      <a class="btn btn-primary" href="/admin/opportunities?status=pending">
-        <i class="bi bi-clipboard-check me-1"></i>Review queue (<%= moderation.pending %>)
-      </a>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary px-3 rounded-3" href="/admin/analytics"><i class="bi bi-graph-up me-1"></i>Full Analytics</a>
+        <a class="btn btn-gradient-indigo px-4 rounded-3 shadow-sm" href="/admin/opportunities?status=pending">
+          <i class="bi bi-clipboard-check me-1"></i>Review Queue (<%= moderation.pending %>)
+        </a>
+      </div>
     </div>
   </div>
 
@@ -37,37 +45,43 @@ const trendChart = { type: 'line', labels: chart.trend.labels, data: chart.trend
     </div>
 
     <div class="col-lg-9">
+      <!-- 4 KPI Stat Tiles -->
       <div class="row g-3 mb-4">
         <div class="col-6 col-xl-3">
-          <%- include('../partials/statCard', { label: 'Total users', value: stats.totalUsers, icon: 'bi-people', tone: 'primary', href: '/admin/users', sub: 'All roles' }) %>
+          <%- include('../partials/statCard', { label: 'Total Users', value: stats.totalUsers, icon: 'bi-people-fill', tone: 'primary', href: '/admin/users', sub: 'All system roles' }) %>
         </div>
         <div class="col-6 col-xl-3">
-          <%- include('../partials/statCard', { label: 'Pending moderation', value: moderation.pending, icon: 'bi-hourglass-split', tone: 'warning', href: '/admin/opportunities?status=pending', sub: moderation.approvalRate + '% approval rate' }) %>
+          <%- include('../partials/statCard', { label: 'Pending Moderation', value: moderation.pending, icon: 'bi-hourglass-split', tone: 'warning', href: '/admin/opportunities?status=pending', sub: moderation.approvalRate + '% approval rate' }) %>
         </div>
         <div class="col-6 col-xl-3">
-          <%- include('../partials/statCard', { label: 'Open opportunities', value: stats.openOpportunities, icon: 'bi-briefcase', tone: 'success', href: '/admin/opportunities?status=approved', sub: moderation.total + ' total posts' }) %>
+          <%- include('../partials/statCard', { label: 'Active Postings', value: stats.openOpportunities, icon: 'bi-briefcase-fill', tone: 'success', href: '/admin/opportunities?status=approved', sub: moderation.total + ' total posts' }) %>
         </div>
         <div class="col-6 col-xl-3">
-          <%- include('../partials/statCard', { label: 'Applications', value: stats.totalApplications, icon: 'bi-send-check', tone: 'info', href: '/admin/analytics' }) %>
+          <%- include('../partials/statCard', { label: 'Total Applications', value: stats.totalApplications, icon: 'bi-send-check-fill', tone: 'info', href: '/admin/analytics', sub: 'Across all postings' }) %>
         </div>
       </div>
 
       <% if (announcements && announcements.length) { %>
         <div class="mb-4">
           <% announcements.forEach(function (a) { %>
-            <div class="alert alert-<%= a.level || 'info' %> alert-dismissible fade show" role="alert">
-              <strong><i class="bi bi-megaphone-fill me-1"></i><%= a.title %></strong>
-              <div class="small"><%= a.body %></div>
+            <div class="alert alert-<%= a.level || 'info' %> alert-dismissible fade show shadow-sm rounded-3 border-0 d-flex align-items-start gap-2" role="alert">
+              <i class="bi bi-megaphone-fill mt-1 text-<%= a.level || 'primary' %>"></i>
+              <div class="flex-grow-1">
+                <strong><%= a.title %></strong>
+                <div class="small"><%= a.body %></div>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
           <% }); %>
         </div>
       <% } %>
 
+      <!-- 3 Charts Row -->
       <div class="row g-4 mb-4">
         <div class="col-xl-4">
-          <div class="card shadow-sm border-0 h-100">
+          <div class="card shadow-sm border border-light-subtle rounded-4 h-100">
             <div class="card-body p-4">
-              <h2 class="h6 mb-3"><i class="bi bi-people me-2 text-primary"></i>Users by role</h2>
+              <h2 class="h6 fw-bold text-dark mb-3"><i class="bi bi-people-fill me-2 text-indigo"></i>Users by Role</h2>
               <div class="chart-box">
                 <canvas data-chart="<%= JSON.stringify(roleChart) %>" aria-label="Users by role" role="img"></canvas>
               </div>
@@ -76,9 +90,9 @@ const trendChart = { type: 'line', labels: chart.trend.labels, data: chart.trend
         </div>
 
         <div class="col-xl-4">
-          <div class="card shadow-sm border-0 h-100">
+          <div class="card shadow-sm border border-light-subtle rounded-4 h-100">
             <div class="card-body p-4">
-              <h2 class="h6 mb-3"><i class="bi bi-briefcase me-2 text-primary"></i>Opportunities by type</h2>
+              <h2 class="h6 fw-bold text-dark mb-3"><i class="bi bi-briefcase-fill me-2 text-indigo"></i>Posts by Type</h2>
               <div class="chart-box">
                 <canvas data-chart="<%= JSON.stringify(typeChart) %>" aria-label="Opportunities by type" role="img"></canvas>
               </div>
@@ -87,9 +101,9 @@ const trendChart = { type: 'line', labels: chart.trend.labels, data: chart.trend
         </div>
 
         <div class="col-xl-4">
-          <div class="card shadow-sm border-0 h-100">
+          <div class="card shadow-sm border border-light-subtle rounded-4 h-100">
             <div class="card-body p-4">
-              <h2 class="h6 mb-3"><i class="bi bi-graph-up me-2 text-primary"></i>Applications trend</h2>
+              <h2 class="h6 fw-bold text-dark mb-3"><i class="bi bi-graph-up-arrow me-2 text-indigo"></i>Applications Trend</h2>
               <div class="chart-box">
                 <canvas data-chart="<%= JSON.stringify(trendChart) %>" aria-label="Applications trend" role="img"></canvas>
               </div>
@@ -99,41 +113,51 @@ const trendChart = { type: 'line', labels: chart.trend.labels, data: chart.trend
       </div>
 
       <div class="row g-4">
-        <!-- moderation queue -->
+        <!-- Moderation Queue -->
         <div class="col-xl-7">
-          <div class="card shadow-sm border-0 h-100">
+          <div class="card shadow-sm border border-light-subtle rounded-4 h-100">
             <div class="card-body p-4">
               <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="h6 mb-0"><i class="bi bi-clipboard-check me-2 text-primary"></i>Pending moderation queue</h2>
-                <a class="btn btn-sm btn-outline-secondary" href="/admin/opportunities?status=pending">View all</a>
+                <h2 class="h6 fw-bold text-dark mb-0"><i class="bi bi-clipboard-check-fill me-2 text-indigo"></i>Pending Moderation</h2>
+                <a class="btn btn-sm btn-outline-indigo px-3 rounded-pill" href="/admin/opportunities?status=pending">View All <i class="bi bi-arrow-right ms-1"></i></a>
               </div>
 
               <% if (!pendingQueue.length) { %>
-                <div class="text-center py-4">
-                  <i class="bi bi-check-circle display-6 text-success"></i>
-                  <p class="text-body-secondary mb-0">Nothing waiting for review. Nice work!</p>
+                <div class="text-center py-5">
+                  <div class="avatar avatar-lg rounded-circle bg-success-subtle text-success mx-auto mb-2 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-check-circle fs-3"></i>
+                  </div>
+                  <h3 class="h6 fw-bold text-dark mb-1">Queue is Clear!</h3>
+                  <p class="text-muted small mb-0">No opportunities currently awaiting review.</p>
                 </div>
               <% } else { %>
                 <div class="table-responsive">
-                  <table class="table table-sm table-hover align-middle mb-0">
-                    <thead><tr><th>Opportunity</th><th>Company</th><th>Submitted</th><th></th></tr></thead>
+                  <table class="table table-hover align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th class="ps-0">Opportunity</th>
+                        <th>Company</th>
+                        <th>Submitted</th>
+                        <th class="text-end pe-0">Action</th>
+                      </tr>
+                    </thead>
                     <tbody>
                       <% pendingQueue.forEach(function (o) { %>
                         <tr>
-                          <td>
-                            <a href="/admin/opportunities/<%= o._id %>" class="fw-semibold text-decoration-none"><%= o.title %></a>
-                            <div class="small text-body-secondary"><span class="text-capitalize"><%= o.type %></span> &middot; <%= o.location %></div>
+                          <td class="ps-0">
+                            <a href="/admin/opportunities/<%= o._id %>" class="fw-bold text-dark text-decoration-none d-block text-truncate" style="max-width: 170px;"><%= o.title %></a>
+                            <div class="small text-muted" style="font-size: 0.75rem;"><span class="text-capitalize badge bg-light text-muted p-1"><%= o.type %></span> &middot; <%= o.location %></div>
                           </td>
-                          <td class="small"><%= o.companyNameCopy %></td>
-                          <td class="small text-nowrap"><%= format.timeAgo(o.createdAt) %></td>
-                          <td class="text-end">
+                          <td class="small fw-semibold text-truncate" style="max-width: 120px;"><%= o.companyNameCopy %></td>
+                          <td class="small text-nowrap text-muted"><%= format.timeAgo(o.createdAt) %></td>
+                          <td class="text-end pe-0">
                             <div class="d-inline-flex gap-1">
                               <form action="/admin/opportunities/<%= o._id %>/moderate" method="post" class="d-inline">
                                 <input type="hidden" name="action" value="approve">
                                 <input type="hidden" name="returnTo" value="/admin/dashboard">
-                                <button class="btn btn-sm btn-success" type="submit" title="Approve"><i class="bi bi-check-lg"></i></button>
+                                <button class="btn btn-sm btn-success rounded-pill px-2.5" type="submit" title="Quick Approve"><i class="bi bi-check-lg"></i></button>
                               </form>
-                              <a class="btn btn-sm btn-outline-secondary" href="/admin/opportunities/<%= o._id %>" title="Review"><i class="bi bi-eye"></i></a>
+                              <a class="btn btn-sm btn-outline-secondary rounded-pill px-2.5" href="/admin/opportunities/<%= o._id %>" title="Review Details"><i class="bi bi-eye"></i></a>
                             </div>
                           </td>
                         </tr>
@@ -142,34 +166,36 @@ const trendChart = { type: 'line', labels: chart.trend.labels, data: chart.trend
                   </table>
                 </div>
 
-                <%- include('../partials/pagination', { pager: pager }) %>
+                <div class="mt-3">
+                  <%- include('../partials/pagination', { pager: pager }) %>
+                </div>
               <% } %>
             </div>
           </div>
         </div>
 
-        <!-- activity -->
+        <!-- Activity Feed -->
         <div class="col-xl-5">
-          <div class="card shadow-sm border-0 h-100">
+          <div class="card shadow-sm border border-light-subtle rounded-4 h-100">
             <div class="card-body p-4">
               <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="h6 mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Recent activity</h2>
-                <a class="btn btn-sm btn-outline-secondary" href="/admin/activity">Full log</a>
+                <h2 class="h6 fw-bold text-dark mb-0"><i class="bi bi-activity me-2 text-indigo"></i>Live System Activity</h2>
+                <a class="btn btn-sm btn-outline-secondary px-3 rounded-pill" href="/admin/activity">Full Log</a>
               </div>
 
               <% if (!recentActivity.length) { %>
-                <p class="small text-body-secondary mb-0">No activity recorded yet.</p>
+                <p class="small text-muted mb-0 py-3 text-center">No activity recorded yet.</p>
               <% } else { %>
-                <div class="activity-feed d-grid gap-2">
+                <div class="activity-feed d-grid gap-2.5">
                   <% recentActivity.forEach(function (a) { %>
-                    <div class="d-flex gap-2 small">
-                      <i class="bi bi-dot"></i>
-                      <div class="min-w-0">
-                        <div><strong><%= a.userName %></strong> <%= a.action.replace(/_/g, ' ') %></div>
+                    <div class="d-flex gap-2.5 small p-2 rounded-3 bg-light-subtle border border-light-subtle">
+                      <i class="bi bi-circle-fill text-indigo mt-1" style="font-size: 0.5rem;"></i>
+                      <div class="min-w-0 flex-grow-1">
+                        <div class="text-dark"><strong class="fw-bold"><%= a.userName %></strong> <%= a.action.replace(/_/g, ' ') %></div>
                         <% if (a.details) { %>
-                          <div class="text-body-secondary text-truncate"><%= a.details %></div>
+                          <div class="text-muted text-truncate" style="font-size: 0.75rem;"><%= a.details %></div>
                         <% } %>
-                        <div class="text-body-secondary"><%= format.timeAgo(a.createdAt) %></div>
+                        <div class="text-muted" style="font-size: 0.7rem;"><%= format.timeAgo(a.createdAt) %></div>
                       </div>
                     </div>
                   <% }); %>

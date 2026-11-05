@@ -12,64 +12,102 @@ const sidebarCard = {
   title: 'Complete your profile',
   text: checklist.missing.length
     ? `Your profile is ${checklist.percentage}% complete. ${checklist.missing.length} improvement(s) left.`
-    : 'Your profile is complete - great work!',
+    : 'Your profile is 100% complete — recruiters can find you easily!',
   href: '/student/profile/edit',
   action: checklist.missing.length ? 'Finish my profile' : 'Review my profile'
 };
 const statusChart = { type: 'doughnut', labels: chart.applicationsByStatus.labels, data: chart.applicationsByStatus.values, legend: true };
 const trendChart = {
   type: 'line', labels: chart.trend.map(function (t) { return t._id; }), data: chart.trend.map(function (t) { return t.value; }),
-  label: 'Applications', colors: ['#014F86']
+  label: 'Applications', colors: ['#4338CA']
 };
+
+const userInitials = currentUser.name ? currentUser.name.split(' ').map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase() : 'ST';
+const universityName = profile && profile.education && profile.education.length ? profile.education[0].institution : 'Student Member';
+const majorName = profile && profile.education && profile.education.length ? profile.education[0].fieldOfStudy : '';
 %>
 <%- include('../partials/flash') %>
+
 <div class="container py-4">
-  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-    <div class="d-flex align-items-center gap-3">
-      <img src="/img/logo.png" alt="NextStep Logo" class="dashboard-logo d-none d-sm-block">
-      <div>
-        <h1 class="h3 mb-1">Welcome back, <%= currentUser.name.split(' ')[0] %></h1>
-        <p class="text-body-secondary mb-0">Here is what is happening with your applications.</p>
+  <!-- Student Profile Welcome Banner (Matching PDF Page 7 Top Section) -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white border border-light-subtle">
+    <div class="row align-items-center g-4">
+      <div class="col-md-7 d-flex align-items-center gap-3">
+        <div class="avatar avatar-xl rounded-circle bg-gradient-indigo text-white fw-bold shadow-sm flex-shrink-0" style="width: 64px; height: 64px; font-size: 1.5rem;">
+          <%= userInitials %>
+        </div>
+        <div>
+          <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+            <h1 class="h4 fw-bold text-dark mb-0">Welcome back, <%= currentUser.name.split(' ')[0] %>!</h1>
+            <span class="badge bg-indigo-subtle text-indigo border border-indigo-subtle rounded-pill small">Student Portal</span>
+          </div>
+          <p class="text-muted small mb-0">
+            <i class="bi bi-mortarboard-fill me-1 text-indigo"></i><%= universityName %><%= majorName ? ' · ' + majorName : '' %>
+          </p>
+        </div>
       </div>
-    </div>
-    <div class="d-flex gap-2">
-      <a class="btn btn-primary" href="/search"><i class="bi bi-search me-1"></i>Find opportunities</a>
-      <a class="btn btn-outline-secondary" href="/student/profile/edit"><i class="bi bi-person-gear me-1"></i>Edit profile</a>
+
+      <!-- Profile Strength Meter Widget -->
+      <div class="col-md-5">
+        <div class="d-flex align-items-center justify-content-md-end gap-3 p-3 rounded-3 bg-light-subtle border border-light-subtle">
+          <div class="radial-progress-box flex-shrink-0">
+            <svg class="radial-progress-svg" viewBox="0 0 36 36">
+              <path class="radial-progress-meter" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path class="radial-progress-value" stroke-dasharray="<%= checklist.percentage %>, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            </svg>
+            <span class="radial-progress-text"><%= checklist.percentage %>%</span>
+          </div>
+          <div>
+            <div class="d-flex align-items-center gap-1 mb-1">
+              <span class="small fw-bold text-dark">Profile Strength:</span>
+              <span class="badge bg-<%= checklist.levelColor %>-subtle text-<%= checklist.levelColor %> small fw-semibold"><%= checklist.level %></span>
+            </div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              <%= checklist.missing.length ? checklist.missing.length + ' item(s) left to optimize' : 'Your profile is all-star level!' %>
+            </div>
+            <a href="/student/profile/edit" class="btn btn-sm btn-link p-0 text-indigo fw-semibold mt-1" style="font-size: 0.78rem;">
+              Complete Profile <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="row g-4">
+    <!-- Sidebar Navigation -->
     <div class="col-lg-3 d-none d-lg-block">
       <%- include('../partials/sidebar', { links: links, sidebarCard: sidebarCard }) %>
     </div>
 
+    <!-- Main Dashboard Area -->
     <div class="col-lg-9">
-      <!-- KPI tiles -->
+      <!-- 4 KPI Stat Tiles (Matching Design System) -->
       <div class="row g-3 mb-4">
         <div class="col-6 col-xl-3">
-          <%- include('../partials/statCard', { label: 'Total applications', value: stats.totalApplications, icon: 'bi-send-check', tone: 'primary', href: '/student/applications' }) %>
+          <%- include('../partials/statCard', { label: 'Total Applications', value: stats.totalApplications, icon: 'bi-send-check', tone: 'primary', href: '/student/applications', sub: 'Lifetime submitted' }) %>
         </div>
         <div class="col-6 col-xl-3">
-          <%- include('../partials/statCard', { label: 'In progress', value: stats.activeApplications, icon: 'bi-hourglass-split', tone: 'info', href: '/student/applications' }) %>
+          <%- include('../partials/statCard', { label: 'Active In Progress', value: stats.activeApplications, icon: 'bi-hourglass-split', tone: 'info', href: '/student/applications', sub: 'Under recruiter review' }) %>
         </div>
         <div class="col-6 col-xl-3">
-          <%- include('../partials/statCard', { label: 'Saved opportunities', value: stats.saved, icon: 'bi-bookmark-heart', tone: 'warning', href: '/student/bookmarks' }) %>
+          <%- include('../partials/statCard', { label: 'Saved Opportunities', value: stats.saved, icon: 'bi-bookmark-heart', tone: 'warning', href: '/student/bookmarks', sub: 'Saved to review' }) %>
         </div>
         <div class="col-6 col-xl-3">
-          <%- include('../partials/statCard', { label: 'Profile strength', value: checklist.percentage + '%', icon: 'bi-person-check', tone: checklist.levelColor, href: '/student/profile', sub: checklist.level }) %>
+          <%- include('../partials/statCard', { label: 'Profile Score', value: checklist.percentage + '%', icon: 'bi-patch-check-fill', tone: checklist.levelColor, href: '/student/profile', sub: checklist.level }) %>
         </div>
       </div>
 
-      <!-- announcements (bonus 20) -->
+      <!-- In-app Announcements / Flash updates -->
       <% if (announcements && announcements.length) { %>
         <div class="mb-4">
           <% announcements.forEach(function (a) { %>
-            <div class="alert alert-<%= a.level || 'info' %> alert-dismissible fade show d-flex align-items-start gap-2" role="alert">
-              <i class="bi bi-megaphone-fill mt-1"></i>
+            <div class="alert alert-<%= a.level || 'info' %> alert-dismissible fade show d-flex align-items-start gap-3 shadow-sm rounded-3 border-0" role="alert">
+              <i class="bi bi-megaphone-fill fs-5 mt-1 text-<%= a.level || 'primary' %>"></i>
               <div class="flex-grow-1">
-                <strong><%= a.title %></strong>
+                <div class="fw-bold"><%= a.title %></div>
                 <div class="small"><%= a.body %></div>
-                <div class="small text-body-secondary mt-1">
+                <div class="small text-muted mt-1" style="font-size: 0.72rem;">
                   <%= format.timeAgo(a.createdAt) %> &middot; <%= a.createdByName %>
                 </div>
               </div>
@@ -79,12 +117,17 @@ const trendChart = {
         </div>
       <% } %>
 
-      <div class="row g-4">
-        <!-- charts -->
+      <!-- Charts Section: Status Doughnut + Trend Line -->
+      <div class="row g-4 mb-4">
         <div class="col-xl-7">
-          <div class="card shadow-sm border-0 h-100">
+          <div class="card shadow-sm border border-light-subtle h-100 rounded-4">
             <div class="card-body p-4">
-              <h2 class="h6 mb-3"><i class="bi bi-pie-chart me-2 text-primary"></i>My applications by status</h2>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h6 fw-bold text-dark mb-0 d-flex align-items-center">
+                  <i class="bi bi-pie-chart-fill text-indigo me-2"></i>Applications by Status
+                </h2>
+                <span class="badge bg-indigo-subtle text-indigo small">Live Status</span>
+              </div>
               <div class="chart-box">
                 <canvas data-chart="<%= JSON.stringify(statusChart) %>" aria-label="Applications by status" role="img"></canvas>
               </div>
@@ -93,49 +136,94 @@ const trendChart = {
         </div>
 
         <div class="col-xl-5">
-          <div class="card shadow-sm border-0 h-100">
+          <div class="card shadow-sm border border-light-subtle h-100 rounded-4">
             <div class="card-body p-4">
-              <h2 class="h6 mb-3"><i class="bi bi-graph-up me-2 text-primary"></i>Applications over 6 months</h2>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h6 fw-bold text-dark mb-0 d-flex align-items-center">
+                  <i class="bi bi-graph-up-arrow text-indigo me-2"></i>6-Month Activity
+                </h2>
+                <span class="badge bg-light text-muted small">Trend</span>
+              </div>
               <div class="chart-box">
                 <canvas data-chart="<%= JSON.stringify(trendChart) %>" aria-label="Monthly applications" role="img"></canvas>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- recent applications -->
+      <!-- Application Tracking & Deadlines Row -->
+      <div class="row g-4 mb-4">
+        <!-- Recent Applications Table (Left 7 cols) -->
         <div class="col-xl-7">
-          <div class="card shadow-sm border-0 h-100">
+          <div class="card shadow-sm border border-light-subtle h-100 rounded-4">
             <div class="card-body p-4">
               <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="h6 mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Recent applications</h2>
-                <a class="btn btn-sm btn-outline-secondary" href="/student/applications">View all</a>
+                <h2 class="h6 fw-bold text-dark mb-0 d-flex align-items-center">
+                  <i class="bi bi-clock-history text-indigo me-2"></i>Recent Applications
+                </h2>
+                <a class="btn btn-sm btn-outline-indigo px-3 rounded-pill" href="/student/applications">
+                  View All <i class="bi bi-arrow-right ms-1"></i>
+                </a>
               </div>
 
               <% if (!recentApplications.length) { %>
-                <div class="text-center py-4">
-                  <i class="bi bi-send display-6 text-body-secondary opacity-50"></i>
-                  <p class="text-body-secondary mb-2">You have not applied to anything yet.</p>
-                  <a class="btn btn-sm btn-primary" href="/search">Browse opportunities</a>
+                <div class="text-center py-5">
+                  <div class="avatar avatar-lg rounded-circle bg-light text-muted mx-auto mb-3 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-send fs-3 opacity-50"></i>
+                  </div>
+                  <h3 class="h6 fw-bold text-dark mb-1">No applications yet</h3>
+                  <p class="text-muted small mb-3">Start exploring curated roles and submit your first one-click application.</p>
+                  <a class="btn btn-sm btn-indigo px-4 py-2 rounded-3 fw-semibold" href="/search">
+                    <i class="bi bi-search me-1"></i>Browse Opportunities
+                  </a>
                 </div>
               <% } else { %>
                 <div class="table-responsive">
-                  <table class="table table-sm table-hover align-middle mb-0">
-                    <thead><tr><th>Opportunity</th><th>Applied</th><th>Status</th></tr></thead>
+                  <table class="table table-hover align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th class="ps-0">Opportunity</th>
+                        <th>Applied Date</th>
+                        <th>Current Stage</th>
+                        <th class="text-end pe-0">Action</th>
+                      </tr>
+                    </thead>
                     <tbody>
-                      <% recentApplications.forEach(function (a) { %>
+                      <% recentApplications.forEach(function (a) {
+                           const cp = (a.opportunity && a.opportunity.companyProfile) || {};
+                           const cName = cp.companyName || (a.opportunity && a.opportunity.companyNameCopy) || 'Company';
+                           const initLetter = cName.trim().charAt(0).toUpperCase() || 'C';
+                      %>
                         <tr>
-                          <td>
-                            <a href="/student/applications/<%= a._id %>" class="text-decoration-none fw-semibold">
-                              <%= a.opportunity ? a.opportunity.title : '(removed)' %>
-                            </a>
-                            <div class="small text-body-secondary"><%= a.opportunity ? a.opportunity.companyNameCopy : '' %></div>
+                          <td class="ps-0">
+                            <div class="d-flex align-items-center gap-2">
+                              <div class="company-logo-wrapper flex-shrink-0" style="width: 36px; height: 36px;">
+                                <% if (cp.logo) { %>
+                                  <img src="/files/company/logo/<%= cp.user || '' %>" class="company-logo-img rounded-2" alt="<%= cName %>"
+                                       onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'company-logo-fallback rounded-2\' style=\'font-size:0.85rem\'><%= initLetter %></span>';">
+                                <% } else { %>
+                                  <span class="company-logo-fallback rounded-2" style="font-size: 0.85rem;"><%= initLetter %></span>
+                                <% } %>
+                              </div>
+                              <div class="min-w-0">
+                                <a href="/student/applications/<%= a._id %>" class="text-decoration-none fw-bold text-dark text-truncate d-block" style="max-width: 180px;">
+                                  <%= a.opportunity ? a.opportunity.title : '(removed)' %>
+                                </a>
+                                <span class="small text-muted text-truncate d-block" style="font-size: 0.75rem;"><%= cName %></span>
+                              </div>
+                            </div>
                           </td>
-                          <td class="small text-nowrap"><%= format.formatDate(a.appliedAt) %></td>
+                          <td class="small text-nowrap text-muted"><%= format.formatDate(a.appliedAt) %></td>
                           <td>
-                            <span class="badge <%= format.APPLICATION_STATUS_BADGE[a.status] %>">
+                            <span class="badge <%= format.APPLICATION_STATUS_BADGE[a.status] %> rounded-pill px-2.5 py-1">
                               <i class="bi <%= format.APPLICATION_STATUS_ICON[a.status] %> me-1"></i><%= format.applicationStatusLabel(a.status) %>
                             </span>
+                          </td>
+                          <td class="text-end pe-0">
+                            <a href="/student/applications/<%= a._id %>" class="btn btn-sm btn-light border-0 rounded-circle" title="View details">
+                              <i class="bi bi-chevron-right text-indigo"></i>
+                            </a>
                           </td>
                         </tr>
                       <% }); %>
@@ -147,24 +235,31 @@ const trendChart = {
           </div>
         </div>
 
-        <!-- deadlines + skill demand -->
+        <!-- Upcoming Deadlines & Skills (Right 5 cols) -->
         <div class="col-xl-5">
-          <div class="card shadow-sm border-0 mb-4">
+          <!-- Upcoming Deadlines Card -->
+          <div class="card shadow-sm border border-light-subtle rounded-4 mb-4">
             <div class="card-body p-4">
-              <h2 class="h6 mb-3"><i class="bi bi-alarm me-2 text-primary"></i>Upcoming deadlines</h2>
+              <h2 class="h6 fw-bold text-dark mb-3 d-flex align-items-center">
+                <i class="bi bi-alarm-fill text-danger me-2"></i>Upcoming Deadlines
+              </h2>
               <% if (!upcomingDeadlines.length) { %>
-                <p class="small text-body-secondary mb-0">No open applications with a deadline in the future.</p>
+                <div class="p-3 bg-light rounded-3 text-center">
+                  <i class="bi bi-check-circle text-success fs-4 d-block mb-1"></i>
+                  <span class="small text-muted">No urgent pending deadlines for your applications.</span>
+                </div>
               <% } else { %>
                 <div class="list-group list-group-flush">
-                  <% upcomingDeadlines.forEach(function (a) { %>
-                    <% const days = Math.ceil((new Date(a.opportunity.deadline) - Date.now()) / 86400000); %>
-                    <a href="/student/applications/<%= a._id %>" class="list-group-item list-group-item-action px-0">
+                  <% upcomingDeadlines.forEach(function (a) {
+                       const days = Math.ceil((new Date(a.opportunity.deadline) - Date.now()) / 86400000);
+                  %>
+                    <a href="/student/applications/<%= a._id %>" class="list-group-item list-group-item-action px-0 border-light-subtle transition-hover">
                       <div class="d-flex justify-content-between align-items-start gap-2">
                         <div class="min-w-0">
-                          <div class="fw-semibold text-truncate"><%= a.opportunity.title %></div>
-                          <div class="small text-body-secondary"><%= format.formatDate(a.opportunity.deadline) %></div>
+                          <div class="fw-semibold text-truncate text-dark small"><%= a.opportunity.title %></div>
+                          <div class="small text-muted" style="font-size: 0.72rem;"><i class="bi bi-calendar3 me-1"></i><%= format.formatDate(a.opportunity.deadline) %></div>
                         </div>
-                        <span class="badge <%= format.deadlineBadge(days).className %> text-nowrap"><%= format.deadlineBadge(days).text %></span>
+                        <span class="badge <%= format.deadlineBadge(days).className %> text-nowrap rounded-pill"><%= format.deadlineBadge(days).text %></span>
                       </div>
                     </a>
                   <% }); %>
@@ -173,45 +268,59 @@ const trendChart = {
             </div>
           </div>
 
+          <!-- Market In-Demand Skills Card -->
           <% if (skillDemand && skillDemand.length) { %>
-            <div class="card shadow-sm border-0">
+            <div class="card shadow-sm border border-light-subtle rounded-4">
               <div class="card-body p-4">
-                <h2 class="h6 mb-1"><i class="bi bi-fire text-danger me-2"></i>Your skills in demand</h2>
-                <p class="small text-body-secondary mb-3">Openings currently requesting your skills.</p>
-                <% skillDemand.forEach(function (s) { %>
-                  <div class="d-flex justify-content-between small mb-1">
-                    <span><%= s._id %></span>
-                    <span class="badge text-bg-light border"><%= s.openings %> openings</span>
-                  </div>
-                <% }); %>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <h2 class="h6 fw-bold text-dark mb-0 d-flex align-items-center">
+                    <i class="bi bi-fire text-danger me-2"></i>Your In-Demand Skills
+                  </h2>
+                  <span class="badge bg-danger-subtle text-danger small">Market Hot</span>
+                </div>
+                <p class="small text-muted mb-3" style="font-size: 0.75rem;">Open positions currently requesting your verified profile skills.</p>
+                <div class="d-flex flex-column gap-2">
+                  <% skillDemand.forEach(function (s) { %>
+                    <div class="d-flex justify-content-between align-items-center p-2 rounded-3 bg-light-subtle border border-light-subtle">
+                      <span class="small fw-semibold text-dark"><i class="bi bi-tag-fill text-indigo me-1.5"></i><%= s._id %></span>
+                      <a href="/search?q=<%= encodeURIComponent(s._id) %>" class="badge bg-indigo-subtle text-indigo border border-indigo-subtle text-decoration-none rounded-pill">
+                        <%= s.openings %> openings &rarr;
+                      </a>
+                    </div>
+                  <% }); %>
+                </div>
               </div>
             </div>
           <% } %>
         </div>
       </div>
 
-      <!-- recommendations (bonus 2) -->
-      <div class="card shadow-sm border-0 mt-4">
+      <!-- Recommended Opportunities Section -->
+      <div class="card shadow-sm border border-light-subtle rounded-4 mb-4">
         <div class="card-body p-4">
-          <div class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-2">
-            <h2 class="h5 mb-0"><i class="bi bi-magic me-2 text-primary"></i>Recommended for you</h2>
-            <a class="btn btn-sm btn-outline-primary" href="/search">See all</a>
+          <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+            <div>
+              <h2 class="h5 fw-bold text-dark mb-1 d-flex align-items-center">
+                <i class="bi bi-magic text-indigo me-2"></i>Recommended for You
+              </h2>
+              <p class="small text-muted mb-0">Ranked by smart skill compatibility with your profile.</p>
+            </div>
+            <a class="btn btn-sm btn-outline-indigo px-3 rounded-pill" href="/search">
+              See All Opportunities <i class="bi bi-arrow-right ms-1"></i>
+            </a>
           </div>
-          <p class="small text-body-secondary">
-            Ranked by how many of your profile skills each opportunity requires.
-          </p>
 
           <% if (!recommended.length) { %>
-            <%- include('../partials/emptyState', {
-              emptyState: {
-                icon: 'bi-magic',
-                title: 'No recommendations yet',
-                message: 'Add a few skills to your profile and we will match you with relevant opportunities.',
-                actionHref: '/student/skills', actionLabel: 'Add my skills', actionIcon: 'bi-plus-lg'
-              }
-            }) %>
+            <div class="text-center py-5">
+              <i class="bi bi-magic fs-2 text-indigo mb-2 d-block"></i>
+              <h3 class="h6 fw-bold text-dark mb-1">No recommendations yet</h3>
+              <p class="text-muted small mb-3">Add skills to your profile so our engine can match you with the right opportunities.</p>
+              <a class="btn btn-sm btn-indigo px-4 py-2 rounded-3" href="/student/skills">
+                <i class="bi bi-plus-lg me-1"></i>Add My Skills
+              </a>
+            </div>
           <% } else { %>
-            <div class="row g-3">
+            <div class="row g-4 mt-1">
               <% recommended.forEach(function (o) { %>
                 <div class="col-md-6 col-xl-4">
                   <%- include('../partials/opportunityCard', { o: o, applied: false }) %>
@@ -222,22 +331,30 @@ const trendChart = {
         </div>
       </div>
 
-      <!-- saved -->
-      <div class="card shadow-sm border-0 mt-4">
+      <!-- Saved Opportunities Section -->
+      <div class="card shadow-sm border border-light-subtle rounded-4">
         <div class="card-body p-4">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="h5 mb-0"><i class="bi bi-bookmark-heart me-2 text-primary"></i>Saved opportunities</h2>
-            <a class="btn btn-sm btn-outline-secondary" href="/student/bookmarks">Manage saved</a>
+            <div>
+              <h2 class="h5 fw-bold text-dark mb-1 d-flex align-items-center">
+                <i class="bi bi-bookmark-heart-fill text-danger me-2"></i>Saved Opportunities
+              </h2>
+              <p class="small text-muted mb-0">Positions you bookmarked to review or apply later.</p>
+            </div>
+            <a class="btn btn-sm btn-outline-secondary px-3 rounded-pill" href="/student/bookmarks">
+              Manage Bookmarks <i class="bi bi-arrow-right ms-1"></i>
+            </a>
           </div>
 
           <% if (!savedOpportunities.length) { %>
-            <p class="text-body-secondary small mb-0">
-              Nothing saved yet. Click the <i class="bi bi-bookmark"></i> icon on any opportunity to save it here.
-            </p>
+            <div class="text-center py-4 bg-light-subtle rounded-3 border border-dashed border-light-subtle">
+              <i class="bi bi-bookmark text-muted fs-3 mb-1 d-block opacity-50"></i>
+              <span class="text-muted small">Nothing saved yet. Click the bookmark icon on any opportunity card to save it here.</span>
+            </div>
           <% } else { %>
-            <div class="row g-3">
+            <div class="row g-4 mt-1">
               <% savedOpportunities.forEach(function (b) { %>
-                <div class="col-md-6 col-xl-3">
+                <div class="col-md-6 col-xl-4">
                   <%- include('../partials/opportunityCard', { o: b.opportunity }) %>
                 </div>
               <% }); %>

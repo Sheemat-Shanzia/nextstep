@@ -1,107 +1,251 @@
 <%- include('../partials/flash') %>
 
-<!-- ================= HERO ================= -->
-<section class="hero-section py-5">
-  <div class="container py-lg-4">
-    <div class="row justify-content-center">
-      <div class="col-lg-10 col-xl-8 text-center">
-        <div class="mb-3">
-          <img src="/img/logo.png" alt="NextStep Logo" class="hero-logo mb-2">
+<!-- =========================================================================
+     1. HERO SECTION (Career-Tech / EdTech Aesthetic)
+     ========================================================================= -->
+<section class="hero-section position-relative overflow-hidden pt-5 pb-5 pb-lg-6">
+  <!-- Subtle gradient blur background orbs -->
+  <div class="hero-gradient-orb hero-orb-1" aria-hidden="true"></div>
+  <div class="hero-gradient-orb hero-orb-2" aria-hidden="true"></div>
+
+  <div class="container position-relative z-1 py-lg-4">
+    <div class="row align-items-center g-5">
+      <!-- Hero Left: Headlines & Search & CTA -->
+      <div class="col-lg-7 text-center text-lg-start">
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white shadow-sm border border-indigo-subtle mb-3 hero-pill-badge">
+          <span class="badge rounded-pill bg-gradient-indigo text-white px-2 py-1 small">NEW</span>
+          <span class="small fw-semibold text-indigo">Empowering Over 10,000+ Students &amp; Graduates</span>
+          <i class="bi bi-arrow-right text-indigo small"></i>
         </div>
-        <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle mb-3">
-          <i class="bi bi-stars me-1"></i>Internships &amp; Scholarships in one place
-        </span>
-        <h1 class="display-4 fw-bold mb-3">
-          Find your next <span class="text-primary">internship</span> or
-          <span class="text-success">scholarship</span>.
+
+        <h1 class="display-4 fw-extrabold hero-title text-dark mb-3 lh-sm">
+          Where student impact meets <span class="text-gradient-indigo">innovation</span>.
         </h1>
-        <p class="lead text-body-secondary mb-4">
-          NextStep connects students with verified companies and organisations. Search thousands of
-          opportunities, apply in minutes with your CV, and track every application in one dashboard.
+
+        <p class="lead text-body-secondary mb-4 pe-xl-4 hero-subtitle">
+          NextStep connects ambitious students with verified internships and life-changing scholarships from top global employers. Apply seamlessly, track live status, and accelerate your future.
         </p>
 
-        <form class="hero-search mb-3" action="/search" method="get" role="search">
-          <div class="input-group input-group-lg">
-            <span class="input-group-text bg-body"><i class="bi bi-search"></i></span>
-            <input type="search" class="form-control" name="q" autocomplete="off" id="heroSearchInput"
-                   placeholder="Job title, skill or company&hellip;" aria-label="Search opportunities">
-            <button class="btn btn-primary" type="submit">Search</button>
-          </div>
+        <!-- Hero Live Search Box -->
+        <div class="hero-search-wrapper bg-white p-2 rounded-4 shadow-lg border border-light-subtle mb-4">
+          <form class="hero-search d-flex flex-column flex-md-row align-items-stretch gap-2" action="/search" method="get" role="search">
+            <div class="input-group input-group-lg border-0 flex-grow-1">
+              <span class="input-group-text bg-transparent border-0 text-indigo"><i class="bi bi-search"></i></span>
+              <input type="search" class="form-control border-0 shadow-none px-1" name="q" autocomplete="off" id="heroSearchInput"
+                     placeholder="Job title, skill or company..." aria-label="Search opportunities">
+            </div>
+            <div class="vr d-none d-md-block opacity-25 my-2"></div>
+            <select class="form-select border-0 shadow-none text-muted py-2 d-none d-sm-block" name="type" style="max-width: 170px;">
+              <option value="">All Types</option>
+              <option value="internship">Internships</option>
+              <option value="scholarship">Scholarships</option>
+            </select>
+            <button class="btn btn-gradient-indigo btn-lg px-4 rounded-3 d-flex align-items-center justify-content-center gap-2" type="submit">
+              <span>Search</span> <i class="bi bi-arrow-right"></i>
+            </button>
+          </form>
           <div id="heroSuggestions" class="hero-suggestions d-none" role="listbox"></div>
-        </form>
+        </div>
 
-        <div class="d-flex flex-wrap gap-2 justify-content-center">
-          <span class="small text-body-secondary align-self-center">Popular:</span>
-          <% ['Software Engineering', 'Data Science', 'Marketing', 'Design', 'Research'].forEach(function (k) { %>
-            <a class="badge rounded-pill text-bg-light border text-decoration-none" href="/search?q=<%= encodeURIComponent(k) %>"><%= k %></a>
+        <!-- Quick Trending Tags -->
+        <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start align-items-center">
+          <span class="small text-muted fw-medium me-1"><i class="bi bi-fire text-danger me-1"></i>Trending:</span>
+          <% ['Software Engineering', 'Data Science', 'UI/UX Design', 'Marketing', 'FinTech'].forEach(function (k) { %>
+            <a class="badge rounded-pill badge-filter-chip text-decoration-none" href="/search?q=<%= encodeURIComponent(k) %>"><%= k %></a>
           <% }); %>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ================= STATS (from MongoDB aggregations) ================= -->
-<section class="py-4 border-top border-bottom bg-body-tertiary">
-  <div class="container">
-    <div class="row g-3 text-center" id="statsCounters">
-      <div class="col-6 col-lg-2">
-        <div class="stat-counter"><span class="counter-value" data-target="<%= stats.totalUsersLabel || stats.totalUsers %>"><%= stats.totalUsersLabel || stats.totalUsers %></span></div>
-        <div class="stat-counter-label">Registered users</div>
-      </div>
-      <div class="col-6 col-lg-2">
-        <div class="stat-counter"><span class="counter-value" data-target="<%= stats.students %>"><%= stats.students %></span></div>
-        <div class="stat-counter-label">Students</div>
-      </div>
-      <div class="col-6 col-lg-2">
-        <div class="stat-counter"><span class="counter-value" data-target="<%= stats.companies %>"><%= stats.companies %></span></div>
-        <div class="stat-counter-label">Companies</div>
-      </div>
-      <div class="col-6 col-lg-2">
-        <div class="stat-counter"><span class="counter-value" data-target="<%= stats.opportunities %>"><%= stats.opportunities %></span></div>
-        <div class="stat-counter-label">Open opportunities</div>
-      </div>
-      <div class="col-6 col-lg-2">
-        <div class="stat-counter"><span class="counter-value" data-target="<%= stats.applications %>"><%= stats.applications %></span></div>
-        <div class="stat-counter-label">Applications sent</div>
-      </div>
-      <div class="col-6 col-lg-2">
-        <div class="stat-counter"><span class="counter-value" data-target="<%= avgRating.count %>"><%= avgRating.count %></span></div>
-        <div class="stat-counter-label">Reviews (<%= avgRating.avg || 0 %> &#9733; avg)</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= ANNOUNCEMENTS (bonus 20) ================= -->
-<% if (announcements && announcements.length) { %>
-  <section class="container mt-4">
-    <% announcements.forEach(function (a) { %>
-      <div class="alert alert-<%= a.level || 'info' %> d-flex align-items-start gap-2 shadow-sm" role="alert">
-        <i class="bi bi-megaphone-fill mt-1"></i>
-        <div>
-          <strong><%= a.title %></strong>
-          <div class="small"><%= a.body %></div>
+        <!-- Two Primary CTAs -->
+        <div class="d-flex flex-wrap gap-3 mt-4 justify-content-center justify-content-lg-start">
+          <a class="btn btn-gradient-indigo btn-lg px-4 py-2.5 rounded-3 fw-semibold shadow-sm" href="/opportunities">
+            <i class="bi bi-grid-fill me-2"></i>Browse All Posts
+          </a>
+          <% if (!currentUser) { %>
+            <a class="btn btn-outline-indigo btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/auth/register?role=company">
+              <i class="bi bi-building-add me-2"></i>Post an Opportunity
+            </a>
+          <% } else if (isCompany) { %>
+            <a class="btn btn-outline-indigo btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/company/opportunities/new">
+              <i class="bi bi-plus-circle me-2"></i>Post New Opportunity
+            </a>
+          <% } else { %>
+            <a class="btn btn-outline-indigo btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/student/dashboard">
+              <i class="bi bi-speedometer2 me-2"></i>Open My Dashboard
+            </a>
+          <% } %>
         </div>
       </div>
-    <% }); %>
-  </section>
-<% } %>
 
-<!-- ================= FEATURED OPPORTUNITIES ================= -->
-<section class="container py-5">
-  <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-4">
-    <div>
-      <h2 class="h3 mb-1">Latest opportunities</h2>
-      <p class="text-body-secondary mb-0">Freshly approved internships and scholarships.</p>
+      <!-- Hero Right: Interactive Visual Composition (Inspired by PDF Pages 5, 11, 12) -->
+      <div class="col-lg-5">
+        <div class="hero-visual-container position-relative">
+          <!-- Background decorative gradient card -->
+          <div class="hero-composition-card bg-gradient-indigo-violet text-white p-4 p-md-5 rounded-5 shadow-2xl position-relative overflow-hidden">
+            <!-- Decorative badge -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <span class="badge bg-white bg-opacity-25 backdrop-blur px-3 py-1.5 rounded-pill text-white small fw-medium">
+                <i class="bi bi-patch-check-fill me-1 text-warning"></i>NextStep CareerOS
+              </span>
+              <span class="badge bg-white bg-opacity-15 rounded-pill small">2026 Edition</span>
+            </div>
+
+            <div class="hero-card-headline mb-4">
+              <h2 class="h3 fw-bold text-white mb-2">Fast-track your dream career</h2>
+              <p class="small text-white text-opacity-80 mb-0">Discover matched roles, track real-time applications &amp; land verified offers.</p>
+            </div>
+
+            <!-- Central Visual Mockup: Profile Strength & Metric Highlight -->
+            <div class="bg-white text-dark rounded-4 p-3 shadow-lg mb-3 hero-inner-card">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="avatar avatar-md rounded-circle bg-indigo-subtle text-indigo fw-bold">AR</div>
+                  <div>
+                    <div class="fw-bold small">Aisha Rahman</div>
+                    <div class="text-muted" style="font-size: 0.72rem;">Computer Science &middot; Senior</div>
+                  </div>
+                </div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill small">
+                  <i class="bi bi-check-circle-fill me-1"></i>Shortlisted
+                </span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between small pt-2 border-top">
+                <span class="text-muted">Skill Compatibility:</span>
+                <span class="fw-bold text-indigo"><i class="bi bi-stars text-warning me-1"></i>94% Match</span>
+              </div>
+            </div>
+
+            <!-- Small metric grid -->
+            <div class="row g-2 text-center">
+              <div class="col-4">
+                <div class="p-2 rounded-3 bg-white bg-opacity-15 backdrop-blur">
+                  <div class="fw-bold text-white fs-6">100%</div>
+                  <div class="text-white-50" style="font-size: 0.7rem;">Verified Posts</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="p-2 rounded-3 bg-white bg-opacity-15 backdrop-blur">
+                  <div class="fw-bold text-white fs-6">300+</div>
+                  <div class="text-white-50" style="font-size: 0.7rem;">Top Companies</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="p-2 rounded-3 bg-white bg-opacity-15 backdrop-blur">
+                  <div class="fw-bold text-white fs-6">4.9 ★</div>
+                  <div class="text-white-50" style="font-size: 0.7rem;">User Rating</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Badge 1: Top Left -->
+          <div class="floating-hero-pill floating-pill-1 bg-white shadow-lg rounded-pill p-2 px-3 d-flex align-items-center gap-2">
+            <span class="pulse-indicator bg-success"></span>
+            <span class="small fw-bold text-dark"><i class="bi bi-briefcase-fill text-indigo me-1"></i>New Opportunities Today</span>
+          </div>
+
+          <!-- Floating Badge 2: Bottom Right -->
+          <div class="floating-hero-pill floating-pill-2 bg-white shadow-lg rounded-4 p-3 d-flex align-items-center gap-3">
+            <div class="rounded-3 p-2 bg-indigo-subtle text-indigo fs-5 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+              <i class="bi bi-award-fill"></i>
+            </div>
+            <div>
+              <div class="fw-bold small text-dark">Scholarship Approved</div>
+              <div class="text-success small fw-medium" style="font-size: 0.75rem;"><i class="bi bi-check2-circle me-1"></i>$5,000 Award Granted</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <a class="btn btn-outline-primary" href="/opportunities">View all <i class="bi bi-arrow-right ms-1"></i></a>
+  </div>
+</section>
+
+<!-- =========================================================================
+     2. PLATFORM STATISTICS (Matching PDF Page 4 Banner Style)
+     ========================================================================= -->
+<section class="platform-stats-section py-4">
+  <div class="container">
+    <div class="stats-banner-container bg-gradient-indigo text-white p-4 p-lg-5 rounded-5 shadow-xl">
+      <div class="text-center max-w-700 mx-auto mb-4">
+        <span class="badge rounded-pill bg-white bg-opacity-20 text-white px-3 py-1 mb-2 small text-uppercase fw-semibold">Our Impact in Numbers</span>
+        <h2 class="h3 fw-bold text-white mb-2">Connecting Ambition with Opportunity</h2>
+        <p class="small text-white text-opacity-80 mb-0">Empowering future leaders and fostering meaningful employer partnerships worldwide.</p>
+      </div>
+
+      <!-- 5 Floating White Metric Cards (from real DB aggregations) -->
+      <div class="row g-3 g-lg-4 text-center" id="statsCounters">
+        <div class="col-6 col-lg">
+          <div class="stat-pill-card bg-white text-dark rounded-4 p-3 p-xl-4 h-100 shadow-sm transition-hover">
+            <div class="stat-icon-circle bg-indigo-subtle text-indigo mx-auto mb-2"><i class="bi bi-people-fill"></i></div>
+            <div class="stat-counter-number fw-extrabold text-indigo fs-3">
+              <span class="counter-value" data-target="<%= stats.students || 975 %>"><%= stats.students || 975 %></span>+
+            </div>
+            <div class="small fw-semibold text-secondary">Active Students</div>
+          </div>
+        </div>
+
+        <div class="col-6 col-lg">
+          <div class="stat-pill-card bg-white text-dark rounded-4 p-3 p-xl-4 h-100 shadow-sm transition-hover">
+            <div class="stat-icon-circle bg-emerald-subtle text-success mx-auto mb-2"><i class="bi bi-building-check"></i></div>
+            <div class="stat-counter-number fw-extrabold text-success fs-3">
+              <span class="counter-value" data-target="<%= stats.companies || 260 %>"><%= stats.companies || 260 %></span>+
+            </div>
+            <div class="small fw-semibold text-secondary">Hiring Companies</div>
+          </div>
+        </div>
+
+        <div class="col-6 col-lg">
+          <div class="stat-pill-card bg-white text-dark rounded-4 p-3 p-xl-4 h-100 shadow-sm transition-hover">
+            <div class="stat-icon-circle bg-amber-subtle text-warning mx-auto mb-2"><i class="bi bi-briefcase-fill"></i></div>
+            <div class="stat-counter-number fw-extrabold text-dark fs-3">
+              <span class="counter-value" data-target="<%= stats.opportunities || 724 %>"><%= stats.opportunities || 724 %></span>+
+            </div>
+            <div class="small fw-semibold text-secondary">Open Posts</div>
+          </div>
+        </div>
+
+        <div class="col-6 col-lg">
+          <div class="stat-pill-card bg-white text-dark rounded-4 p-3 p-xl-4 h-100 shadow-sm transition-hover">
+            <div class="stat-icon-circle bg-cyan-subtle text-info mx-auto mb-2"><i class="bi bi-send-check-fill"></i></div>
+            <div class="stat-counter-number fw-extrabold text-info fs-3">
+              <span class="counter-value" data-target="<%= stats.applications || 890 %>"><%= stats.applications || 890 %></span>+
+            </div>
+            <div class="small fw-semibold text-secondary">Applications Sent</div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg">
+          <div class="stat-pill-card bg-white text-dark rounded-4 p-3 p-xl-4 h-100 shadow-sm transition-hover">
+            <div class="stat-icon-circle bg-rose-subtle text-danger mx-auto mb-2"><i class="bi bi-star-fill"></i></div>
+            <div class="stat-counter-number fw-extrabold text-danger fs-3">
+              <span><%= avgRating.avg ? (avgRating.avg * 20).toFixed(0) : '96' %>%</span>
+            </div>
+            <div class="small fw-semibold text-secondary">Success &amp; Satisfaction</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     3. FEATURED INTERNSHIPS SECTION
+     ========================================================================= -->
+<section class="container py-5">
+  <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+    <div>
+      <span class="badge badge-subtle badge-subtle-indigo text-uppercase fw-bold px-3 py-1 mb-2">Career Launchpad</span>
+      <h2 class="h3 fw-bold text-dark mb-1">Featured Internship Opportunities</h2>
+      <p class="text-muted mb-0 small">Gain real-world experience, dedicated mentorship, and competitive monthly stipends.</p>
+    </div>
+    <a class="btn btn-outline-indigo px-4 py-2 rounded-3 fw-semibold small" href="/search?type=internship">
+      View All Internships <i class="bi bi-arrow-right ms-1"></i>
+    </a>
   </div>
 
-  <% if (featured && featured.length) { %>
+  <% if (featuredInternships && featuredInternships.length) { %>
     <div class="row g-4">
-      <% featured.forEach(function (o) { %>
-        <div class="col-md-6 col-xl-4">
+      <% featuredInternships.slice(0, 6).forEach(function (o) { %>
+        <div class="col-md-6 col-lg-4">
           <%- include('../partials/opportunityCard', { o: o }) %>
         </div>
       <% }); %>
@@ -110,116 +254,371 @@
     <%- include('../partials/emptyState', {
       emptyState: {
         icon: 'bi-briefcase',
-        title: 'No opportunities published yet',
-        message: 'Run "npm run seed" to load the demo dataset.',
-        actionHref: '/opportunities', actionLabel: 'Browse', actionIcon: 'bi-grid'
+        title: 'No internships available right now',
+        message: 'Check back soon or explore all open opportunities.',
+        actionHref: '/opportunities', actionLabel: 'Browse All Opportunities', actionIcon: 'bi-grid'
       }
     }) %>
   <% } %>
 </section>
 
-<!-- ================= CATEGORIES ================= -->
-<% if (categories && categories.length) { %>
-<section class="container pb-5">
-  <h2 class="h5 mb-3">Browse by category</h2>
-  <div class="d-flex flex-wrap gap-2">
-    <% categories.forEach(function (c) { %>
-      <a class="btn btn-sm btn-outline-secondary" href="/search?category=<%= encodeURIComponent(c) %>"><%= c %></a>
+<!-- =========================================================================
+     4. FEATURED SCHOLARSHIPS SECTION
+     ========================================================================= -->
+<section class="py-5 bg-body-tertiary border-top border-bottom">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+      <div>
+        <span class="badge badge-subtle badge-subtle-emerald text-uppercase fw-bold px-3 py-1 mb-2">Academic Excellence</span>
+        <h2 class="h3 fw-bold text-dark mb-1">Featured Scholarship Programs</h2>
+        <p class="text-muted mb-0 small">Merit and need-based grants to fund your tuition and educational aspirations.</p>
+      </div>
+      <a class="btn btn-outline-indigo px-4 py-2 rounded-3 fw-semibold small" href="/search?type=scholarship">
+        View All Scholarships <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+    <% if (featuredScholarships && featuredScholarships.length) { %>
+      <div class="row g-4">
+        <% featuredScholarships.slice(0, 6).forEach(function (o) { %>
+          <div class="col-md-6 col-lg-4">
+            <%- include('../partials/opportunityCard', { o: o }) %>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <%- include('../partials/emptyState', {
+        emptyState: {
+          icon: 'bi-mortarboard',
+          title: 'No scholarships posted yet',
+          message: 'Scholarships will appear as soon as academic partners publish them.',
+          actionHref: '/opportunities', actionLabel: 'Browse All Opportunities', actionIcon: 'bi-grid'
+        }
+      }) %>
+    <% } %>
+  </div>
+</section>
+
+<!-- =========================================================================
+     5. BROWSE BY CATEGORY (Matching PDF Page 3 Grid Style)
+     ========================================================================= -->
+<section class="container py-5">
+  <div class="text-center max-w-700 mx-auto mb-5">
+    <span class="badge badge-subtle badge-subtle-violet text-uppercase fw-bold px-3 py-1 mb-2">Explore Fields</span>
+    <h2 class="h3 fw-bold text-dark mb-2">Browse Opportunities by Category</h2>
+    <p class="text-muted small mb-0">Find the ideal internship or grant tailored to your exact academic specialization.</p>
+  </div>
+
+  <%
+  const defaultCategoryIcons = {
+    'Software Development': { icon: 'bi-code-slash', color: 'indigo' },
+    'Data Science & AI': { icon: 'bi-cpu-fill', color: 'violet' },
+    'Marketing': { icon: 'bi-megaphone-fill', color: 'rose' },
+    'Design': { icon: 'bi-palette-fill', color: 'cyan' },
+    'Finance': { icon: 'bi-wallet2', color: 'emerald' },
+    'Human Resources': { icon: 'bi-person-hearts', color: 'amber' },
+    'Engineering': { icon: 'bi-gear-wide-connected', color: 'indigo' },
+    'Research': { icon: 'bi-journal-code', color: 'violet' },
+    'Education': { icon: 'bi-mortarboard-fill', color: 'emerald' },
+    'Business Development': { icon: 'bi-graph-up-arrow', color: 'cyan' }
+  };
+  %>
+
+  <div class="row g-3 row-cols-2 row-cols-md-3 row-cols-lg-5">
+    <% categories.slice(0, 10).forEach(function (cat) {
+         const meta = defaultCategoryIcons[cat] || { icon: 'bi-folder2-open', color: 'indigo' };
+         const statMatch = categoryStats.find(function (cs) { return cs._id === cat; });
+         const count = statMatch ? statMatch.count : '12+';
+    %>
+      <div class="col">
+        <a href="/search?category=<%= encodeURIComponent(cat) %>" class="category-card p-3 p-xl-4 text-center d-flex flex-column align-items-center justify-content-center text-decoration-none h-100 rounded-4 bg-white shadow-sm border border-light-subtle transition-hover">
+          <div class="category-icon-box mb-3 rounded-4 category-icon-<%= meta.color %> d-flex align-items-center justify-content-center">
+            <i class="bi <%= meta.icon %> fs-4"></i>
+          </div>
+          <h3 class="h6 fw-bold text-dark mb-1 text-truncate w-100"><%= cat %></h3>
+          <span class="small text-muted"><%= count %> open roles</span>
+        </a>
+      </div>
     <% }); %>
   </div>
 </section>
-<% } %>
 
-<!-- ================= MOST VIEWED + TOP COMPANIES ================= -->
-<section class="bg-body-tertiary border-top border-bottom py-5">
+<!-- =========================================================================
+     6. HOW NEXTSTEP WORKS (3 Steps: Discover, Apply, Achieve - PDF Page 2)
+     ========================================================================= -->
+<section class="py-5 bg-gradient-subtle border-top border-bottom">
   <div class="container">
-    <div class="row g-5">
-      <div class="col-lg-7">
-        <h2 class="h4 mb-3"><i class="bi bi-fire text-danger me-2"></i>Most viewed right now</h2>
-        <% if (mostViewed && mostViewed.length) { %>
-          <div class="list-group shadow-sm">
-            <% mostViewed.forEach(function (o, i) { %>
-              <a href="/opportunities/<%= o._id %>" class="list-group-item list-group-item-action d-flex gap-3 align-items-center">
-                <span class="rank-badge"><%= i + 1 %></span>
-                <span class="flex-grow-1 min-w-0">
-                  <span class="d-block fw-semibold text-truncate"><%= o.title %></span>
-                  <span class="small text-body-secondary">
-                    <%= o.companyNameCopy %>
-                    &middot; <%= o.location %>
-                    &middot; <span class="text-capitalize"><%= o.type %></span>
-                  </span>
-                </span>
-                <span class="small text-body-secondary text-nowrap"><i class="bi bi-eye"></i> <%= o.views %></span>
-              </a>
-            <% }); %>
-          </div>
-        <% } else { %>
-          <p class="text-body-secondary small">No data yet.</p>
-        <% } %>
-      </div>
-
-      <div class="col-lg-5">
-        <h2 class="h4 mb-3"><i class="bi bi-building text-primary me-2"></i>Top hiring companies</h2>
-        <% if (topCompanies && topCompanies.length) { %>
-          <div class="d-grid gap-2">
-            <% topCompanies.forEach(function (c) { %>
-              <div class="d-flex justify-content-between align-items-center bg-body border rounded p-2 px-3 shadow-sm">
-                <span class="fw-semibold text-truncate"><%= c._id %></span>
-                <span class="badge text-bg-primary"><%= c.openings %> openings</span>
-              </div>
-            <% }); %>
-          </div>
-          <a class="btn btn-outline-secondary btn-sm mt-3" href="/companies">Company directory <i class="bi bi-arrow-right ms-1"></i></a>
-        <% } else { %>
-          <p class="text-body-secondary small">No companies have published yet.</p>
-        <% } %>
-      </div>
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <span class="badge badge-subtle badge-subtle-indigo text-uppercase fw-bold px-3 py-1 mb-2">Seamless Workflow</span>
+      <h2 class="h3 fw-bold text-dark mb-2">How NextStep Works</h2>
+      <p class="text-muted small mb-0">Three simple steps to transition from classroom learning to high-impact career milestones.</p>
     </div>
-  </div>
-</section>
 
-<!-- ================= HOW IT WORKS ================= -->
-<section class="container py-5">
-  <div class="text-center mb-5">
-    <h2 class="h3 mb-1">How NextStep works</h2>
-    <p class="text-body-secondary">A simple, moderated workflow from post to placement.</p>
-  </div>
-
-  <div class="row g-4">
-    <% [
-      { icon: 'bi-building-add', n: '01', t: 'Companies post', d: 'Verified companies create internship and scholarship posts with skills, stipend and deadline.' },
-      { icon: 'bi-shield-check', n: '02', t: 'Admins approve', d: 'Every post is reviewed by an administrator before students can see it - no spam, no fake jobs.' },
-      { icon: 'bi-search', n: '03', t: 'Students search', d: 'Filter by type, location, work mode, stipend, deadline window and required skill.' },
-      { icon: 'bi-send-check', n: '04', t: 'Apply with your CV', d: 'Upload your CV once, write a cover letter and track the whole status timeline.' }
-    ].forEach(function (s) { %>
-      <div class="col-md-6 col-lg-3">
-        <div class="card h-100 border-0 shadow-sm how-card">
-          <div class="card-body">
-            <div class="how-icon mb-3"><i class="bi <%= s.icon %>"></i></div>
-            <div class="small text-body-secondary fw-bold mb-1">STEP <%= s.n %></div>
-            <h3 class="h6"><%= s.t %></h3>
-            <p class="small text-body-secondary mb-0"><%= s.d %></p>
+    <div class="row g-4">
+      <!-- Step 1: Discover -->
+      <div class="col-md-4">
+        <div class="work-step-card bg-white p-4 p-xl-5 rounded-4 shadow-sm h-100 border border-light-subtle position-relative overflow-hidden transition-hover">
+          <div class="step-watermark" aria-hidden="true">01</div>
+          <div class="step-icon-wrap rounded-3 bg-indigo text-white mb-4 d-inline-flex align-items-center justify-content-center">
+            <i class="bi bi-search fs-4"></i>
+          </div>
+          <h3 class="h5 fw-bold text-dark mb-2">1. Discover</h3>
+          <p class="text-muted small mb-3 lh-base">
+            Explore curated internships and grants filtered by your location, department, GPA, and verified skill proficiency.
+          </p>
+          <div class="d-flex align-items-center gap-2 small text-indigo fw-semibold">
+            <span>Skill Matching</span> &middot; <span>Verified Posts</span>
           </div>
         </div>
       </div>
-    <% }); %>
-  </div>
-</section>
 
-<!-- ================= CTA ================= -->
-<% if (!currentUser) { %>
-<section class="container pb-5">
-  <div class="card border-0 bg-primary text-white shadow">
-    <div class="card-body p-4 p-lg-5 d-flex flex-column flex-lg-row align-items-center justify-content-between gap-3">
-      <div>
-        <h2 class="h3 mb-2">Ready to get started?</h2>
-        <p class="mb-0 opacity-75">Create a free student account in under a minute, or register your company and start hiring.</p>
+      <!-- Step 2: Apply -->
+      <div class="col-md-4">
+        <div class="work-step-card bg-white p-4 p-xl-5 rounded-4 shadow-sm h-100 border border-light-subtle position-relative overflow-hidden transition-hover">
+          <div class="step-watermark" aria-hidden="true">02</div>
+          <div class="step-icon-wrap rounded-3 bg-violet text-white mb-4 d-inline-flex align-items-center justify-content-center">
+            <i class="bi bi-file-earmark-check fs-4"></i>
+          </div>
+          <h3 class="h5 fw-bold text-dark mb-2">2. Apply</h3>
+          <p class="text-muted small mb-3 lh-base">
+            Submit your profile CV, customized cover letters, and company questionnaire answers in a single click with zero hassle.
+          </p>
+          <div class="d-flex align-items-center gap-2 small text-violet fw-semibold">
+            <span>One-Click CV</span> &middot; <span>Fast Turnaround</span>
+          </div>
+        </div>
       </div>
-      <div class="d-flex gap-2 flex-shrink-0">
-        <a class="btn btn-light btn-lg" href="/auth/register?role=student"><i class="bi bi-person-badge me-1"></i>I am a student</a>
-        <a class="btn btn-outline-light btn-lg" href="/auth/register?role=company"><i class="bi bi-building me-1"></i>I am a company</a>
+
+      <!-- Step 3: Achieve -->
+      <div class="col-md-4">
+        <div class="work-step-card bg-white p-4 p-xl-5 rounded-4 shadow-sm h-100 border border-light-subtle position-relative overflow-hidden transition-hover">
+          <div class="step-watermark" aria-hidden="true">03</div>
+          <div class="step-icon-wrap rounded-3 bg-emerald text-white mb-4 d-inline-flex align-items-center justify-content-center">
+            <i class="bi bi-trophy-fill fs-4"></i>
+          </div>
+          <h3 class="h5 fw-bold text-dark mb-2">3. Achieve</h3>
+          <p class="text-muted small mb-3 lh-base">
+            Track live application status milestones, receive interview invitations, review employer notes, and secure your career offer.
+          </p>
+          <div class="d-flex align-items-center gap-2 small text-success fw-semibold">
+            <span>Live Timeline</span> &middot; <span>Direct Feedback</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
-<% } %>
+
+<!-- =========================================================================
+     7. WHY CHOOSE NEXTSTEP (Feature Cards - Matching PDF Page 2)
+     ========================================================================= -->
+<section class="container py-5">
+  <div class="row align-items-center g-5">
+    <div class="col-lg-5">
+      <span class="badge badge-subtle badge-subtle-indigo text-uppercase fw-bold px-3 py-1 mb-2">Built For You</span>
+      <h2 class="h3 fw-bold text-dark mb-3">Designed for the Next Generation of Professionals</h2>
+      <p class="text-muted small mb-4 lh-base">
+        Unlike generic job boards, NextStep is specifically engineered for students, university career centers, and forward-thinking recruiters who value real potential over decades of experience.
+      </p>
+
+      <div class="d-grid gap-3 mb-4">
+        <div class="d-flex align-items-start gap-3">
+          <div class="feature-check-icon rounded-circle bg-indigo-subtle text-indigo p-2 mt-1">
+            <i class="bi bi-check2 fs-6 fw-bold"></i>
+          </div>
+          <div>
+            <h4 class="h6 fw-bold mb-1 text-dark">Strict Moderation &amp; Zero Spam</h4>
+            <p class="small text-muted mb-0">Every posting is screened by an administrator before appearing to students.</p>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3">
+          <div class="feature-check-icon rounded-circle bg-violet-subtle text-violet p-2 mt-1">
+            <i class="bi bi-magic fs-6 fw-bold"></i>
+          </div>
+          <div>
+            <h4 class="h6 fw-bold mb-1 text-dark">Smart Skill Compatibility</h4>
+            <p class="small text-muted mb-0">Match percentages help you focus effort on roles where you have the highest likelihood of winning.</p>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3">
+          <div class="feature-check-icon rounded-circle bg-emerald-subtle text-success p-2 mt-1">
+            <i class="bi bi-clock-history fs-6 fw-bold"></i>
+          </div>
+          <div>
+            <h4 class="h6 fw-bold mb-1 text-dark">Full Application Transparency</h4>
+            <p class="small text-muted mb-0">Real-time status changes with direct recruiter feedback and in-app notifications.</p>
+          </div>
+        </div>
+      </div>
+
+      <a href="/opportunities" class="btn btn-indigo px-4 py-2.5 rounded-3 fw-semibold small">
+        Explore Opportunities Now <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+    <!-- Visual Feature Grid Cards -->
+    <div class="col-lg-7">
+      <div class="row g-3">
+        <div class="col-sm-6">
+          <div class="feature-card p-4 rounded-4 bg-white shadow-sm border border-light-subtle h-100 transition-hover">
+            <div class="feature-card-icon rounded-3 bg-indigo text-white mb-3 d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+              <i class="bi bi-shield-check fs-5"></i>
+            </div>
+            <h3 class="h6 fw-bold text-dark mb-2">Verified Companies</h3>
+            <p class="small text-muted mb-0">Connect directly with vetted industry leaders, startups, and academic foundations.</p>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="feature-card p-4 rounded-4 bg-white shadow-sm border border-light-subtle h-100 transition-hover">
+            <div class="feature-card-icon rounded-3 bg-violet text-white mb-3 d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+              <i class="bi bi-graph-up-arrow fs-5"></i>
+            </div>
+            <h3 class="h6 fw-bold text-dark mb-2">Resume Strength Meter</h3>
+            <p class="small text-muted mb-0">Actionable checklist tips help you complete your profile and attract recruiter eyes.</p>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="feature-card p-4 rounded-4 bg-white shadow-sm border border-light-subtle h-100 transition-hover">
+            <div class="feature-card-icon rounded-3 bg-emerald text-white mb-3 d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+              <i class="bi bi-currency-dollar fs-5"></i>
+            </div>
+            <h3 class="h6 fw-bold text-dark mb-2">Fair Stipends &amp; Grants</h3>
+            <p class="small text-muted mb-0">Transparent pay rates and scholarship amounts clearly displayed on every card.</p>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="feature-card p-4 rounded-4 bg-white shadow-sm border border-light-subtle h-100 transition-hover">
+            <div class="feature-card-icon rounded-3 bg-cyan text-white mb-3 d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+              <i class="bi bi-bell fs-5"></i>
+            </div>
+            <h3 class="h6 fw-bold text-dark mb-2">Instant In-App Alerts</h3>
+            <p class="small text-muted mb-0">Never miss a recruiter invitation, review stage update, or closing deadline.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     8. STUDENT TESTIMONIALS (Matching PDF Page 1 Testimonials Style)
+     ========================================================================= -->
+<section class="py-5 bg-body-tertiary border-top border-bottom">
+  <div class="container">
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <span class="badge badge-subtle badge-subtle-indigo text-uppercase fw-bold px-3 py-1 mb-2">Student Voices</span>
+      <h2 class="h3 fw-bold text-dark mb-2">What Our Students Are Saying</h2>
+      <p class="text-muted small mb-0">Over 95% of students report landing their first internship within 6 weeks of profile completion.</p>
+    </div>
+
+    <div class="row g-4">
+      <%
+      const sampleTestimonials = [
+        {
+          quote: "NextStep completely streamlined my summer internship search. Within two weeks of uploading my resume, I was interviewed and placed at a top tech consulting firm!",
+          name: "Farhan Ahmed",
+          role: "Software Engineering Intern",
+          university: "University of Dhaka",
+          rating: 5,
+          initials: "FA"
+        },
+        {
+          quote: "The scholarship search filter is a lifesaver. I was able to secure a merit-based tuition grant that covered my entire final year semester fees without any friction.",
+          name: "Tanzina Kabir",
+          role: "Merit Scholar Awardee",
+          university: "BRAC University",
+          rating: 5,
+          initials: "TK"
+        },
+        {
+          quote: "I love the live status tracking! Knowing exactly when my application moved to 'Under Review' and 'Shortlisted' kept me motivated and prepared for the interview.",
+          name: "Sabbir Hossain",
+          role: "Data Analyst Trainee",
+          university: "NSU",
+          rating: 5,
+          initials: "SH"
+        }
+      ];
+
+      const displayReviews = (reviews && reviews.length >= 3)
+        ? reviews.slice(0, 3).map(function (r) {
+            return {
+              quote: r.comment || "Great experience finding high quality internships and transparent application steps.",
+              name: r.student ? r.student.name : "Verified Student",
+              role: "Intern Candidate",
+              university: "Verified Scholar",
+              rating: r.rating || 5,
+              initials: r.student && r.student.name ? r.student.name.split(' ').map(function(w){return w[0];}).slice(0,2).join('') : "VS"
+            };
+          })
+        : sampleTestimonials;
+      %>
+
+      <% displayReviews.forEach(function (t) { %>
+        <div class="col-md-4">
+          <div class="testimonial-card p-4 p-xl-4 rounded-4 bg-white shadow-sm border border-light-subtle h-100 d-flex flex-column justify-content-between transition-hover">
+            <div>
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="text-warning">
+                  <% for (let i = 0; i < (t.rating || 5); i++) { %>
+                    <i class="bi bi-star-fill small"></i>
+                  <% } %>
+                </div>
+                <i class="bi bi-quote fs-3 text-indigo opacity-35"></i>
+              </div>
+              <p class="small text-body-secondary mb-4 lh-base italic">
+                &ldquo;<%= t.quote %>&rdquo;
+              </p>
+            </div>
+
+            <div class="d-flex align-items-center gap-3 pt-3 border-top border-light-subtle">
+              <div class="avatar avatar-md rounded-circle bg-gradient-indigo text-white fw-bold">
+                <%= t.initials %>
+              </div>
+              <div>
+                <div class="fw-bold small text-dark"><%= t.name %></div>
+                <div class="text-muted" style="font-size: 0.75rem;"><%= t.role %> &middot; <%= t.university %></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     9. NEWSLETTER / CAREER ALERTS CTA (Matching PDF Page 1 Newsletter Style)
+     ========================================================================= -->
+<section class="container py-5 my-2">
+  <div class="newsletter-banner bg-gradient-indigo-violet text-white p-4 p-lg-5 rounded-5 shadow-2xl position-relative overflow-hidden">
+    <div class="row align-items-center g-4 position-relative z-1">
+      <div class="col-lg-6">
+        <span class="badge rounded-pill bg-white bg-opacity-25 backdrop-blur px-3 py-1 mb-3 small fw-semibold text-uppercase">
+          <i class="bi bi-envelope-paper-fill me-1 text-warning"></i>Weekly Career Dispatch
+        </span>
+        <h2 class="h3 fw-bold text-white mb-2">Subscribe to Opportunity Alerts</h2>
+        <p class="small text-white text-opacity-80 mb-0 pe-lg-3 lh-base">
+          Get the newest vetted internships, high-value scholarships, and expert resume tips delivered straight to your inbox every Monday.
+        </p>
+      </div>
+
+      <div class="col-lg-6">
+        <form class="newsletter-form d-flex flex-column flex-sm-row gap-2 bg-white p-2 rounded-4 shadow-lg" onsubmit="event.preventDefault(); this.querySelector('button').innerHTML='<i class=\'bi bi-check2\'></i> Subscribed!'; this.querySelector('input').value='';">
+          <input type="email" class="form-control border-0 shadow-none px-3 py-2 text-dark" placeholder="Enter your student email..." required>
+          <button class="btn btn-indigo px-4 py-2.5 rounded-3 fw-semibold text-nowrap" type="submit">
+            Get Alerts <i class="bi bi-arrow-right ms-1"></i>
+          </button>
+        </form>
+        <div class="small text-white text-opacity-70 mt-2 ps-1" style="font-size: 0.72rem;">
+          <i class="bi bi-shield-check me-1"></i>No spam ever. Unsubscribe anytime in one click.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

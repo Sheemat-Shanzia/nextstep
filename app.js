@@ -44,15 +44,14 @@ app.use(expressLayouts);
 // ===========================================================================
 app.use(
   helmet({
-    // Bootstrap / Bootstrap Icons / Chart.js are loaded from the jsDelivr CDN,
-    // so the CSP has to allow those hosts (and inline <style> for progress bars).
+    // Bootstrap / Bootstrap Icons / Chart.js / Google Fonts
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", 'cdn.jsdelivr.net'],
-        styleSrc: ["'self'", 'cdn.jsdelivr.net', "'unsafe-inline'"],
-        fontSrc: ["'self'", 'cdn.jsdelivr.net', 'data:'],
-        imgSrc: ["'self'", 'data:', 'blob:'],
+        styleSrc: ["'self'", 'cdn.jsdelivr.net', "'unsafe-inline'", 'fonts.googleapis.com'],
+        fontSrc: ["'self'", 'cdn.jsdelivr.net', 'data:', 'fonts.gstatic.com'],
+        imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
         connectSrc: ["'self'"],
         formAction: ["'self'"],
         objectSrc: ["'none'"],

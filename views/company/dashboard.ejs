@@ -8,7 +8,7 @@ const links = [
   { href: '/auth/settings', label: 'Settings', icon: 'bi-gear' }
 ];
 const sidebarCard = { title: 'Post an opportunity', text: 'New posts are reviewed by an administrator before students can see them.', href: '/company/opportunities/new', action: 'Create a post' };
-const statusChart = { type: 'doughnut', labels: chart.applicantsByStatus.labels, data: chart.applicantsByStatus.values };
+const statusChart = { type: 'doughnut', labels: chart.applicantsByStatus.labels, data: chart.applicantsByStatus.values, legend: true };
 const oppChart = {
   type: 'bar', labels: perOpportunity.map(function (p) { return p.title.length > 18 ? p.title.slice(0, 18) + '...' : p.title; }),
   data: perOpportunity.map(function (p) { return p.value; }), label: 'Applicants'
@@ -16,19 +16,34 @@ const oppChart = {
 %>
 <%- include('../partials/flash') %>
 <div class="container py-4">
-  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-    <div class="d-flex align-items-center gap-3">
-      <img src="/img/logo.png" alt="NextStep Logo" class="dashboard-logo d-none d-sm-block">
-      <div>
-        <h1 class="h3 mb-1">Company dashboard</h1>
-        <p class="text-body-secondary mb-0">
-          <% if (profile) { %><%= profile.companyName %><% if (profile.verified) { %> <i class="bi bi-patch-check-fill text-primary"></i><% } %><% } %>
-        </p>
+  <!-- Company Dashboard Welcome Header -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white border border-light-subtle">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="company-logo-wrapper flex-shrink-0" style="width: 56px; height: 56px;">
+          <% if (profile && profile.logo) { %>
+            <img src="/files/company/logo/<%= profile.user || '' %>" class="company-logo-img rounded-3" alt="Logo"
+                 onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'company-logo-fallback rounded-3\'><%= (profile && profile.companyName ? profile.companyName[0] : \'C\').toUpperCase() %></span>';">
+          <% } else { %>
+            <span class="company-logo-fallback rounded-3"><%= (profile && profile.companyName ? profile.companyName[0] : 'C').toUpperCase() %></span>
+          <% } %>
+        </div>
+        <div>
+          <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+            <h1 class="h4 fw-bold text-dark mb-0"><%= profile ? profile.companyName : 'Company Portal' %></h1>
+            <% if (profile && profile.verified) { %>
+              <span class="badge bg-primary-subtle text-indigo border border-indigo-subtle rounded-pill small">
+                <i class="bi bi-patch-check-fill me-1"></i>Verified Partner
+              </span>
+            <% } %>
+          </div>
+          <p class="text-muted small mb-0">Manage employer listings, track candidates, and discover top campus talent.</p>
+        </div>
       </div>
-    </div>
-    <div class="d-flex gap-2">
-      <a class="btn btn-outline-secondary" href="/company/profile"><i class="bi bi-building me-1"></i>Company profile</a>
-      <a class="btn btn-primary" href="/company/opportunities/new"><i class="bi bi-plus-lg me-1"></i>Post opportunity</a>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary px-3 rounded-3" href="/company/profile"><i class="bi bi-building me-1"></i>Edit Profile</a>
+        <a class="btn btn-gradient-indigo px-4 rounded-3 shadow-sm" href="/company/opportunities/new"><i class="bi bi-plus-lg me-1"></i>Post Opportunity</a>
+      </div>
     </div>
   </div>
 
@@ -38,26 +53,27 @@ const oppChart = {
     </div>
 
     <div class="col-lg-9">
+      <!-- 4 KPI Stat Tiles -->
       <div class="row g-3 mb-4">
         <div class="col-6 col-xl-3">
-          <%- include('../partials/statCard', { label: 'Total opportunities', value: counters.total, icon: 'bi-briefcase', tone: 'primary', href: '/company/opportunities' }) %>
+          <%- include('../partials/statCard', { label: 'Total Posts', value: counters.total, icon: 'bi-briefcase-fill', tone: 'primary', href: '/company/opportunities', sub: 'All created posts' }) %>
         </div>
         <div class="col-6 col-xl-3">
-          <%- include('../partials/statCard', { label: 'Currently open', value: counters.open, icon: 'bi-unlock', tone: 'success', href: '/company/opportunities?status=approved', sub: 'Approved & within deadline' }) %>
+          <%- include('../partials/statCard', { label: 'Currently Live', value: counters.open, icon: 'bi-unlock-fill', tone: 'success', href: '/company/opportunities?status=approved', sub: 'Approved & open' }) %>
         </div>
         <div class="col-6 col-xl-3">
-          <%- include('../partials/statCard', { label: 'Awaiting review', value: counters.pending, icon: 'bi-hourglass-split', tone: 'warning', href: '/company/opportunities?status=pending', sub: 'Pending admin approval' }) %>
+          <%- include('../partials/statCard', { label: 'Awaiting Review', value: counters.pending, icon: 'bi-hourglass-split', tone: 'warning', href: '/company/opportunities?status=pending', sub: 'Moderation queue' }) %>
         </div>
         <div class="col-6 col-xl-3">
-          <%- include('../partials/statCard', { label: 'Total applicants', value: counters.totalApplicants, icon: 'bi-people', tone: 'info', href: '/company/applications', sub: counters.activeApplicants + ' still active' }) %>
+          <%- include('../partials/statCard', { label: 'Total Candidates', value: counters.totalApplicants, icon: 'bi-people-fill', tone: 'info', href: '/company/applications', sub: counters.activeApplicants + ' in pipeline' }) %>
         </div>
       </div>
 
       <% if (announcements && announcements.length) { %>
         <div class="mb-4">
           <% announcements.forEach(function (a) { %>
-            <div class="alert alert-<%= a.level || 'info' %> alert-dismissible fade show d-flex align-items-start gap-2" role="alert">
-              <i class="bi bi-megaphone-fill mt-1"></i>
+            <div class="alert alert-<%= a.level || 'info' %> alert-dismissible fade show d-flex align-items-start gap-2 shadow-sm rounded-3 border-0" role="alert">
+              <i class="bi bi-megaphone-fill mt-1 text-<%= a.level || 'primary' %>"></i>
               <div class="flex-grow-1">
                 <strong><%= a.title %></strong>
                 <div class="small"><%= a.body %></div>
@@ -68,11 +84,12 @@ const oppChart = {
         </div>
       <% } %>
 
-      <div class="row g-4">
+      <!-- Charts Row -->
+      <div class="row g-4 mb-4">
         <div class="col-xl-6">
-          <div class="card shadow-sm border-0 h-100">
+          <div class="card shadow-sm border border-light-subtle rounded-4 h-100">
             <div class="card-body p-4">
-              <h2 class="h6 mb-3"><i class="bi bi-pie-chart me-2 text-primary"></i>Applicants by status</h2>
+              <h2 class="h6 fw-bold text-dark mb-3"><i class="bi bi-pie-chart-fill me-2 text-indigo"></i>Applicants by Stage</h2>
               <div class="chart-box">
                 <canvas data-chart="<%= JSON.stringify(statusChart) %>" aria-label="Applicants by status" role="img"></canvas>
               </div>
@@ -81,49 +98,64 @@ const oppChart = {
         </div>
 
         <div class="col-xl-6">
-          <div class="card shadow-sm border-0 h-100">
+          <div class="card shadow-sm border border-light-subtle rounded-4 h-100">
             <div class="card-body p-4">
-              <h2 class="h6 mb-3"><i class="bi bi-bar-chart me-2 text-primary"></i>Applicants per opportunity</h2>
+              <h2 class="h6 fw-bold text-dark mb-3"><i class="bi bi-bar-chart-fill me-2 text-indigo"></i>Applicants per Opportunity</h2>
               <% if (perOpportunity.length) { %>
                 <div class="chart-box">
                   <canvas data-chart="<%= JSON.stringify(oppChart) %>" aria-label="Applicants per opportunity" role="img"></canvas>
                 </div>
               <% } else { %>
-                <p class="small text-body-secondary">No applications yet. Publish an opportunity to start receiving applicants.</p>
+                <p class="small text-muted py-5 text-center">No applications received yet. Publish an opportunity to start attracting students.</p>
               <% } %>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- recent applicants -->
+      <!-- Tables Row -->
+      <div class="row g-4">
+        <!-- Recent Applicants -->
         <div class="col-xl-7">
-          <div class="card shadow-sm border-0 h-100">
+          <div class="card shadow-sm border border-light-subtle rounded-4 h-100">
             <div class="card-body p-4">
               <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="h6 mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Recent applicants</h2>
-                <a class="btn btn-sm btn-outline-secondary" href="/company/applications">View all</a>
+                <h2 class="h6 fw-bold text-dark mb-0"><i class="bi bi-clock-history me-2 text-indigo"></i>Recent Applicants</h2>
+                <a class="btn btn-sm btn-outline-indigo px-3 rounded-pill" href="/company/applications">View All <i class="bi bi-arrow-right ms-1"></i></a>
               </div>
 
               <% if (!recentApplicants.length) { %>
-                <p class="text-body-secondary small mb-0">No applications received yet.</p>
+                <div class="text-center py-4">
+                  <i class="bi bi-people display-6 text-muted opacity-50 d-block mb-2"></i>
+                  <p class="text-muted small mb-0">No candidate applications received yet.</p>
+                </div>
               <% } else { %>
                 <div class="table-responsive">
-                  <table class="table table-sm table-hover align-middle mb-0">
-                    <thead><tr><th>Student</th><th>Opportunity</th><th>Status</th><th></th></tr></thead>
+                  <table class="table table-hover align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th class="ps-0">Candidate</th>
+                        <th>Position</th>
+                        <th>Stage</th>
+                        <th class="text-end pe-0">Action</th>
+                      </tr>
+                    </thead>
                     <tbody>
                       <% recentApplicants.forEach(function (a) { %>
                         <tr>
-                          <td>
-                            <div class="fw-semibold"><%= a.student ? a.student.name : 'Unknown' %></div>
-                            <div class="small text-body-secondary"><%= a.student ? a.student.email : '' %></div>
+                          <td class="ps-0">
+                            <div class="fw-bold text-dark"><%= a.student ? a.student.name : 'Unknown' %></div>
+                            <div class="small text-muted" style="font-size: 0.75rem;"><%= a.student ? a.student.email : '' %></div>
                           </td>
-                          <td class="small"><%= a.opportunity ? a.opportunity.title : '-' %></td>
+                          <td class="small fw-semibold text-truncate" style="max-width: 160px;"><%= a.opportunity ? a.opportunity.title : '-' %></td>
                           <td>
-                            <span class="badge <%= format.APPLICATION_STATUS_BADGE[a.status] %>"><%= format.applicationStatusLabel(a.status) %></span>
+                            <span class="badge <%= format.APPLICATION_STATUS_BADGE[a.status] %> rounded-pill px-2.5 py-1">
+                              <%= format.applicationStatusLabel(a.status) %>
+                            </span>
                           </td>
-                          <td class="text-end">
-                            <a class="btn btn-sm btn-outline-primary" href="/company/applications/<%= a._id %>">
-                              <i class="bi bi-eye"></i>
+                          <td class="text-end pe-0">
+                            <a class="btn btn-sm btn-light border-0 rounded-circle" href="/company/applications/<%= a._id %>" title="Review Application">
+                              <i class="bi bi-chevron-right text-indigo"></i>
                             </a>
                           </td>
                         </tr>
@@ -136,31 +168,32 @@ const oppChart = {
           </div>
         </div>
 
-        <!-- recent opportunities -->
+        <!-- Recent Opportunities -->
         <div class="col-xl-5">
-          <div class="card shadow-sm border-0 h-100">
+          <div class="card shadow-sm border border-light-subtle rounded-4 h-100">
             <div class="card-body p-4">
               <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="h6 mb-0"><i class="bi bi-briefcase me-2 text-primary"></i>Latest posts</h2>
-                <a class="btn btn-sm btn-outline-secondary" href="/company/opportunities">Manage</a>
+                <h2 class="h6 fw-bold text-dark mb-0"><i class="bi bi-briefcase-fill me-2 text-indigo"></i>Latest Postings</h2>
+                <a class="btn btn-sm btn-outline-secondary px-3 rounded-pill" href="/company/opportunities">Manage</a>
               </div>
 
               <% if (!recentOpps.length) { %>
-                <p class="small text-body-secondary mb-0">
-                  You have not posted anything yet. <a href="/company/opportunities/new">Create your first post</a>.
-                </p>
+                <div class="text-center py-4 bg-light rounded-3">
+                  <p class="small text-muted mb-2">You have not published any opportunities yet.</p>
+                  <a href="/company/opportunities/new" class="btn btn-sm btn-indigo px-3">Create First Post</a>
+                </div>
               <% } else { %>
                 <div class="list-group list-group-flush">
                   <% recentOpps.forEach(function (o) { %>
-                    <a href="/company/opportunities/<%= o._id %>" class="list-group-item list-group-item-action px-0">
+                    <a href="/company/opportunities/<%= o._id %>" class="list-group-item list-group-item-action px-0 border-light-subtle transition-hover">
                       <div class="d-flex justify-content-between align-items-start gap-2">
                         <div class="min-w-0">
-                          <div class="fw-semibold text-truncate"><%= o.title %></div>
-                          <div class="small text-body-secondary">
-                            <%= o.location %> &middot; closes <%= format.formatDate(o.deadline) %>
+                          <div class="fw-semibold text-truncate text-dark small"><%= o.title %></div>
+                          <div class="small text-muted" style="font-size: 0.72rem;">
+                            <i class="bi bi-geo-alt me-1"></i><%= o.location %> &middot; closes <%= format.formatDate(o.deadline) %>
                           </div>
                         </div>
-                        <span class="badge <%= format.OPPORTUNITY_STATUS_BADGE[o.status] %> text-capitalize"><%= o.status %></span>
+                        <span class="badge <%= format.OPPORTUNITY_STATUS_BADGE[o.status] %> text-capitalize rounded-pill"><%= o.status %></span>
                       </div>
                     </a>
                   <% }); %>

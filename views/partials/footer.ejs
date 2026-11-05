@@ -1,64 +1,102 @@
-<footer class="isms-footer mt-5">
-  <div class="container py-4">
-    <div class="row g-4">
-      <div class="col-lg-4">
-        <div class="d-flex align-items-center gap-2 mb-2">
+<footer class="isms-footer pt-5 pb-4 mt-5">
+  <div class="container">
+    <div class="row g-4 g-lg-5 mb-5">
+      <!-- Col 1: Brand & Social -->
+      <div class="col-lg-4 col-md-6">
+        <div class="d-flex align-items-center gap-2 mb-3">
           <img src="/img/logo.png" alt="NextStep Logo" class="footer-logo">
-          <span class="fw-bold fs-5 text-white">NextStep</span>
+          <span class="fw-bold fs-4 text-white letter-spacing-tight">NextStep</span>
         </div>
-        <p class="small mb-0">
-          Internship and Scholarship Management System &mdash; a 3-tier web platform that
-          connects <strong>students</strong>, <strong>companies</strong> and
-          <strong>administrators</strong> around internships and scholarships.
+        <p class="small text-white-50 mb-4 pe-lg-3 lh-base">
+          NextStep is a premier Career-Tech &amp; EdTech platform connecting aspiring students with verified internships and life-changing scholarships worldwide.
         </p>
+
+        <!-- Social Media Icon Links (PDF Inspiration Page 1) -->
+        <div class="footer-social-links d-flex align-items-center gap-2">
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="LinkedIn">
+            <i class="bi bi-linkedin"></i>
+          </a>
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="GitHub">
+            <i class="bi bi-github"></i>
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="Twitter">
+            <i class="bi bi-twitter-x"></i>
+          </a>
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="Facebook">
+            <i class="bi bi-facebook"></i>
+          </a>
+          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="YouTube">
+            <i class="bi bi-youtube"></i>
+          </a>
+        </div>
       </div>
 
-      <div class="col-6 col-lg-2">
-        <h6 class="text-uppercase small fw-bold mb-2">For students</h6>
-        <ul class="list-unstyled small d-grid gap-1">
-          <li><a class="footer-link" href="/opportunities">Browse</a></li>
-          <li><a class="footer-link" href="/search">Search</a></li>
-          <li><a class="footer-link" href="/auth/register">Create account</a></li>
-          <li><a class="footer-link" href="/auth/login">Sign in</a></li>
+      <!-- Col 2: For Students -->
+      <div class="col-6 col-md-3 col-lg-2">
+        <h6 class="footer-heading text-uppercase small fw-bold mb-3">For Students</h6>
+        <ul class="list-unstyled footer-nav-list small d-grid gap-2">
+          <li><a class="footer-link" href="/opportunities"><i class="bi bi-chevron-right text-primary me-1 small"></i>Browse All</a></li>
+          <li><a class="footer-link" href="/search?type=internship"><i class="bi bi-chevron-right text-primary me-1 small"></i>Internships</a></li>
+          <li><a class="footer-link" href="/search?type=scholarship"><i class="bi bi-chevron-right text-primary me-1 small"></i>Scholarships</a></li>
+          <li><a class="footer-link" href="/opportunities/most-viewed"><i class="bi bi-chevron-right text-primary me-1 small"></i>Popular Posts</a></li>
+          <li><a class="footer-link" href="/auth/register?role=student"><i class="bi bi-chevron-right text-primary me-1 small"></i>Student Sign Up</a></li>
         </ul>
       </div>
 
-      <div class="col-6 col-lg-2">
-        <h6 class="text-uppercase small fw-bold mb-2">For companies</h6>
-        <ul class="list-unstyled small d-grid gap-1">
-          <li><a class="footer-link" href="/auth/register?role=company">Register company</a></li>
-          <li><a class="footer-link" href="/companies">Company directory</a></li>
-          <li><a class="footer-link" href="/auth/login">Post an opportunity</a></li>
+      <!-- Col 3: For Employers -->
+      <div class="col-6 col-md-3 col-lg-2">
+        <h6 class="footer-heading text-uppercase small fw-bold mb-3">For Employers</h6>
+        <ul class="list-unstyled footer-nav-list small d-grid gap-2">
+          <li><a class="footer-link" href="/auth/register?role=company"><i class="bi bi-chevron-right text-primary me-1 small"></i>Post a Job</a></li>
+          <li><a class="footer-link" href="/companies"><i class="bi bi-chevron-right text-primary me-1 small"></i>Company Directory</a></li>
+          <li><a class="footer-link" href="/company/dashboard"><i class="bi bi-chevron-right text-primary me-1 small"></i>Employer Portal</a></li>
+          <li><a class="footer-link" href="/auth/login"><i class="bi bi-chevron-right text-primary me-1 small"></i>Recruiter Login</a></li>
         </ul>
       </div>
 
-      <div class="col-6 col-lg-2">
-        <h6 class="text-uppercase small fw-bold mb-2">Platform</h6>
-        <ul class="list-unstyled small d-grid gap-1">
-          <li><a class="footer-link" href="/opportunities/most-viewed">Most viewed</a></li>
-          <li><a class="footer-link" href="/feedback">Contact / feedback</a></li>
-          <li><a class="footer-link" href="/auth/forgot-password">Forgot password</a></li>
+      <!-- Col 4: Support & Platform -->
+      <div class="col-6 col-md-3 col-lg-2">
+        <h6 class="footer-heading text-uppercase small fw-bold mb-3">Platform</h6>
+        <ul class="list-unstyled footer-nav-list small d-grid gap-2">
+          <li><a class="footer-link" href="/search"><i class="bi bi-chevron-right text-primary me-1 small"></i>Advanced Search</a></li>
+          <li><a class="footer-link" href="/feedback"><i class="bi bi-chevron-right text-primary me-1 small"></i>Contact Support</a></li>
+          <li><a class="footer-link" href="/feedback"><i class="bi bi-chevron-right text-primary me-1 small"></i>Feedback Inbox</a></li>
+          <li><a class="footer-link" href="/auth/forgot-password"><i class="bi bi-chevron-right text-primary me-1 small"></i>Reset Password</a></li>
         </ul>
       </div>
 
-      <div class="col-6 col-lg-2">
-        <h6 class="text-uppercase small fw-bold mb-2">Account</h6>
-        <ul class="list-unstyled small d-grid gap-1">
-          <% if (currentUser) { %>
-            <li><a class="footer-link" href="/auth/settings">Settings</a></li>
-            <li><a class="footer-link" href="/notifications">Notifications</a></li>
-          <% } else { %>
-            <li><span class="text-body-secondary">Signed out</span></li>
-          <% } %>
-        </ul>
+      <!-- Col 5: Contact Info -->
+      <div class="col-6 col-md-3 col-lg-2">
+        <h6 class="footer-heading text-uppercase small fw-bold mb-3">Get in Touch</h6>
+        <div class="small text-white-50 d-grid gap-2">
+          <div class="d-flex align-items-start gap-2">
+            <i class="bi bi-geo-alt-fill text-indigo mt-1"></i>
+            <span>Innovation Hub, Tech District</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-envelope-fill text-indigo"></i>
+            <span>support@nextstep.io</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-telephone-fill text-indigo"></i>
+            <span>+1 (800) 234-NEXT</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <hr class="my-3 opacity-25">
+    <!-- Divider -->
+    <hr class="footer-divider my-4">
 
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small">
-      <span>&copy; <%= new Date().getFullYear() %> NextStep. Built with Node.js, Express, MongoDB, Mongoose, EJS and Bootstrap 5.</span>
-      <span class="text-body-secondary">Database: <code>isms_db</code> &middot; MongoDB</span>
+    <!-- Bottom Bar -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 small text-white-50">
+      <div>
+        &copy; <%= new Date().getFullYear() %> <strong class="text-white">NextStep</strong> Inc. All Rights Reserved.
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <span class="badge bg-indigo-subtle text-indigo px-2 py-1"><i class="bi bi-shield-lock-fill me-1"></i>Verified Platform</span>
+        <span class="text-white-50">Empowering Students Everywhere</span>
+      </div>
     </div>
   </div>
 </footer>

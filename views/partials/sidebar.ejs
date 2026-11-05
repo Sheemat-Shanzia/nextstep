@@ -1,25 +1,33 @@
 <%
 /**
- * Dashboard sidebar. `links` = [{href,label,icon,badge,active,match}]
- * Passed in from each dashboard view, so the three portals can share one file.
+ * Modern SaaS Career Portal Sidebar
+ * Reused across Student, Company, and Administrator portals.
  */
 %>
 <aside class="isms-sidebar">
-  <div class="card shadow-sm">
-    <div class="card-body p-3 text-center border-bottom bg-body-tertiary rounded-top">
+  <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-3">
+    <!-- Brand Header -->
+    <div class="sidebar-brand-header p-3 text-center border-bottom bg-gradient-subtle">
       <a href="/" class="d-inline-flex align-items-center justify-content-center gap-2 text-decoration-none">
         <img src="/img/logo.png" alt="NextStep Logo" class="sidebar-logo">
-        <span class="fw-bold text-body fs-6">NextStep</span>
+        <span class="fw-bold fs-6 text-dark tracking-wide">Next<span class="text-indigo">Step</span></span>
       </a>
     </div>
+
+    <!-- Navigation List -->
     <div class="card-body p-2">
       <ul class="nav nav-pills flex-column gap-1">
         <% (links || []).forEach(function (l) { %>
           <li class="nav-item">
-            <a class="nav-link d-flex justify-content-between align-items-center <%= l.active ? 'active' : '' %>"
+            <a class="nav-link sidebar-nav-link d-flex justify-content-between align-items-center <%= l.active ? 'active' : '' %>"
                href="<%= l.href %>">
-              <span><i class="bi <%= l.icon %> me-2"></i><%= l.label %></span>
-              <% if (l.badge) { %><span class="badge rounded-pill text-bg-light border"><%= l.badge %></span><% } %>
+              <span class="d-flex align-items-center">
+                <i class="bi <%= l.icon %> sidebar-icon me-2.5"></i>
+                <span class="sidebar-label"><%= l.label %></span>
+              </span>
+              <% if (typeof l.badge !== 'undefined' && l.badge !== null) { %>
+                <span class="badge sidebar-badge rounded-pill"><%= l.badge %></span>
+              <% } %>
             </a>
           </li>
         <% }); %>
@@ -27,13 +35,21 @@
     </div>
   </div>
 
+  <!-- Optional Sidebar Promo / Action Card -->
   <% if (typeof sidebarCard !== 'undefined' && sidebarCard) { %>
-    <div class="card shadow-sm mt-3">
-      <div class="card-body">
-        <h6 class="card-title h6"><%= sidebarCard.title %></h6>
-        <p class="small text-body-secondary"><%= sidebarCard.text %></p>
+    <div class="card sidebar-promo-card shadow-sm border-0 rounded-4 mt-3">
+      <div class="card-body p-3">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <div class="promo-icon-badge rounded-3 d-flex align-items-center justify-content-center">
+            <i class="bi bi-stars text-indigo"></i>
+          </div>
+          <h6 class="card-title h6 mb-0 fw-bold text-dark"><%= sidebarCard.title %></h6>
+        </div>
+        <p class="small text-muted mb-3 lh-sm"><%= sidebarCard.text %></p>
         <% if (sidebarCard.href) { %>
-          <a class="btn btn-sm btn-outline-primary w-100" href="<%= sidebarCard.href %>"><%= sidebarCard.action || 'Open' %></a>
+          <a class="btn btn-sm btn-indigo w-100 rounded-3 shadow-none fw-medium" href="<%= sidebarCard.href %>">
+            <%= sidebarCard.action || 'Get Started' %> <i class="bi bi-arrow-right ms-1"></i>
+          </a>
         <% } %>
       </div>
     </div>
