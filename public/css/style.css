@@ -999,30 +999,18 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
   margin: 0 auto;
 }
 
-/* Decorative backdrop shapes behind image */
+/* Decorative backdrop circle behind top-left of image (Matching Reference Screenshot 2) */
 .hero-photo-backdrop-shape {
   position: absolute;
-  top: -20px;
-  left: -20px;
-  width: 130px;
-  height: 130px;
+  top: -24px;
+  left: -24px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #A78BFA 0%, #C4B5FD 100%);
+  background: linear-gradient(135deg, #2DD4BF 0%, #818CF8 100%);
   z-index: 0;
-  opacity: 0.65;
-  filter: blur(8px);
-}
-
-.hero-photo-backdrop-glow {
-  position: absolute;
-  bottom: -24px;
-  right: -24px;
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.2), transparent 70%);
-  z-index: 0;
-  pointer-events: none;
+  opacity: 0.9;
+  box-shadow: 0 10px 25px rgba(45, 212, 191, 0.25);
 }
 
 /* Main Rounded Photo Container */
@@ -1037,7 +1025,7 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
 
 .hero-photo-img {
   width: 100%;
-  height: 480px;
+  height: 490px;
   object-fit: cover;
   object-position: center 25%;
   display: block;
@@ -1048,17 +1036,17 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
 .hero-photo-vignette {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(17, 24, 39, 0.2) 0%, transparent 40%);
+  background: linear-gradient(to top, rgba(17, 24, 39, 0.22) 0%, transparent 40%);
   pointer-events: none;
 }
 
-/* Floating UI Cards - Refined & Sized to avoid covering face */
+/* Floating UI Cards */
 .hero-floating-card {
   position: absolute;
   z-index: 3;
   background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 14px 34px -6px rgba(17, 24, 39, 0.14), 0 0 0 1px rgba(17, 24, 39, 0.06);
+  box-shadow: 0 14px 34px -6px rgba(17, 24, 39, 0.15), 0 0 0 1px rgba(17, 24, 39, 0.06);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   backdrop-filter: blur(8px);
 }
@@ -1069,17 +1057,25 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
 
 /* Card 1: Application Shortlisted (Bottom-Left) */
 .hero-card-shortlisted {
-  bottom: 24px;
-  left: -20px;
-  max-width: 310px;
+  bottom: 28px;
+  left: -28px;
+  max-width: 320px;
   animation: heroFloat1 4.5s ease-in-out infinite alternate;
 }
 
-/* Card 2: Scholarship Approved (Bottom-Right) */
+/* Card 2: Browse Opportunities (Top-Right) */
+.hero-card-browse {
+  top: 25px;
+  right: -25px;
+  min-width: 210px;
+  animation: heroFloat2 5s ease-in-out infinite alternate;
+}
+
+/* Card 3: Scholarship Approved (Bottom-Right) */
 .hero-card-scholarship {
-  bottom: -12px;
-  right: -16px;
-  min-width: 240px;
+  bottom: -15px;
+  right: 20px;
+  min-width: 250px;
   animation: heroFloat3 4.8s ease-in-out infinite alternate;
 }
 
@@ -1135,11 +1131,15 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
     height: 420px;
   }
   .hero-card-shortlisted {
-    left: 10px;
+    left: 0;
     bottom: 20px;
   }
+  .hero-card-browse {
+    right: 0;
+    top: 15px;
+  }
   .hero-card-scholarship {
-    right: 10px;
+    right: 15px;
     bottom: -10px;
   }
 }
@@ -1152,6 +1152,7 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
     height: 320px;
   }
   .hero-card-shortlisted,
+  .hero-card-browse,
   .hero-card-scholarship {
     position: static;
     margin-top: 0.75rem;
@@ -1159,87 +1160,6 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
     max-width: 100%;
     animation: none;
   }
-}
-
-/* ==========================================================================
-   8. PLATFORM HIGHLIGHTS (Section A)
-   ========================================================================== */
-.platform-highlights-section {
-  background: #FFFFFF;
-  position: relative;
-  border-bottom: 1px solid var(--slate-200);
-}
-.highlight-stat-card {
-  background: #FFFFFF;
-  border: 1px solid var(--slate-200);
-  border-radius: 18px;
-  padding: 1.5rem 1.25rem;
-  transition: transform var(--isms-transition), box-shadow var(--isms-transition), border-color var(--isms-transition);
-}
-.highlight-stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 30px -6px rgba(81, 53, 215, 0.12);
-  border-color: rgba(124, 58, 237, 0.35);
-}
-.highlight-stat-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.35rem;
-  margin-bottom: 0.85rem;
-}
-.highlight-stat-value {
-  font-size: 2.15rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
-  margin-bottom: 0.25rem;
-}
-.highlight-stat-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--slate-500);
-}
-
-.category-pill-card {
-  background: #FFFFFF;
-  border: 1px solid var(--slate-200);
-  border-radius: 18px;
-  padding: 1.35rem 1rem;
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: all var(--isms-transition);
-}
-.category-pill-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 28px -6px rgba(81, 53, 215, 0.14);
-  border-color: rgba(124, 58, 237, 0.4);
-}
-.category-pill-card:hover .category-icon-box {
-  transform: scale(1.1);
-}
-
-.bg-slate-subtle {
-  background-color: #F8FAFC !important;
-}
-
-[data-bs-theme="dark"] .platform-highlights-section {
-  background: #0F172A;
-  border-color: #1E293B;
-}
-[data-bs-theme="dark"] .highlight-stat-card,
-[data-bs-theme="dark"] .category-pill-card {
-  background: #1E293B;
-  border-color: #334155;
-}
-[data-bs-theme="dark"] .bg-slate-subtle {
-  background-color: #0B0F19 !important;
 }
 
 /* ==========================================================================

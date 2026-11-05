@@ -27,7 +27,6 @@ const Application = require('../models/Application');
 const Review = require('../models/Review');
 const Announcement = require('../models/Announcement');
 const ActivityLog = require('../models/ActivityLog');
-const CompanyProfile = require('../models/CompanyProfile');
 
 /** Ensure a $group result always has every known key (charts hate undefined). */
 function withZeroes(rows, keys, valueKey) {
@@ -278,17 +277,14 @@ async function mostViewed(limit = 5) {
   ]);
 }
 
-/** The counters shown in the landing page hero and platform highlights. */
+/** The counters shown in the landing page hero. */
 async function siteStats() {
-  const [students, companies, opportunities, internships, scholarships, verifiedCompanies, applications, reviews, dead] = await Promise.all([
-    User.countDocuments({ role: 'student' }).catch(() => 0),
-    User.countDocuments({ role: 'company' }).catch(() => 0),
-    Opportunity.countDocuments({ status: 'approved', isActive: true, deadline: { $gt: new Date() } }).catch(() => 0),
-    Opportunity.countDocuments({ status: 'approved', isActive: true, type: 'internship', deadline: { $gt: new Date() } }).catch(() => 0),
-    Opportunity.countDocuments({ status: 'approved', isActive: true, type: 'scholarship', deadline: { $gt: new Date() } }).catch(() => 0),
-    CompanyProfile.countDocuments({ verified: true }).catch(() => 0),
-    Application.countDocuments({}).catch(() => 0),
-    Review.countDocuments({}).catch(() => 0),
+  const [students, companies, opportunities, applications, reviews, dead] = await Promise.all([
+    User.countDocuments({ role: 'student' }),
+    User.countDocuments({ role: 'company' }),
+    Opportunity.countDocuments({ status: 'approved', isActive: true, deadline: { $gt: new Date() } }),
+    Application.countDocuments({}),
+    Review.countDocuments({}),
     new Promise((resolve) => {
       User.aggregate([{ $group: { _id: null, total: { $sum: 1 } } }])
         .then((r) => resolve(r[0] ? r[0].total : 0))
@@ -297,16 +293,13 @@ async function siteStats() {
   ]);
 
   return {
-    students: students || 0,
-    companies: companies || 0,
-    opportunities: opportunities || 0,
-    internships: internships || 0,
-    scholarships: scholarships || 0,
-    verifiedCompanies: verifiedCompanies || 0,
-    applications: applications || 0,
-    reviews: reviews || 0,
-    totalUsers: dead || 0,
-    totalUsersLabel: (dead || 0) >= 1000 ? `${((dead || 0) / 1000).toFixed(1)}k` : String(dead || 0)
+    students,
+    companies,
+    opportunities,
+    applications,
+    reviews,
+    totalUsers: dead,
+    totalUsersLabel: dead >= 1000 ? `${(dead / 1000).toFixed(1)}k` : String(dead)
   };
 }
 
