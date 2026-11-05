@@ -22,6 +22,29 @@
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
 
   // =========================================================================
+  // 0. Page preloader / loading screen
+  // =========================================================================
+  function initPreloader() {
+    var preloader = document.getElementById('pagePreloader');
+    if (!preloader) return;
+    function hide() {
+      preloader.classList.add('loaded');
+      setTimeout(function () {
+        if (preloader && preloader.parentNode) {
+          preloader.parentNode.removeChild(preloader);
+        }
+      }, 400);
+    }
+    if (document.readyState === 'complete') {
+      hide();
+    } else {
+      window.addEventListener('load', hide);
+      setTimeout(hide, 1200);
+    }
+  }
+  initPreloader();
+
+  // =========================================================================
   // 1. Dark / light toggle
   // =========================================================================
   function initTheme() {

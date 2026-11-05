@@ -13,13 +13,24 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127891;</text></svg>">
+  <link rel="icon" type="image/png" href="/img/logo.png">
+  <link rel="apple-touch-icon" href="/img/logo.png">
 
   <!-- Blocking theme script: applies the saved light/dark choice before first paint
        (kept in a separate file so the strict Content-Security-Policy holds). -->
   <script src="/js/theme.js"></script>
 </head>
 <body class="d-flex flex-column min-vh-100">
+
+  <!-- NextStep Page Preloader / Loading Screen -->
+  <div id="pagePreloader" class="page-preloader" aria-hidden="true">
+    <div class="preloader-content text-center">
+      <img src="/img/logo.png" alt="NextStep" class="preloader-logo">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading NextStep...</span>
+      </div>
+    </div>
+  </div>
 
   <%- include('../partials/navbar') %>
 

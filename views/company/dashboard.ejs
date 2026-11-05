@@ -16,12 +16,15 @@ const oppChart = {
 %>
 <%- include('../partials/flash') %>
 <div class="container py-4">
-  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
-    <div>
-      <h1 class="h3 mb-1"><i class="bi bi-speedometer2 me-2 text-primary"></i>Company dashboard</h1>
-      <p class="text-body-secondary mb-0">
-        <% if (profile) { %><%= profile.companyName %><% if (profile.verified) { %> <i class="bi bi-patch-check-fill text-primary"></i><% } %><% } %>
-      </p>
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div class="d-flex align-items-center gap-3">
+      <img src="/img/logo.png" alt="NextStep Logo" class="dashboard-logo d-none d-sm-block">
+      <div>
+        <h1 class="h3 mb-1">Company dashboard</h1>
+        <p class="text-body-secondary mb-0">
+          <% if (profile) { %><%= profile.companyName %><% if (profile.verified) { %> <i class="bi bi-patch-check-fill text-primary"></i><% } %><% } %>
+        </p>
+      </div>
     </div>
     <div class="d-flex gap-2">
       <a class="btn btn-outline-secondary" href="/company/profile"><i class="bi bi-building me-1"></i>Company profile</a>
