@@ -826,14 +826,14 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
 .isms-footer .text-body-secondary { color: rgba(255, 255, 255, .55) !important; }
 
 /* ==========================================================================
-   7. HERO (homepage)
+   7. HERO (homepage) - Premium Lavender & Purple Career-Tech Design
    ========================================================================== */
 .hero-section {
   background:
-    radial-gradient(1100px 500px at 10% -10%, rgba(99, 102, 241, 0.12), transparent 70%),
-    radial-gradient(900px 450px at 90% 10%, rgba(124, 58, 237, 0.1), transparent 65%),
-    #ffffff;
-  border-bottom: 1px solid var(--slate-200);
+    radial-gradient(900px 500px at 15% -10%, rgba(117, 69, 237, 0.12), transparent 70%),
+    radial-gradient(800px 450px at 85% 15%, rgba(81, 53, 215, 0.1), transparent 65%),
+    #F7F5FF;
+  border-bottom: 1px solid rgba(117, 69, 237, 0.12);
 }
 
 .hero-gradient-orb {
@@ -848,46 +848,97 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
   height: 380px;
   top: -100px;
   left: -80px;
-  background: radial-gradient(circle, rgba(67, 56, 202, 0.18), transparent 70%);
+  background: radial-gradient(circle, rgba(81, 53, 215, 0.16), transparent 70%);
 }
 .hero-orb-2 {
   width: 420px;
   height: 420px;
   top: 40px;
   right: -100px;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.16), transparent 70%);
+  background: radial-gradient(circle, rgba(117, 69, 237, 0.14), transparent 70%);
 }
 
-.hero-pill-badge {
+/* Color Tokens & Utility Classes for Hero */
+.text-navy { color: #111827 !important; }
+.text-navy-muted { color: #4B5563 !important; }
+.text-purple { color: #5135D7 !important; }
+.bg-purple { background-color: #5135D7 !important; color: #fff; }
+.bg-purple-subtle { background-color: rgba(81, 53, 215, 0.08) !important; }
+.border-purple-subtle { border-color: rgba(81, 53, 215, 0.2) !important; }
+.border-purple-light { border-color: rgba(117, 69, 237, 0.22) !important; }
+
+.text-gradient-purple {
+  background: linear-gradient(135deg, #5135D7 0%, #7545ED 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  font-weight: 800;
+}
+
+.btn-purple-gradient {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #5135D7 0%, #7545ED 100%);
+  border: none;
+  box-shadow: 0 4px 14px rgba(81, 53, 215, 0.35);
+  transition: all var(--isms-transition);
+}
+.btn-purple-gradient:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #4329BC 0%, #6333D7 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(81, 53, 215, 0.45);
+}
+
+.btn-outline-purple {
+  color: #5135D7 !important;
+  border: 1.5px solid rgba(81, 53, 215, 0.35);
+  background: transparent;
+  transition: all var(--isms-transition);
+}
+.btn-outline-purple:hover {
+  color: #ffffff !important;
+  background: #5135D7;
+  border-color: #5135D7;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(81, 53, 215, 0.25);
+}
+
+.hero-announcement-badge {
   display: inline-flex;
   align-items: center;
   transition: transform var(--isms-transition), box-shadow var(--isms-transition);
 }
-.hero-pill-badge:hover {
+.hero-announcement-badge:hover {
   transform: translateY(-1px);
   box-shadow: var(--isms-shadow-md) !important;
 }
 
 .hero-title {
-  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  font-size: clamp(2.2rem, 3.8vw, 3.4rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--slate-900);
+  color: #111827;
 }
 
 .hero-subtitle {
-  font-size: clamp(1rem, 1.25vw, 1.2rem);
-  line-height: 1.6;
-  color: var(--slate-600);
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  line-height: 1.65;
+  color: #4B5563;
 }
 
 .hero-search-wrapper {
   background: #ffffff;
-  border: 1px solid var(--slate-200);
-  box-shadow: 0 12px 36px -4px rgba(15, 23, 42, 0.08);
+  border: 1.5px solid rgba(117, 69, 237, 0.22);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px -4px rgba(81, 53, 215, 0.08);
+  transition: border-color var(--isms-transition), box-shadow var(--isms-transition);
+}
+.hero-search-wrapper:focus-within {
+  border-color: #5135D7;
+  box-shadow: 0 12px 36px -4px rgba(81, 53, 215, 0.16);
 }
 .hero-search .form-control {
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   background: transparent;
 }
 .hero-search .form-select {
@@ -902,7 +953,7 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
   right: 0;
   top: calc(100% + .35rem);
   background: #fff;
-  border: 1px solid var(--slate-200);
+  border: 1px solid rgba(117, 69, 237, 0.2);
   border-radius: var(--isms-radius);
   box-shadow: var(--isms-shadow-lg);
   overflow: hidden;
@@ -912,76 +963,203 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
   align-items: center;
   gap: .6rem;
   padding: .65rem 1rem;
-  color: var(--slate-800);
+  color: #111827;
   text-decoration: none;
-  border-bottom: 1px solid var(--slate-100);
+  border-bottom: 1px solid #F3F4F6;
   font-size: 0.9rem;
   transition: background-color var(--isms-transition), color var(--isms-transition);
 }
 .hero-suggestions a:last-child { border-bottom: 0; }
 .hero-suggestions a:hover,
-.hero-suggestions a.is-active { background: var(--indigo-subtle); color: var(--indigo-primary); }
+.hero-suggestions a.is-active { background: #F5F3FF; color: #5135D7; }
 
-.badge-filter-chip {
-  background: var(--slate-100);
-  color: var(--slate-700);
-  border: 1px solid var(--slate-200);
-  padding: 0.4rem 0.8rem;
+.hero-trending-chip {
+  background: #ffffff;
+  color: #4B5563;
+  border: 1px solid rgba(117, 69, 237, 0.18);
+  padding: 0.38rem 0.85rem;
   font-size: 0.78rem;
   font-weight: 600;
+  border-radius: 50rem;
   transition: all var(--isms-transition);
 }
-.badge-filter-chip:hover {
-  background: var(--indigo-subtle);
-  color: var(--indigo-primary);
-  border-color: var(--indigo-light);
+.hero-trending-chip:hover {
+  background: #EDE9FE;
+  color: #5135D7;
+  border-color: #7545ED;
   transform: translateY(-1px);
 }
 
-/* Floating Badges & Mockup on Hero Right */
-.hero-visual-container {
-  padding: 1.5rem 1rem;
+/* ==========================================================================
+   Hero Right: Student Photo Container & Floating UI Cards (Matching Reference)
+   ========================================================================== */
+.hero-photo-wrapper {
+  position: relative;
+  max-width: 530px;
+  margin: 0 auto;
 }
-.hero-composition-card {
+
+/* Decorative backdrop circle behind top-left of image (Matching Reference Screenshot 2) */
+.hero-photo-backdrop-shape {
+  position: absolute;
+  top: -24px;
+  left: -24px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2DD4BF 0%, #818CF8 100%);
+  z-index: 0;
+  opacity: 0.9;
+  box-shadow: 0 10px 25px rgba(45, 212, 191, 0.25);
+}
+
+/* Main Rounded Photo Container */
+.hero-photo-frame {
   position: relative;
   z-index: 1;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(17, 24, 39, 0.18), 0 0 0 1px rgba(81, 53, 215, 0.08);
+  background: #ffffff;
 }
-.hero-inner-card {
-  border: 1px solid rgba(15, 23, 42, 0.06);
+
+.hero-photo-img {
+  width: 100%;
+  height: 490px;
+  object-fit: cover;
+  object-position: center 25%;
+  display: block;
+  border-radius: 28px;
+  transition: transform 0.4s ease;
 }
-.floating-hero-pill {
+
+.hero-photo-vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(17, 24, 39, 0.22) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+/* Floating UI Cards */
+.hero-floating-card {
   position: absolute;
   z-index: 3;
-  border: 1px solid var(--slate-200);
-  animation: floatBounce 4s ease-in-out infinite alternate;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 14px 34px -6px rgba(17, 24, 39, 0.15), 0 0 0 1px rgba(17, 24, 39, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  backdrop-filter: blur(8px);
 }
-.floating-pill-1 {
-  top: -12px;
-  left: -20px;
+.hero-floating-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 20px 42px -8px rgba(81, 53, 215, 0.22);
 }
-.floating-pill-2 {
-  bottom: -20px;
-  right: -10px;
-  animation-delay: 1.8s;
+
+/* Card 1: Application Shortlisted (Bottom-Left) */
+.hero-card-shortlisted {
+  bottom: 28px;
+  left: -28px;
+  max-width: 320px;
+  animation: heroFloat1 4.5s ease-in-out infinite alternate;
 }
-@keyframes floatBounce {
+
+/* Card 2: Browse Opportunities (Top-Right) */
+.hero-card-browse {
+  top: 25px;
+  right: -25px;
+  min-width: 210px;
+  animation: heroFloat2 5s ease-in-out infinite alternate;
+}
+
+/* Card 3: Scholarship Approved (Bottom-Right) */
+.hero-card-scholarship {
+  bottom: -15px;
+  right: 20px;
+  min-width: 250px;
+  animation: heroFloat3 4.8s ease-in-out infinite alternate;
+}
+
+@keyframes heroFloat1 {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-7px); }
+}
+@keyframes heroFloat2 {
   0% { transform: translateY(0px); }
   100% { transform: translateY(-8px); }
+}
+@keyframes heroFloat3 {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-6px); }
+}
+
+/* Small company logo icons inside Card 2 */
+.company-mini-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .pulse-indicator {
   display: inline-block;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-  animation: pulseEmerald 2s infinite;
+  box-shadow: 0 0 0 0 rgba(81, 53, 215, 0.7);
+  animation: pulsePurple 2s infinite;
 }
-@keyframes pulseEmerald {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+.pulse-indicator.bg-purple {
+  background-color: #5135D7;
+}
+@keyframes pulsePurple {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(81, 53, 215, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(81, 53, 215, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(81, 53, 215, 0); }
+}
+
+/* Responsive Rules for Hero */
+@media (max-width: 991.98px) {
+  .hero-photo-wrapper {
+    margin-top: 2rem;
+    max-width: 480px;
+  }
+  .hero-photo-img {
+    height: 420px;
+  }
+  .hero-card-shortlisted {
+    left: 0;
+    bottom: 20px;
+  }
+  .hero-card-browse {
+    right: 0;
+    top: 15px;
+  }
+  .hero-card-scholarship {
+    right: 15px;
+    bottom: -10px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .hero-title {
+    font-size: 2.15rem;
+  }
+  .hero-photo-img {
+    height: 320px;
+  }
+  .hero-card-shortlisted,
+  .hero-card-browse,
+  .hero-card-scholarship {
+    position: static;
+    margin-top: 0.75rem;
+    width: 100%;
+    max-width: 100%;
+    animation: none;
+  }
 }
 
 /* ==========================================================================
@@ -1472,6 +1650,13 @@ a.stat-tile:hover {
     #0B0F19;
   border-bottom-color: #1E293B;
 }
+[data-bs-theme="dark"] .text-navy { color: #F8FAFC !important; }
+[data-bs-theme="dark"] .text-navy-muted { color: #94A3B8 !important; }
+[data-bs-theme="dark"] .hero-announcement-badge { background: #111827 !important; border-color: #1E293B !important; }
+[data-bs-theme="dark"] .hero-trending-chip { background: #111827 !important; border-color: #1E293B !important; color: #E2E8F0 !important; }
+[data-bs-theme="dark"] .hero-trending-chip:hover { background: #1E293B !important; color: #818CF8 !important; }
+[data-bs-theme="dark"] .hero-floating-card { background: #111827 !important; border-color: #1E293B !important; box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.5) !important; }
+[data-bs-theme="dark"] .hero-photo-frame { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important; }
 [data-bs-theme="dark"] .opportunity-card {
   background-color: #111827;
   border-color: #1E293B;

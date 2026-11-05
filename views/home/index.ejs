@@ -1,156 +1,145 @@
 <%- include('../partials/flash') %>
 
 <!-- =========================================================================
-     1. HERO SECTION (Career-Tech / EdTech Aesthetic)
+     1. HERO SECTION (Refined Career-Tech Lavender & Purple Aesthetic)
      ========================================================================= -->
 <section class="hero-section position-relative overflow-hidden pt-5 pb-5 pb-lg-6">
   <!-- Subtle gradient blur background orbs -->
   <div class="hero-gradient-orb hero-orb-1" aria-hidden="true"></div>
   <div class="hero-gradient-orb hero-orb-2" aria-hidden="true"></div>
 
-  <div class="container position-relative z-1 py-lg-4">
+  <div class="container position-relative z-1 py-lg-3">
     <div class="row align-items-center g-5">
-      <!-- Hero Left: Headlines & Search & CTA -->
-      <div class="col-lg-7 text-center text-lg-start">
-        <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white shadow-sm border border-indigo-subtle mb-3 hero-pill-badge">
-          <span class="badge rounded-pill bg-gradient-indigo text-white px-2 py-1 small">NEW</span>
-          <span class="small fw-semibold text-indigo">Empowering Over 10,000+ Students &amp; Graduates</span>
-          <i class="bi bi-arrow-right text-indigo small"></i>
+      <!-- HERO LEFT COLUMN: Announcement, Headline, Subtitle, Search Bar, Trending, CTAs -->
+      <div class="col-lg-6 text-center text-lg-start">
+        <!-- Small Announcement Badge -->
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white shadow-sm border border-purple-subtle mb-3 hero-announcement-badge">
+          <span class="pulse-indicator bg-purple"></span>
+          <span class="small fw-semibold text-purple">Empowering Students &amp; Graduates</span>
+          <i class="bi bi-arrow-right text-purple small"></i>
         </div>
 
-        <h1 class="display-4 fw-extrabold hero-title text-dark mb-3 lh-sm">
-          Where student impact meets <span class="text-gradient-indigo">innovation</span>.
+        <!-- Main Headline -->
+        <h1 class="display-5 fw-extrabold hero-title text-navy mb-3 lh-sm">
+          Where student impact meets <span class="text-gradient-purple">innovation</span>.
         </h1>
 
-        <p class="lead text-body-secondary mb-4 pe-xl-4 hero-subtitle">
-          NextStep connects ambitious students with verified internships and life-changing scholarships from top global employers. Apply seamlessly, track live status, and accelerate your future.
+        <!-- Subtitle Description -->
+        <p class="lead text-navy-muted mb-4 pe-xl-3 hero-subtitle">
+          NextStep connects ambitious students with verified internships and life-changing scholarships from leading organizations. Discover opportunities, apply seamlessly, track your applications, and accelerate your future.
         </p>
 
-        <!-- Hero Live Search Box -->
-        <div class="hero-search-wrapper bg-white p-2 rounded-4 shadow-lg border border-light-subtle mb-4">
+        <!-- Large Modern Search Bar -->
+        <div class="hero-search-wrapper bg-white p-2 rounded-4 shadow-sm border border-purple-light mb-4">
           <form class="hero-search d-flex flex-column flex-md-row align-items-stretch gap-2" action="/search" method="get" role="search">
-            <div class="input-group input-group-lg border-0 flex-grow-1">
-              <span class="input-group-text bg-transparent border-0 text-indigo"><i class="bi bi-search"></i></span>
-              <input type="search" class="form-control border-0 shadow-none px-1" name="q" autocomplete="off" id="heroSearchInput"
+            <div class="input-group input-group-lg border-0 flex-grow-1 align-items-center">
+              <span class="input-group-text bg-transparent border-0 text-purple ps-3 pe-2">
+                <i class="bi bi-search fs-5"></i>
+              </span>
+              <input type="search" class="form-control border-0 shadow-none px-2 text-navy" name="q" autocomplete="off" id="heroSearchInput"
                      placeholder="Job title, skill or company..." aria-label="Search opportunities">
             </div>
             <div class="vr d-none d-md-block opacity-25 my-2"></div>
-            <select class="form-select border-0 shadow-none text-muted py-2 d-none d-sm-block" name="type" style="max-width: 170px;">
+            <select class="form-select border-0 shadow-none text-navy-muted py-2 d-none d-sm-block bg-transparent" name="type" style="max-width: 160px; font-weight: 500;">
               <option value="">All Types</option>
               <option value="internship">Internships</option>
               <option value="scholarship">Scholarships</option>
             </select>
-            <button class="btn btn-gradient-indigo btn-lg px-4 rounded-3 d-flex align-items-center justify-content-center gap-2" type="submit">
+            <button class="btn btn-purple-gradient btn-lg px-4 rounded-3 d-flex align-items-center justify-content-center gap-2 fw-semibold" type="submit">
               <span>Search</span> <i class="bi bi-arrow-right"></i>
             </button>
           </form>
           <div id="heroSuggestions" class="hero-suggestions d-none" role="listbox"></div>
         </div>
 
-        <!-- Quick Trending Tags -->
-        <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start align-items-center">
-          <span class="small text-muted fw-medium me-1"><i class="bi bi-fire text-danger me-1"></i>Trending:</span>
+        <!-- Trending Skill Tags -->
+        <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start align-items-center mb-4">
+          <span class="small text-navy-muted fw-semibold me-1"><i class="bi bi-fire text-danger me-1"></i>Trending:</span>
           <% ['Software Engineering', 'Data Science', 'UI/UX Design', 'Marketing', 'FinTech'].forEach(function (k) { %>
-            <a class="badge rounded-pill badge-filter-chip text-decoration-none" href="/search?q=<%= encodeURIComponent(k) %>"><%= k %></a>
+            <a class="badge rounded-pill hero-trending-chip text-decoration-none" href="/search?q=<%= encodeURIComponent(k) %>"><%= k %></a>
           <% }); %>
         </div>
 
-        <!-- Two Primary CTAs -->
-        <div class="d-flex flex-wrap gap-3 mt-4 justify-content-center justify-content-lg-start">
-          <a class="btn btn-gradient-indigo btn-lg px-4 py-2.5 rounded-3 fw-semibold shadow-sm" href="/opportunities">
-            <i class="bi bi-grid-fill me-2"></i>Browse All Posts
+        <!-- Two CTA Buttons -->
+        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+          <a class="btn btn-purple-gradient btn-lg px-4 py-2.5 rounded-3 fw-semibold shadow-sm" href="/opportunities">
+            <i class="bi bi-grid-fill me-2"></i>Browse All Opportunities
           </a>
           <% if (!currentUser) { %>
-            <a class="btn btn-outline-indigo btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/auth/register?role=company">
+            <a class="btn btn-outline-purple btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/auth/register?role=company">
               <i class="bi bi-building-add me-2"></i>Post an Opportunity
             </a>
           <% } else if (isCompany) { %>
-            <a class="btn btn-outline-indigo btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/company/opportunities/new">
-              <i class="bi bi-plus-circle me-2"></i>Post New Opportunity
+            <a class="btn btn-outline-purple btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/company/opportunities/new">
+              <i class="bi bi-plus-circle me-2"></i>Post an Opportunity
             </a>
           <% } else { %>
-            <a class="btn btn-outline-indigo btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/student/dashboard">
+            <a class="btn btn-outline-purple btn-lg px-4 py-2.5 rounded-3 fw-semibold" href="/student/dashboard">
               <i class="bi bi-speedometer2 me-2"></i>Open My Dashboard
             </a>
           <% } %>
         </div>
       </div>
 
-      <!-- Hero Right: Interactive Visual Composition (Inspired by PDF Pages 5, 11, 12) -->
-      <div class="col-lg-5">
-        <div class="hero-visual-container position-relative">
-          <!-- Background decorative gradient card -->
-          <div class="hero-composition-card bg-gradient-indigo-violet text-white p-4 p-md-5 rounded-5 shadow-2xl position-relative overflow-hidden">
-            <!-- Decorative badge -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <span class="badge bg-white bg-opacity-25 backdrop-blur px-3 py-1.5 rounded-pill text-white small fw-medium">
-                <i class="bi bi-patch-check-fill me-1 text-warning"></i>NextStep CareerOS
-              </span>
-              <span class="badge bg-white bg-opacity-15 rounded-pill small">2026 Edition</span>
-            </div>
+      <!-- HERO RIGHT COLUMN: Realistic Student Photo with Background Backdrop & 3 Floating UI Cards -->
+      <div class="col-lg-6">
+        <div class="hero-photo-wrapper position-relative mx-auto">
+          <!-- Subtle cyan/purple backdrop circle shape behind top-left of image (matching Reference Screenshot 2) -->
+          <div class="hero-photo-backdrop-shape" aria-hidden="true"></div>
 
-            <div class="hero-card-headline mb-4">
-              <h2 class="h3 fw-bold text-white mb-2">Fast-track your dream career</h2>
-              <p class="small text-white text-opacity-80 mb-0">Discover matched roles, track real-time applications &amp; land verified offers.</p>
-            </div>
+          <!-- Main Rounded Photograph Container -->
+          <div class="hero-photo-frame shadow-2xl position-relative overflow-hidden">
+            <img src="/images/nextstep-hero-student.jpg"
+                 alt="University student learning and discovering career opportunities on NextStep"
+                 class="hero-photo-img"
+                 loading="eager"
+                 onerror="this.onerror=null; this.src='/img/nextstep-hero-student.jpg';">
+            <!-- Subtle gradient vignette overlay at the bottom for smooth blending -->
+            <div class="hero-photo-vignette" aria-hidden="true"></div>
+          </div>
 
-            <!-- Central Visual Mockup: Profile Strength & Metric Highlight -->
-            <div class="bg-white text-dark rounded-4 p-3 shadow-lg mb-3 hero-inner-card">
-              <div class="d-flex align-items-center justify-content-between mb-2">
-                <div class="d-flex align-items-center gap-2">
-                  <div class="avatar avatar-md rounded-circle bg-indigo-subtle text-indigo fw-bold">AR</div>
-                  <div>
-                    <div class="fw-bold small">Aisha Rahman</div>
-                    <div class="text-muted" style="font-size: 0.72rem;">Computer Science &middot; Senior</div>
-                  </div>
-                </div>
-                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill small">
-                  <i class="bi bi-check-circle-fill me-1"></i>Shortlisted
-                </span>
-              </div>
-              <div class="d-flex align-items-center justify-content-between small pt-2 border-top">
-                <span class="text-muted">Skill Compatibility:</span>
-                <span class="fw-bold text-indigo"><i class="bi bi-stars text-warning me-1"></i>94% Match</span>
-              </div>
+          <!-- FLOATING UI CARD 1: "Application Shortlisted" (Bottom-Left, matching Reference Screenshot 2) -->
+          <div class="hero-floating-card hero-card-shortlisted bg-white p-3 rounded-4 shadow-lg border border-light-subtle d-flex align-items-center gap-3">
+            <div class="hero-card-icon rounded-circle bg-success-subtle text-success d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
+              <i class="bi bi-check2-circle fs-4" style="color: #15966B !important;"></i>
             </div>
-
-            <!-- Small metric grid -->
-            <div class="row g-2 text-center">
-              <div class="col-4">
-                <div class="p-2 rounded-3 bg-white bg-opacity-15 backdrop-blur">
-                  <div class="fw-bold text-white fs-6">100%</div>
-                  <div class="text-white-50" style="font-size: 0.7rem;">Verified Posts</div>
-                </div>
+            <div class="min-w-0">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="fw-bold small text-navy">Application Shortlisted</span>
+                <span class="badge rounded-pill text-white small px-2 py-0.5" style="background-color: #15966B !important; font-size: 0.68rem;">Active</span>
               </div>
-              <div class="col-4">
-                <div class="p-2 rounded-3 bg-white bg-opacity-15 backdrop-blur">
-                  <div class="fw-bold text-white fs-6">300+</div>
-                  <div class="text-white-50" style="font-size: 0.7rem;">Top Companies</div>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="p-2 rounded-3 bg-white bg-opacity-15 backdrop-blur">
-                  <div class="fw-bold text-white fs-6">4.9 ★</div>
-                  <div class="text-white-50" style="font-size: 0.7rem;">User Rating</div>
-                </div>
+              <div class="text-navy-muted small" style="font-size: 0.76rem;">
+                <span class="fw-semibold text-purple">Google</span> &middot; Software Engineering Intern
               </div>
             </div>
           </div>
 
-          <!-- Floating Badge 1: Top Left -->
-          <div class="floating-hero-pill floating-pill-1 bg-white shadow-lg rounded-pill p-2 px-3 d-flex align-items-center gap-2">
-            <span class="pulse-indicator bg-success"></span>
-            <span class="small fw-bold text-dark"><i class="bi bi-briefcase-fill text-indigo me-1"></i>New Opportunities Today</span>
+          <!-- FLOATING UI CARD 2: "Browse Opportunities" with small company logos (Top-Right, matching Reference Screenshot 2) -->
+          <div class="hero-floating-card hero-card-browse bg-white p-3 rounded-4 shadow-lg border border-light-subtle">
+            <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
+              <span class="fw-bold small text-navy">Browse Opportunities</span>
+              <span class="badge bg-purple-subtle text-purple rounded-pill small" style="font-size: 0.68rem;">250+ New</span>
+            </div>
+            <!-- Small company brand logos/chips -->
+            <div class="d-flex align-items-center gap-1.5">
+              <span class="company-mini-logo bg-danger text-white" title="Google"><i class="bi bi-google"></i></span>
+              <span class="company-mini-logo bg-primary text-white" title="Microsoft"><i class="bi bi-microsoft"></i></span>
+              <span class="company-mini-logo bg-dark text-white" title="Apple"><i class="bi bi-apple"></i></span>
+              <span class="company-mini-logo bg-info text-white" title="Intel"><i class="bi bi-cpu-fill"></i></span>
+              <span class="company-mini-more small fw-bold text-navy-muted ms-1">+120</span>
+            </div>
           </div>
 
-          <!-- Floating Badge 2: Bottom Right -->
-          <div class="floating-hero-pill floating-pill-2 bg-white shadow-lg rounded-4 p-3 d-flex align-items-center gap-3">
-            <div class="rounded-3 p-2 bg-indigo-subtle text-indigo fs-5 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-              <i class="bi bi-award-fill"></i>
+          <!-- FLOATING UI CARD 3: "Scholarship Approved" with icon & award amount (Bottom-Right) -->
+          <div class="hero-floating-card hero-card-scholarship bg-white p-3 rounded-4 shadow-lg border border-light-subtle d-flex align-items-center gap-3">
+            <div class="hero-card-icon rounded-circle bg-purple-subtle text-purple d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
+              <i class="bi bi-mortarboard-fill fs-5 text-purple"></i>
             </div>
             <div>
-              <div class="fw-bold small text-dark">Scholarship Approved</div>
-              <div class="text-success small fw-medium" style="font-size: 0.75rem;"><i class="bi bi-check2-circle me-1"></i>$5,000 Award Granted</div>
+              <div class="fw-bold small text-navy">Scholarship Approved</div>
+              <div class="small fw-bold d-flex align-items-center gap-1" style="color: #15966B; font-size: 0.78rem;">
+                <i class="bi bi-patch-check-fill"></i> $5,000 Award Granted
+              </div>
             </div>
           </div>
         </div>
