@@ -147,7 +147,9 @@
                 <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-trash me-1"></i>Remove logo</button>
               </form>
             <% } else { %>
-              <div class="display-6 text-body-secondary opacity-50 mb-3"><i class="bi bi-image"></i></div>
+              <div class="d-flex justify-content-center mb-3">
+                <%- format.renderCategoryIcon(profile || 'Company', { type: 'company', size: 84, iconSize: 40, borderRadius: 18 }) %>
+              </div>
             <% } %>
 
             <form action="/company/profile/logo" method="post" enctype="multipart/form-data">

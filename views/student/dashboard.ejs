@@ -198,12 +198,12 @@ const majorName = profile && profile.education && profile.education.length ? pro
                         <tr>
                           <td class="ps-0">
                             <div class="d-flex align-items-center gap-2">
-                              <div class="company-logo-wrapper flex-shrink-0" style="width: 36px; height: 36px;">
+                              <div class="company-logo-wrapper flex-shrink-0" style="width: 36px; height: 36px; border: 0; background: transparent;">
                                 <% if (cp.logo) { %>
                                   <img src="/files/company/logo/<%= cp.user || '' %>" class="company-logo-img rounded-2" alt="<%= cName %>"
-                                       onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'company-logo-fallback rounded-2\' style=\'font-size:0.85rem\'><%= initLetter %></span>';">
+                                       onerror="this.onerror=null; this.parentElement.innerHTML='<%- format.getLogoFallbackHtml(a.opportunity || cName, { size: 36, iconSize: 18, borderRadius: 8 }) %>';">
                                 <% } else { %>
-                                  <span class="company-logo-fallback rounded-2" style="font-size: 0.85rem;"><%= initLetter %></span>
+                                  <%- format.renderCategoryIcon(a.opportunity || cName, { size: 36, iconSize: 18, borderRadius: 8 }) %>
                                 <% } %>
                               </div>
                               <div class="min-w-0">

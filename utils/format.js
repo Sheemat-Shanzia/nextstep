@@ -122,6 +122,8 @@ function deadlineBadge(daysLeft) {
   return { text: `${daysLeft} days left`, className: 'bg-light text-dark border' };
 }
 
+const categoryTheme = require('./categoryTheme');
+
 module.exports = {
   formatDate,
   formatDateTime,
@@ -132,5 +134,9 @@ module.exports = {
   APPLICATION_STATUS_BADGE,
   APPLICATION_STATUS_ICON,
   applicationStatusLabel,
-  deadlineBadge
+  deadlineBadge,
+  categoryTheme,
+  getCategoryTheme: categoryTheme.getCategoryTheme,
+  renderCategoryIcon: categoryTheme.renderCategoryIcon,
+  getLogoFallbackHtml: categoryTheme.getLogoFallbackHtml
 };

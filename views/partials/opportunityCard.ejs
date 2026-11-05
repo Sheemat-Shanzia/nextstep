@@ -20,13 +20,13 @@ const isInternship = o.type === 'internship';
     <!-- Header: Company Info + Type Badge -->
     <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
       <div class="d-flex align-items-center gap-3 min-w-0">
-        <div class="company-logo-wrapper flex-shrink-0">
+        <div class="company-logo-wrapper flex-shrink-0" style="width: 46px; height: 46px; border: 0; background: transparent;">
           <% if (cp.logo) { %>
             <img src="/files/company/logo/<%= cp.user || '' %>" class="company-logo-img rounded-3" width="46" height="46"
                  style="object-fit:cover" alt="<%= companyName %>"
-                 onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'company-logo-fallback\'><%= initialLetter %></span>';">
+                 onerror="this.onerror=null; this.parentElement.innerHTML='<%- format.getLogoFallbackHtml(o, { size: 46, borderRadius: 10 }) %>';">
           <% } else { %>
-            <span class="company-logo-fallback rounded-3"><%= initialLetter %></span>
+            <%- format.renderCategoryIcon(o, { size: 46, borderRadius: 10 }) %>
           <% } %>
         </div>
         <div class="min-w-0">

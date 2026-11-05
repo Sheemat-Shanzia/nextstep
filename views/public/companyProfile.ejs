@@ -12,12 +12,15 @@
   <div class="card shadow-sm border-0 mb-4">
     <div class="card-body p-4">
       <div class="d-flex flex-wrap align-items-start gap-3">
-        <% if (profile.logo) { %>
-          <img src="/files/company/logo/<%= profile.user %>" width="88" height="88" class="rounded"
-               style="object-fit:cover" alt="<%= profile.companyName %> logo" onerror="this.style.display='none'">
-        <% } else { %>
-          <span class="avatar avatar-xl"><%= profile.initial %></span>
-        <% } %>
+        <div class="company-logo-wrapper flex-shrink-0" style="width: 88px; height: 88px; border: 0; background: transparent;">
+          <% if (profile.logo) { %>
+            <img src="/files/company/logo/<%= profile.user %>" width="88" height="88" class="rounded-4"
+                 style="object-fit:cover" alt="<%= profile.companyName %> logo"
+                 onerror="this.onerror=null; this.parentElement.innerHTML='<%- format.getLogoFallbackHtml(profile, { type: 'company', size: 88, iconSize: 42, borderRadius: 20 }) %>';">
+          <% } else { %>
+            <%- format.renderCategoryIcon(profile, { type: 'company', size: 88, iconSize: 42, borderRadius: 20 }) %>
+          <% } %>
+        </div>
 
         <div class="flex-grow-1">
           <div class="d-flex flex-wrap align-items-center gap-2 mb-1">

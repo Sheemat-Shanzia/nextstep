@@ -20,12 +20,12 @@ const oppChart = {
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white border border-light-subtle">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
       <div class="d-flex align-items-center gap-3">
-        <div class="company-logo-wrapper flex-shrink-0" style="width: 56px; height: 56px;">
+        <div class="company-logo-wrapper flex-shrink-0" style="width: 56px; height: 56px; border: 0; background: transparent;">
           <% if (profile && profile.logo) { %>
             <img src="/files/company/logo/<%= profile.user || '' %>" class="company-logo-img rounded-3" alt="Logo"
-                 onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'company-logo-fallback rounded-3\'><%= (profile && profile.companyName ? profile.companyName[0] : \'C\').toUpperCase() %></span>';">
+                 onerror="this.onerror=null; this.parentElement.innerHTML='<%- format.getLogoFallbackHtml(profile || 'Company', { type: 'company', size: 56, iconSize: 26, borderRadius: 12 }) %>';">
           <% } else { %>
-            <span class="company-logo-fallback rounded-3"><%= (profile && profile.companyName ? profile.companyName[0] : 'C').toUpperCase() %></span>
+            <%- format.renderCategoryIcon(profile || 'Company', { type: 'company', size: 56, iconSize: 26, borderRadius: 12 }) %>
           <% } %>
         </div>
         <div>

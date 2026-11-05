@@ -37,12 +37,15 @@
           <div class="card h-100 shadow-sm">
             <div class="card-body">
               <div class="d-flex align-items-start gap-3 mb-3">
-                <% if (c.logo) { %>
-                  <img src="/files/company/logo/<%= c.user %>" width="52" height="52" class="rounded"
-                       style="object-fit:cover" alt="<%= c.companyName %> logo" onerror="this.style.display='none'">
-                <% } else { %>
-                  <span class="avatar avatar-lg"><%= c.initial %></span>
-                <% } %>
+                <div class="company-logo-wrapper flex-shrink-0" style="width: 52px; height: 52px; border: 0; background: transparent;">
+                  <% if (c.logo) { %>
+                    <img src="/files/company/logo/<%= c.user %>" width="52" height="52" class="rounded-3"
+                         style="object-fit:cover" alt="<%= c.companyName %> logo"
+                         onerror="this.onerror=null; this.parentElement.innerHTML='<%- format.getLogoFallbackHtml(c, { type: 'company', size: 52, borderRadius: 12 }) %>';">
+                  <% } else { %>
+                    <%- format.renderCategoryIcon(c, { type: 'company', size: 52, borderRadius: 12 }) %>
+                  <% } %>
+                </div>
                 <div class="min-w-0">
                   <h2 class="h6 mb-1">
                     <a href="/companies/<%= c.user %>" class="text-decoration-none text-body"><%= c.companyName %></a>

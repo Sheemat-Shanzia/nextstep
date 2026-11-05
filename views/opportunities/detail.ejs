@@ -38,12 +38,16 @@ const isOwner = currentUser && opportunity.company && opportunity.company._id &&
 
           <h1 class="h3 mb-3"><%= opportunity.title %></h1>
 
-          <div class="d-flex align-items-center gap-2 mb-3">
-            <% if (company && company.logo) { %>
-              <img src="/files/company/logo/<%= company.user %>" width="40" height="40" class="rounded"
-                   style="object-fit:cover" alt="<%= company.companyName %> logo"
-                   onerror="this.style.display='none'">
-            <% } %>
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="company-logo-wrapper flex-shrink-0" style="width: 44px; height: 44px; border: 0; background: transparent;">
+              <% if (company && company.logo) { %>
+                <img src="/files/company/logo/<%= company.user %>" width="44" height="44" class="rounded-3"
+                     style="object-fit:cover" alt="<%= company.companyName %> logo"
+                     onerror="this.onerror=null; this.parentElement.innerHTML='<%- format.getLogoFallbackHtml(opportunity, { size: 44, borderRadius: 10 }) %>';">
+              <% } else { %>
+                <%- format.renderCategoryIcon(opportunity, { size: 44, borderRadius: 10 }) %>
+              <% } %>
+            </div>
             <div class="min-w-0">
               <a href="/companies/<%= opportunity.company %>" class="fw-semibold d-block text-decoration-none text-body">
                 <%= opportunity.companyNameCopy %>
@@ -232,19 +236,32 @@ const isOwner = currentUser && opportunity.company && opportunity.company._id &&
           <div class="card shadow-sm border-0 mb-4">
             <div class="card-body p-4">
               <h2 class="h6 text-uppercase text-body-secondary mb-3">About the company</h2>
-              <h3 class="h5 mb-1"><%= company.companyName %></h3>
-              <div class="mb-2">
-                <% if (company.verified) { %>
-                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
-                    <i class="bi bi-patch-check-fill me-1"></i>Verified
-                  </span>
-                <% } %>
-                <% if (company.averageRating > 0) { %>
-                  <span class="badge text-bg-warning">
-                    <i class="bi bi-star-fill me-1"></i><%= company.averageRating.toFixed(1) %>
-                    <span class="fw-normal">(<%= company.reviewCount %>)</span>
-                  </span>
-                <% } %>
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="company-logo-wrapper flex-shrink-0" style="width: 48px; height: 48px; border: 0; background: transparent;">
+                  <% if (company.logo) { %>
+                    <img src="/files/company/logo/<%= company.user %>" width="48" height="48" class="rounded-3"
+                         style="object-fit:cover" alt="<%= company.companyName %> logo"
+                         onerror="this.onerror=null; this.parentElement.innerHTML='<%- format.getLogoFallbackHtml(company, { type: 'company', size: 48, borderRadius: 12 }) %>';">
+                  <% } else { %>
+                    <%- format.renderCategoryIcon(company, { type: 'company', size: 48, borderRadius: 12 }) %>
+                  <% } %>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="h5 mb-1 text-truncate"><%= company.companyName %></h3>
+                  <div>
+                    <% if (company.verified) { %>
+                      <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
+                        <i class="bi bi-patch-check-fill me-1"></i>Verified
+                      </span>
+                    <% } %>
+                    <% if (company.averageRating > 0) { %>
+                      <span class="badge text-bg-warning">
+                        <i class="bi bi-star-fill me-1"></i><%= company.averageRating.toFixed(1) %>
+                        <span class="fw-normal">(<%= company.reviewCount %>)</span>
+                      </span>
+                    <% } %>
+                  </div>
+                </div>
               </div>
 
               <% if (company.industry) { %><p class="small mb-1"><i class="bi bi-building me-2"></i><%= company.industry %></p><% } %>

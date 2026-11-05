@@ -1207,10 +1207,17 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
   transform: scale(1.1);
 }
 .category-icon-box {
-  width: 56px;
-  height: 56px;
-  border-radius: 1rem;
-  transition: transform var(--isms-transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform var(--isms-transition), box-shadow var(--isms-transition);
+}
+.category-icon-box svg {
+  display: block;
+}
+.opportunity-card:hover .category-icon-box {
+  transform: scale(1.06);
 }
 .category-icon-indigo  { background: rgba(67, 56, 202, 0.1); color: var(--indigo-primary); }
 .category-icon-violet  { background: rgba(124, 58, 237, 0.1); color: var(--violet-primary); }
@@ -1298,8 +1305,8 @@ kbd { background-color: rgba(169, 214, 229, .4); color: var(--deep-navy); }
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--slate-50);
-  border: 1px solid var(--slate-200);
+  background: transparent;
+  border: none;
 }
 .company-logo-img {
   width: 100%;

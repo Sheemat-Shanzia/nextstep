@@ -134,6 +134,9 @@ app.use(async (req, res, next) => {
   res.locals.query = req.query || {};
   res.locals.qs = (overrides = {}) => queryString(req.query || {}, overrides);
   res.locals.format = format;
+  res.locals.categoryTheme = format.categoryTheme;
+  res.locals.renderCategoryIcon = format.renderCategoryIcon;
+  res.locals.getCategoryTheme = format.getCategoryTheme;
 
   // Consume this request's flash messages once, up front, so every view can
   // render them from res.locals.flashes (views never touch req directly).
